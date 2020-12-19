@@ -4,7 +4,13 @@ This repository contains the issue tracker project developed as a collaborative 
 Target of the project is to develop a web-based issue tracker.
 ## Project Team
 Team is as follows:
-* TODO
+* @kopfadam
+* @codergo7
+* @iskmetin
+* @Omer975
+* @poormus
+* @Avk44
+* @bySmy
 ## Project Structure
 Project is decomposed into layers and this is reflected to the directory structure.
 * backend: backend of the application
