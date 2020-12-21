@@ -25,7 +25,7 @@ public class IssueEntity {
     private Long id;
 
     @NotBlank
-    private String tittle;
+    private String title;
 
     @NotBlank
     private String description;
