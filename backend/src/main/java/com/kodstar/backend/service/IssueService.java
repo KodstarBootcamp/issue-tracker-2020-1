@@ -1,7 +1,8 @@
 package com.kodstar.backend.service;
 
-import org.springframework.stereotype.Service;
+import com.kodstar.backend.model.dto.Issue;
 
-@Service
-public class IssueService {
+public interface IssueService {
+
+    Issue saveIssueEntity(Issue issue);
 }
