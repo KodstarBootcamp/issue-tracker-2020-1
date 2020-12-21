@@ -1,15 +1,10 @@
 package com.kodstar.backend.model.entity;
 
-
 import com.kodstar.backend.model.enums.Label;
-
-
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -20,7 +15,6 @@ import java.util.Set;
 public class IssueEntity {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -42,7 +36,6 @@ public class IssueEntity {
 
     @PrePersist
     void onCreate(){
-
         created=LocalDateTime.now();
         modified=LocalDateTime.now();
     }
@@ -51,5 +44,4 @@ public class IssueEntity {
     void onUpdate(){
         modified = LocalDateTime.now();
     }
-
 }
