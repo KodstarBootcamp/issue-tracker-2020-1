@@ -25,12 +25,12 @@ public class IssueEntity {
     private Long id;
 
     @NotBlank
+    @Column(length = 250)
     private String title;
 
-    @NotBlank
+    @Column(length = 1500)
     private String description;
 
-    @NotBlank
     @Enumerated(EnumType.STRING)
     private Set<Label> labels;
 
@@ -39,5 +39,17 @@ public class IssueEntity {
 
     @Column(name = "modified_at")
     private LocalDateTime modified;
+
+    @PrePersist
+    void onCreate(){
+
+        created=LocalDateTime.now();
+        modified=LocalDateTime.now();
+    }
+
+    @PreUpdate
+    void onUpdate(){
+        modified = LocalDateTime.now();
+    }
 
 }
