@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -26,7 +27,10 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public Collection<Issue> getAllIssues() {
-        return null;
+        return issueRepository.findAll()
+                .stream()
+                .map(issue -> convertToDTO(issue))
+                .collect(Collectors.toList());
     }
 
     @Override
