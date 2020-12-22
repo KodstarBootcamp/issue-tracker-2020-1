@@ -29,6 +29,12 @@
       "title": "İssue 5",
       "description": "İssue 5 description",
       "labels": ["todo", "story"]
+    },
+    {
+      "title": "new issue",
+      "description": "I could not understand the usage of Axios",
+      "labels": ["Question", "Critical"],
+      "id": 7
     }
   ]
 }
