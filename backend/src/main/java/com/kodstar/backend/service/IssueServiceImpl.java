@@ -19,4 +19,9 @@ public class IssueServiceImpl implements IssueService{
     public Issue saveIssueEntity(Issue issue) {
         return null;
     }
+
+    @Override
+    public Issue updateIssueEntity(Issue issue) {
+        return null;
+    }
 }

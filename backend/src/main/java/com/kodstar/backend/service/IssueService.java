@@ -5,4 +5,6 @@ import com.kodstar.backend.model.dto.Issue;
 public interface IssueService {
 
     Issue saveIssueEntity(Issue issue);
+
+    Issue updateIssueEntity(Issue issue);
 }
