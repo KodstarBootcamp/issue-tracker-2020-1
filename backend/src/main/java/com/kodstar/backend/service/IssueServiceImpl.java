@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+
 
 @Service
 @Transactional
@@ -17,6 +19,11 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public Issue saveIssueEntity(Issue issue) {
+        return null;
+    }
+
+    @Override
+    public Collection<Issue> getAllIssues() {
         return null;
     }
 }
