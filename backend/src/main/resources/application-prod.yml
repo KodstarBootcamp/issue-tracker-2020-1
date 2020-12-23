@@ -1,0 +1,11 @@
+spring:
+    datasource:
+        password:
+        url:
+        username: root
+    jpa:
+        hibernate:
+            ddl-auto: create
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL8Dialect
