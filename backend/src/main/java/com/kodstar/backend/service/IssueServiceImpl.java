@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -15,14 +14,19 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class IssueServiceImpl implements IssueService{
+public class IssueServiceImpl implements IssueService {
 
     private final IssueRepository issueRepository;
     private final ModelMapper modelMapper;
 
     @Override
     public Issue saveIssueEntity(Issue issue) {
-        return null;
+
+        IssueEntity issueEntity = convertToEntity(issue);
+
+        issueEntity = issueRepository.save(issueEntity);
+
+        return convertToDTO(issueEntity);
     }
 
     @Override
@@ -46,7 +50,9 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public IssueEntity convertToEntity(Issue issue) {
+
         IssueEntity issueEntity = modelMapper.map(issue, IssueEntity.class);
         return issueEntity;
     }
 }
+

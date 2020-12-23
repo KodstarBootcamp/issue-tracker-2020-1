@@ -2,22 +2,20 @@ package com.kodstar.backend.controller;
 
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.service.IssueService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
 @RequestMapping
+@RequiredArgsConstructor
 public class IssueController {
 
     private final IssueService issueService;
-
-    public IssueController(IssueService issueService) {
-        this.issueService = issueService;
-    }
 
     @GetMapping("/issues")
     public ResponseEntity<Collection<Issue>> getIssues(){
@@ -27,5 +25,11 @@ public class IssueController {
             return ResponseEntity.noContent().build();
 
         return ResponseEntity.ok(issues);
+    }
+
+    @PostMapping("/issue")
+    public ResponseEntity<Issue> createIssue(@Valid @RequestBody Issue issue){
+
+        return new ResponseEntity(issueService.saveIssueEntity(issue), HttpStatus.CREATED);
     }
 }
