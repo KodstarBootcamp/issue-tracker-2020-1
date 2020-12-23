@@ -1,7 +1,6 @@
 package com.kodstar.backend.model.entity;
 
 import com.kodstar.backend.model.enums.Label;
-
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;

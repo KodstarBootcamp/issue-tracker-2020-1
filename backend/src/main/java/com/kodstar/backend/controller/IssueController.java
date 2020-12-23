@@ -35,8 +35,8 @@ public class IssueController {
 
     @PutMapping("/issue/{id}")
     public ResponseEntity<Issue> updateIssue(@Valid @PathVariable long id, @RequestBody Issue issue){
-        issueService.updateIssueEntity(id,issue);
-        return ResponseEntity.ok(issue);
+
+        return ResponseEntity.ok(issueService.updateIssueEntity(id,issue));
 
     }
 }
