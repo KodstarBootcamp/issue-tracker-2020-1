@@ -2,6 +2,7 @@ package com.kodstar.backend.model.enums;
 
 import lombok.Getter;
 
+
 @Getter
 public enum Label {
 
@@ -23,6 +24,7 @@ public enum Label {
         public String toString() {
             return name;
         }
+
 }
 
 

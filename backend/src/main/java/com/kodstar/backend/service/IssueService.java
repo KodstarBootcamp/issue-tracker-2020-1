@@ -10,5 +10,5 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     Issue saveIssueEntity(Issue issue);
     Collection<Issue> getAllIssues();
 
-    Issue updateIssueEntity(Issue issue);
+    Issue updateIssueEntity(long id,Issue issue);
 }

@@ -32,4 +32,11 @@ public class IssueController {
 
         return new ResponseEntity(issueService.saveIssueEntity(issue), HttpStatus.CREATED);
     }
+
+    @PutMapping("/issue/{id}")
+    public ResponseEntity<Issue> updateIssue(@Valid @PathVariable long id, @RequestBody Issue issue){
+        issueService.updateIssueEntity(id,issue);
+        return ResponseEntity.ok(issue);
+
+    }
 }

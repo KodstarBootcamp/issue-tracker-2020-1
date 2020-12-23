@@ -1,6 +1,7 @@
 package com.kodstar.backend.model.entity;
 
 import com.kodstar.backend.model.enums.Label;
+
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -25,13 +26,11 @@ public class IssueEntity {
     @Column(length = 1500)
     private String description;
 
-
     @ElementCollection(targetClass = Label.class, fetch = FetchType.EAGER)
     @JoinTable(name = "issue_labels", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "label", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<Label> labels;
-
 
 
     @Column(name = "created_at", updatable = false)
