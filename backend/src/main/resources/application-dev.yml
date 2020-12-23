@@ -1,0 +1,27 @@
+server:
+    port: 8080
+spring:
+    datasource:
+        driverClassName: org.h2.Driver
+        initialize: true
+        password: ''
+        url: jdbc:h2:mem:testdb
+        username: sa
+    h2:
+        console:
+            enabled: true
+            path: /h2
+    jackson:
+        default-property-inclusion: non-null
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        hibernate:
+            naming:
+                implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
+                physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.H2Dialect
+    output:
+        ansi:
+            enabled: always
