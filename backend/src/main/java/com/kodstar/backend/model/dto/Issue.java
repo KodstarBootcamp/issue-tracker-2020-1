@@ -1,6 +1,5 @@
 package com.kodstar.backend.model.dto;
 
-import com.kodstar.backend.model.enums.Label;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ public class Issue {
     private Long id;
     private String title;
     private String description;
-    private Set<Label> labels;
+    private Set<String> labels;
 
     public Issue(String title) {
         this.title = title;
