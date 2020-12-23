@@ -2,12 +2,15 @@ package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
+import com.kodstar.backend.model.enums.Label;
 import com.kodstar.backend.repository.IssueRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -46,8 +49,25 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public IssueEntity convertToEntity(Issue issue) {
 
-        IssueEntity issueEntity = modelMapper.map(issue, IssueEntity.class);
+        //Convert explicitly, handling is easier for this case
+        Set<Label> labels = issue.getLabels().stream()
+                .map(label -> Label.fromString(label))
+                .collect(Collectors.toSet());
+
+        IssueEntity issueEntity = modelMapper.typeMap(Issue.class, IssueEntity.class)
+                .addMappings(mapper -> {
+                    mapper.map(src -> src.getId(),
+                            IssueEntity::setId);
+                    mapper.map(src -> src.getTitle(),
+                            IssueEntity::setTitle);
+                    mapper.map(src -> src.getDescription(),
+                            IssueEntity::setDescription);
+                }).map(issue);
+
+        issueEntity.setLabels(labels);
+
         return issueEntity;
     }
+
 }
 
