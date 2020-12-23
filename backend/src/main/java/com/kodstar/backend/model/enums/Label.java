@@ -27,7 +27,7 @@ public enum Label {
                 return label;
             }
         }
-        return null;
+        return STORY;
     }
 
     @Override
