@@ -8,13 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Service
 @Transactional
@@ -35,7 +33,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Issue updateIssueEntity(Long id,Issue issue) {
+    public Issue updateIssueEntity(Long id, Issue issue) {
 
         IssueEntity issueEntityToUpdate = issueRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
@@ -46,12 +44,11 @@ public class IssueServiceImpl implements IssueService {
 
         Set<Label> labels = issue.getLabels().stream()
                 .map(label -> Label.fromString(label))
-               .collect(Collectors.toSet());
+                .collect(Collectors.toSet());
         issueEntityToUpdate.setLabels(labels);
         issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
         return convertToDTO(issueEntityToUpdate);
-
     }
 
     @Override
@@ -71,7 +68,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public IssueEntity convertToEntity(Issue issue) {
 
-    //Convert explicitly, handling is easier for this case
+        //Convert explicitly, handling is easier for this case
         Set<Label> labels = issue.getLabels().stream()
                 .map(label -> Label.fromString(label))
                 .collect(Collectors.toSet());
@@ -89,6 +86,5 @@ public class IssueServiceImpl implements IssueService {
         issueEntity.setLabels(labels);
         return issueEntity;
     }
-
 }
 
