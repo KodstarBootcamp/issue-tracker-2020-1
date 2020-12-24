@@ -19,6 +19,17 @@ public enum Label {
         this.name = name;
     }
 
+
+    //The name must be an exact match, otherwise throws an IllegalArgumentException
+    public static Label fromString(String str) {
+        for (Label label : Label.values()) {
+            if (label.name.equalsIgnoreCase(str)) {
+                return label;
+            }
+        }
+        return STORY;
+    }
+
     @Override
     public String toString() {
         return name;
