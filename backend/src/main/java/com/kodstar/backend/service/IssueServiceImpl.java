@@ -35,7 +35,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Issue updateIssueEntity(long id,Issue issue) {
+    public Issue updateIssueEntity(Long id,Issue issue) {
 
         IssueEntity issueEntityToUpdate = issueRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
