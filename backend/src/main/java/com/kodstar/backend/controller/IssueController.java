@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.Set;
 
 @RestController
 @RequestMapping
@@ -38,5 +39,13 @@ public class IssueController {
 
         return ResponseEntity.ok(issueService.updateIssueEntity(id,issue));
 
+    }
+
+    @GetMapping("/issues/labels")
+    public ResponseEntity<Collection<String>> getAllLabels(){
+
+        var labels = issueService.getAllLabels();
+
+        return ResponseEntity.ok(labels);
     }
 }
