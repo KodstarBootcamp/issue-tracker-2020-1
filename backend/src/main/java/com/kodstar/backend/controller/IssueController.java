@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.Collection;
 
@@ -16,6 +15,12 @@ import java.util.Collection;
 public class IssueController {
 
     private final IssueService issueService;
+
+    @GetMapping("/issue/{id}")
+    public ResponseEntity<Issue> getIssueById(@Valid @PathVariable Long id){
+
+        return ResponseEntity.ok(issueService.findById(id));
+    }
 
     @GetMapping("/issues")
     public ResponseEntity<Collection<Issue>> getIssues(){
