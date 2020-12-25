@@ -2,9 +2,7 @@ package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
-import com.kodstar.backend.model.enums.Label;
 import com.kodstar.backend.repository.IssueRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
