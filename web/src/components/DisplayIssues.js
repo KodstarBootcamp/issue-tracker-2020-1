@@ -7,17 +7,22 @@ import { Link } from "react-router-dom";
 
 export default function DisplayIssues({ issues }) {
   const deleteHandler = (event) => {
+    // get id to delete sprecific item
     const id = event.target.id;
-    console.log(id);
-    const URL = "http://localhost:5000/issues";
 
-    axios.delete(`http://localhost:5000/issues/${id}`).then((res) => {
+    // the url that we need to make request
+    const URL = "http://localhost:5000/issues/";
+
+    // make delete request
+    axios.delete(URL + id).then((res) => {
       console.log(res);
-      console.log(res.data);
     });
+
+    //reload the page after process
     window.location.reload();
   };
 
+  // mapping around all the issues to display one by one
   const Display = issues.map((item) => (
     <div key={item.id}>
       <h1>{item.title}</h1>
@@ -40,5 +45,12 @@ export default function DisplayIssues({ issues }) {
     </div>
   ));
 
-  return <div>{Display}</div>;
+  return (
+    <>
+      <div>{Display}</div>
+      <Link to="/createIssue">
+        <button>Create New Issue</button>
+      </Link>
+    </>
+  );
 }

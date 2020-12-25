@@ -1,20 +1,29 @@
 {
   "issues": [
     {
-      "title": "deneme111",
+      "title": "deneme - son",
       "description": "try",
       "labels": [
-        "Question"
+        "Bug",
+        "Enhancement"
       ],
       "id": 1
     },
     {
-      "title": "123",
-      "description": "123",
+      "title": "console",
+      "description": "123 he",
       "labels": [
-        "Enhancement"
+        "Bug"
       ],
       "id": 2
+    },
+    {
+      "title": "ufuk",
+      "description": "frontend",
+      "labels": [
+        "Bug"
+      ],
+      "id": 3
     }
   ]
 }
