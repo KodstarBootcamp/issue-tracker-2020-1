@@ -23,6 +23,15 @@ public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
 
     @Override
+    public Issue findById(Long id) {
+
+        IssueEntity issueEntity = issueRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
+
+        return convertToDTO(issueEntity);
+    }
+
+    @Override
     public Issue saveIssueEntity(Issue issue) {
 
         IssueEntity issueEntity = convertToEntity(issue);
