@@ -10,7 +10,7 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
 
     Issue saveIssueEntity(Issue issue);
     Collection<Issue> getAllIssues();
-    //Collection<LabelEntity> getAllLabels();
+    Collection<String> getAllLabels();
     Issue updateIssueEntity(Long id,Issue issue);
     Issue findById(Long id);
 }
