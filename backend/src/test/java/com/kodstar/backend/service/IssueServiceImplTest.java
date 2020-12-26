@@ -3,6 +3,7 @@ package com.kodstar.backend.service;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.repository.IssueRepository;
+import com.kodstar.backend.repository.LabelRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ class IssueServiceImplTest {
 
     @MockBean
     private IssueRepository issueRepository;
+
+    @MockBean
+    private LabelRepository labelRepository;
 
     @Test
     void saveIssueEntity() {
@@ -65,5 +69,28 @@ class IssueServiceImplTest {
         assertEquals(issueEntity.getId(),returnedIssue.getId());
         assertEquals(issueEntity.getTitle(),returnedIssue.getTitle());
     }
+
+    @Test
+    @DisplayName("Test getAllIssues")
+    void testFindAll() {
+        // Setup our mock repository
+        Set<String> labelSet = Set.of("story", "bug");
+        Issue issue = new Issue(null, "test", "test is important", labelSet);
+
+        IssueEntity issueEntity1 = issueService.convertToEntity(issue);
+        issueEntity1.setId(1l);
+        IssueEntity issueEntity2 = issueService.convertToEntity(issue);
+        issueEntity2.setId(2l);
+
+        doReturn(Arrays.asList(issueEntity1, issueEntity2)).when(issueRepository).findAll();
+
+        // Execute the service call
+        Collection<Issue> issues = issueService.getAllIssues();
+
+        // Assert the response
+        assertEquals(2, issues.size(), "getAllIssues should return 2 issues");
+    }
+
+
 
 }
