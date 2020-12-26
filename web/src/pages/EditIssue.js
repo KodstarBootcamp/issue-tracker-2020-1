@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
 import { Multiselect } from "multiselect-react-dropdown";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 function EditIssue(props) {
   let history = useHistory();
@@ -14,7 +14,7 @@ function EditIssue(props) {
   const [description, setDescription] = useState("");
   const [labels, setLabels] = useState([]);
   const [preselect, setPreselect] = useState([]);
-  const [options] = useState([
+  const [options, setOptions] = useState([
     { Label: "Bug" },
     { Label: "Enhancement" },
     { Label: "Question" },
@@ -25,6 +25,8 @@ function EditIssue(props) {
   useEffect(async () => {
     const URL = "http://localhost:5000/issues/";
     const response = await Axios.get(URL + id);
+    console.log(response);
+
     const { title, description, labels } = response.data;
     setTitle(title);
     setDescription(description);
@@ -33,8 +35,6 @@ function EditIssue(props) {
       (item) => labels.includes(item.Label) === true
     );
     setPreselect(select);
-
-    console.log(response);
   }, []);
 
   const titleHandler = (event) => {
@@ -45,18 +45,15 @@ function EditIssue(props) {
     setDescription(event.target.value);
   };
 
-  const validate = (UpdatedIssue) => {
-    if (UpdatedIssue.title.length < 1) {
+  const validate = (newIssue) => {
+    if (newIssue.title.length < 1) {
       alert("Title cannot be left blank");
       return false;
-    } else if (UpdatedIssue.title.length > 250) {
+    } else if (newIssue.title.length > 250) {
       alert("Title cannot exceed 250 characters");
       return false;
-    } else if (UpdatedIssue.description.length < 1) {
-      alert("Description cannot be left blank");
-      return false;
-    } else if (UpdatedIssue.description.length > 1000) {
-      alert("Description cannot exceed 1000 characters");
+    } else if (newIssue.description.length > 1500) {
+      alert("Description cannot exceed 1500 characters");
       return false;
     }
     return true;
@@ -64,7 +61,13 @@ function EditIssue(props) {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    const labelText = labels.data.map((item) => item.Label);
+
+    let labelText;
+    if (Object.values(labels).length < 1) {
+      labelText = [];
+    } else {
+      labelText = labels.data.map((item) => item.Label);
+    }
 
     const UpdatedIssue = {
       title: title,
@@ -76,21 +79,35 @@ function EditIssue(props) {
 
     if (validate(UpdatedIssue)) {
       const response = await Axios.put(URL + id, UpdatedIssue);
-      history.push("/");
-
       console.log(response);
+      alert("Succesfully edited");
+      history.push("/");
     }
   };
 
   const addLabelHandler = () => {
-    console.log("ehy");
+    const labelName = prompt("Please enter  label name", "");
+    if (labelName === null) {
+      return;
+    }
+    if (labelName.length < 1) {
+      alert("Title can not be left blank");
+      return;
+    }
+
+    const newLabelObject = {
+      Label: labelName.charAt(0).toUpperCase() + labelName.slice(1),
+    };
+
+    setOptions([...options, newLabelObject]);
   };
 
   return (
-    <form className="w-75 ml-auto mr-auto mt-5" onSubmit={submitHandler}>
+    <form className="w-75 ml-auto mr-auto mt-5">
       <div className="form-group">
         <label htmlFor="exampleFormControlInput1"> Title </label>
         <input
+          required
           value={title}
           onChange={titleHandler}
           type="text"
@@ -99,7 +116,7 @@ function EditIssue(props) {
           placeholder="Please add issue title"
         />
       </div>
-      <div className="form-group">
+      <div className="form-group mt-5">
         <label htmlFor="exampleFormControlTextarea1"> Issue Description </label>
         <textarea
           value={description}
@@ -110,24 +127,37 @@ function EditIssue(props) {
           rows="3"
         ></textarea>
       </div>
-      <div className="form-group">
-        <label htmlFor="exampleFormControlSelect1"> Label selection </label>{" "}
-        <Multiselect
-          options={options}
-          selectedValues={preselect}
-          displayValue="Label"
-          onSelect={(data) => setLabels({ ...data, data })}
-          onRemove={(data) => setLabels({ ...data, data })}
-          emptyRecordMsg="No options available. Add new one"
-        />
+      <div className="d-flex ">
+        <div className="form-group  flex-grow-1 mt-3">
+          <label htmlFor="exampleFormControlSelect1"> Label selection </label>
+          <Multiselect
+            options={options}
+            selectedValues={preselect}
+            displayValue="Label"
+            onSelect={(data) => setLabels({ ...data, data })}
+            onRemove={(data) => setLabels({ ...data, data })}
+            emptyRecordMsg="No options available. Add new one"
+          />
+        </div>
+        <div>
+          <button
+            onClick={addLabelHandler}
+            type="button"
+            className="btn btn-success mt-5 ml-3"
+          >
+            Add New Label
+          </button>
+        </div>
       </div>
-      <button
-        type="submit"
-        className="btn btn-primary"
-        disabled={!(Object.values(labels).length > 0)}
-      >
-        Submit
-      </button>
+
+      <div className="d-flex mt-5 justify-content-between">
+        <button onClick={submitHandler} className="btn btn-primary">
+          Submit
+        </button>
+        <Link to="/">
+          <p style={{ textDecoration: "underline" }}>Back to Home Page</p>
+        </Link>
+      </div>
     </form>
   );
 }
