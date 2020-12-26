@@ -33,7 +33,7 @@ class IssueServiceImplTest {
 
     @Test
     void saveIssueEntity() {
-
+        // Setup our mock repository
         Set<String> labelSet = Set.of("story", "bug");
         Issue issue = new Issue(null, "test", "test is important", labelSet);
 
