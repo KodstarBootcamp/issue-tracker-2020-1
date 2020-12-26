@@ -46,6 +46,14 @@ public class IssueController {
 
     }
 
+    @DeleteMapping("/issue/{id}")
+    public ResponseEntity<Void> deleteIssue(@Valid @PathVariable Long id){
+
+        issueService.deleteIssue(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/issues/labels")
     public ResponseEntity<Collection<String>> getAllLabels(){
 
