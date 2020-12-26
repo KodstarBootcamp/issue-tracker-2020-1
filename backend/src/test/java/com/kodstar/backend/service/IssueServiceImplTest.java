@@ -103,13 +103,13 @@ class IssueServiceImplTest {
         doReturn(Arrays.asList(labelEntity1)).when(labelRepository).findAll();
 
         // Execute the service call
-        Collection<LabelEntity> labels = labelRepository.findAll();
+        Collection<String> labels = issueService.getAllLabels();
 
         // Assert the response
         assertEquals(1, labels.size(), "getAlllabels should return 1 issues");
-        assertTrue(labels.contains(labelEntity1));
+        assertTrue(labels.contains(labelEntity1.getName()));
     }
-    
+
 
 
 
