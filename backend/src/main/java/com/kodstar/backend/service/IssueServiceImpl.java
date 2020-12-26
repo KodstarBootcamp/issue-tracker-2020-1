@@ -37,7 +37,9 @@ public class IssueServiceImpl implements IssueService {
 
         IssueEntity issueEntity = convertToEntity(issue);
 
-        issueEntity.getLabels().forEach(labelEntity -> labelRepository.save(labelEntity));
+        setIdFromExistingLabel(issueEntity);
+
+        labelRepository.saveAll(issueEntity.getLabels());
         issueEntity = issueRepository.save(issueEntity);
 
         return convertToDTO(issueEntity);
