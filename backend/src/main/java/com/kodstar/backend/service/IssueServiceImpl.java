@@ -33,6 +33,15 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    public void deleteIssue(Long id) {
+
+        IssueEntity issueEntity = issueRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
+
+        issueRepository.delete(issueEntity);
+    }
+
+    @Override
     public Issue saveIssueEntity(Issue issue) {
 
         IssueEntity issueEntity = convertToEntity(issue);

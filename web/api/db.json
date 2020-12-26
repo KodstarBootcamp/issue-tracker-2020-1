@@ -1,29 +1,18 @@
 {
   "issues": [
     {
-      "title": "deneme - son",
-      "description": "try",
-      "labels": [
-        "Bug",
-        "Enhancement"
-      ],
+      "title": "Ufuk",
+      "description": "",
+      "labels": [],
       "id": 1
     },
     {
-      "title": "console",
-      "description": "123 he",
+      "title": "Ufuk",
+      "description": "zczcz",
       "labels": [
-        "Bug"
+        "Enhancement"
       ],
       "id": 2
-    },
-    {
-      "title": "ufuk",
-      "description": "frontend",
-      "labels": [
-        "Bug"
-      ],
-      "id": 3
     }
   ]
 }

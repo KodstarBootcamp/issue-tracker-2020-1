@@ -1,11 +1,9 @@
 import React from "react";
 import axios from "axios";
-import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export default function DisplayIssues({ issues }) {
+  let history = useHistory();
   const deleteHandler = (event) => {
     // get id to delete sprecific item
     const id = event.target.id;
@@ -22,35 +20,55 @@ export default function DisplayIssues({ issues }) {
     window.location.reload();
   };
 
+  const editHandler = (event) => {
+    const id = event.target.id;
+    console.log(id);
+    history.push(`/editIssue/${id}`);
+  };
+
   // mapping around all the issues to display one by one
   const Display = issues.map((item) => (
-    <div key={item.id}>
-      <h1>{item.title}</h1>
-      <div>
-        <span>{item.description}</span>
-        <IconButton aria-label="EDIT">
-          <Link to={`/editIssue/${item.id}`}>
-            <EditIcon />
-          </Link>
-        </IconButton>
-        <IconButton aria-label="DELETE" onClick={deleteHandler}>
-          <DeleteIcon id={item.id} />
-        </IconButton>
+    <div key={item.id} className="card mt-3 " style={{ width: "18rem" }}>
+      <div className="card-body">
+        <h5 className="card-title">{item.title}</h5>
+        <p className="card-text">{item.description}</p>
+        <ul>
+          {item.labels.map((label, i) => (
+            <li key={i}>{label}</li>
+          ))}
+        </ul>
+        <div>
+          <button
+            id={item.id}
+            onClick={editHandler}
+            type="button"
+            className="btn btn-secondary mr-3"
+          >
+            Edit
+          </button>
+          <button
+            id={item.id}
+            onClick={deleteHandler}
+            type="button"
+            className="btn btn-danger"
+          >
+            Delete
+          </button>
+        </div>
       </div>
-      <ul>
-        {item.labels.map((label) => (
-          <li>{label}</li>
-        ))}
-      </ul>
     </div>
   ));
 
   return (
     <>
-      <div>{Display}</div>
-      <Link to="/createIssue">
-        <button>Create New Issue</button>
-      </Link>
+      <div className="d-flex flex-column flex-wrap justify-content-around">
+        {Display}
+      </div>
+      <div style={{ position: "fixed", top: "35px", right: "35px" }}>
+        <Link to="/createIssue">
+          <button>Create New Issue</button>
+        </Link>
+      </div>
     </>
   );
 }

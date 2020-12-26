@@ -13,6 +13,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200"})
 public class IssueController {
 
     private final IssueService issueService;
@@ -45,6 +46,17 @@ public class IssueController {
         return ResponseEntity.ok(issueService.updateIssueEntity(id,issue));
 
     }
+
+ 
+    @DeleteMapping("/issue/{id}")
+    public ResponseEntity<Void> deleteIssue(@Valid @PathVariable Long id){
+
+        issueService.deleteIssue(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
 
     @GetMapping("/issues/labels")
     public ResponseEntity<Collection<String>> getAllLabels(){
