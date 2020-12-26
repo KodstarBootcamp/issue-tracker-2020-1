@@ -38,7 +38,7 @@ class IssueServiceImplTest {
         Issue issue = new Issue(null, "test", "test is important", labelSet);
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
-        issueEntity.setId(2l);
+        issueEntity.setId(2L);
 
         doReturn(issueEntity).when(issueRepository).save(any());
 
@@ -59,12 +59,12 @@ class IssueServiceImplTest {
         Issue issue = new Issue(null, "test", "test is important", labelSet);
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
-        issueEntity.setId(1l);
+        issueEntity.setId(1L);
 
-        doReturn(Optional.of(issueEntity)).when(issueRepository).findById(1l);
+        doReturn(Optional.of(issueEntity)).when(issueRepository).findById(1L);
 
         // Execute the service call
-        Issue returnedIssue = issueService.findById(1l);
+        Issue returnedIssue = issueService.findById(1L);
 
         // Assert the response
         assertEquals(issueEntity.getId(),returnedIssue.getId());
@@ -79,9 +79,9 @@ class IssueServiceImplTest {
         Issue issue = new Issue(null, "test", "test is important", labelSet);
 
         IssueEntity issueEntity1 = issueService.convertToEntity(issue);
-        issueEntity1.setId(1l);
+        issueEntity1.setId(1L);
         IssueEntity issueEntity2 = issueService.convertToEntity(issue);
-        issueEntity2.setId(2l);
+        issueEntity2.setId(2L);
 
         doReturn(Arrays.asList(issueEntity1, issueEntity2)).when(issueRepository).findAll();
 
