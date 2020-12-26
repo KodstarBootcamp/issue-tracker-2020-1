@@ -12,6 +12,7 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,6 +68,14 @@ public class IssueServiceImpl implements IssueService {
                 .stream()
                 .map(issue -> convertToDTO(issue))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<String> getAllLabels() {
+        return labelRepository.findAll()
+                .stream()
+                .map(LabelEntity::getName)
+                .collect(Collectors.toSet());
     }
 
 
