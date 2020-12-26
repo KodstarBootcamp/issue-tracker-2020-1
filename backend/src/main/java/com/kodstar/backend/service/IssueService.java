@@ -13,4 +13,5 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     Collection<String> getAllLabels();
     Issue updateIssueEntity(Long id,Issue issue);
     Issue findById(Long id);
+    void deleteIssue(Long id);
 }
