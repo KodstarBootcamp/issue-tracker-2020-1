@@ -32,6 +32,7 @@ class IssueServiceImplTest {
     private LabelRepository labelRepository;
 
     @Test
+    @DisplayName("Test saveIssue Success")
     void saveIssueEntity() {
         // Setup our mock repository
         Set<String> labelSet = Set.of("story", "bug");
@@ -50,6 +51,23 @@ class IssueServiceImplTest {
         assertEquals(issue.getTitle(), returnedIssue.getTitle(), "The title of the issue and the title of the issueEntity should be same.");
         assertEquals(2, returnedIssue.getId(), "The id of issue should be equal to id of the issueEntity");
     }
+
+    @Test
+    @DisplayName("Test saveIssue Exception")
+    void saveIssueException() throws Exception {
+
+        // Setup our mock repository without "issue Title"
+        Set<String> labelSet = Set.of("story", "bug");
+        Issue issue = new Issue();
+        issue.setId(1L);
+        issue.setDescription("test is important");
+        issue.setLabels(labelSet);
+
+        // Assert the response
+        assertThrows(NullPointerException.class,()->
+                issueService.saveIssueEntity(issue));
+    }
+
 
     @Test
     @DisplayName("Test findById Success")

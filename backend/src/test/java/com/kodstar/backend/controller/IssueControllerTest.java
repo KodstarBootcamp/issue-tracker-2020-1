@@ -39,7 +39,7 @@ class IssueControllerTest {
     @Test
     @DisplayName("Test createIssue Success")
     void createIssue() throws Exception{
-        
+
         // Setup our mock repository
         Set<String> labelSet = Set.of("story", "bug");
         Issue issue = new Issue(1L, "test", "test is important", labelSet);
