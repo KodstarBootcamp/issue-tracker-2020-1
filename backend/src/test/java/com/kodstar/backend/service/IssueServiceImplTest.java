@@ -2,6 +2,7 @@ package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
+import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -90,6 +91,26 @@ class IssueServiceImplTest {
         // Assert the response
         assertEquals(2, issues.size(), "getAllIssues should return 2 issues");
     }
+
+    @Test
+    @DisplayName("Test getAlllabels")
+    void testGetAllLabels() {
+        // Setup our mock repository
+        LabelEntity labelEntity1 = new LabelEntity();
+        labelEntity1.setId(1L);
+        labelEntity1.setName("bug");
+
+        doReturn(Arrays.asList(labelEntity1)).when(labelRepository).findAll();
+
+        // Execute the service call
+        Collection<LabelEntity> labels = labelRepository.findAll();
+
+        // Assert the response
+        assertEquals(1, labels.size(), "getAlllabels should return 1 issues");
+        assertTrue(labels.contains(labelEntity1));
+    }
+    
+
 
 
 
