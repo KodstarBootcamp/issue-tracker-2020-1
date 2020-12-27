@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { Multiselect } from "multiselect-react-dropdown";
 import Axios from "axios";
@@ -8,6 +8,7 @@ function CreateIssue() {
   let history = useHistory();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [addLabelSelect, setAddLabelSelect] = useState([]);
   const [labels, setLabels] = useState([]);
   const [options, setOptions] = useState([
     { Label: "Bug" },
@@ -16,6 +17,21 @@ function CreateIssue() {
     { Label: "Suggestion" },
     { Label: "Critical" },
   ]);
+
+  useEffect(async () => {
+    const response = await Axios.get("/issues/labels");
+    const UppercaseLabels = response.data.map(
+      (item) => item.charAt(0).toUpperCase() + item.slice(1)
+    );
+
+    const optionsText = options.map((item) => item.Label);
+
+    const allText = [...optionsText, ...UppercaseLabels];
+    const uniques = [...new Set(allText)];
+
+    const allOptions = uniques.map((item) => ({ Label: item }));
+    setOptions(allOptions);
+  }, []);
 
   const titleHandler = (event) => {
     setTitle(
@@ -44,26 +60,18 @@ function CreateIssue() {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    // just retrieve text of the labels objects
-    let labelText;
-    if (Object.values(labels).length < 1) {
-      labelText = [];
-    } else {
-      labelText = labels.data.map((item) => item.Label);
-    }
+    const labelText = labels.map((item) => item.Label);
 
     // create a template to send to database
     const newIssue = {
-      title: title,
+      title: title.trim(),
       description: description,
       labels: labelText,
     };
 
-    const URL = "http://localhost:5000/issues";
-
     if (validate(newIssue)) {
       // make a post request to send data
-      const response = await Axios.post(URL, newIssue);
+      const response = await Axios.post("/issue", newIssue);
       console.log(response);
       alert("Succesfully created");
       history.push("/");
@@ -83,8 +91,19 @@ function CreateIssue() {
     const newLabelObject = {
       Label: labelName.charAt(0).toUpperCase() + labelName.slice(1),
     };
-
+    setLabels([...labels, newLabelObject]);
     setOptions([...options, newLabelObject]);
+    setAddLabelSelect([...addLabelSelect, newLabelObject]);
+  };
+
+  const onSelect = (data) => {
+    setAddLabelSelect(data);
+    setLabels(data);
+  };
+
+  const onRemove = (data) => {
+    setAddLabelSelect(data);
+    setLabels(data);
   };
 
   return (
@@ -117,10 +136,11 @@ function CreateIssue() {
           <label htmlFor="exampleFormControlSelect1"> Label selection </label>
           <Multiselect
             options={options}
+            selectedValues={addLabelSelect}
             displayValue="Label"
             emptyRecordMsg="No options available. Add new one"
-            onSelect={(data) => setLabels({ ...data, data })}
-            onRemove={(data) => setLabels({ ...data, data })}
+            onSelect={onSelect}
+            onRemove={onRemove}
           />
         </div>
         <div>

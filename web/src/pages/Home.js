@@ -9,12 +9,14 @@ function Home() {
     fetchIssues();
   }, []);
 
-  const URL = "http://localhost:5000/issues";
-
   const fetchIssues = async () => {
-    const response = await Axios.get(URL);
-
-    setIssues(response.data);
+    const response = await Axios.get("/issues");
+    console.log(response, "Home.js");
+    if (response.data.length < 1) {
+      setIssues(null);
+    } else {
+      setIssues(response.data);
+    }
   };
 
   return <DisplayIssues issues={issues} />;
