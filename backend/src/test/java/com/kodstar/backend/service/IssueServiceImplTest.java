@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -17,7 +18,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class IssueServiceImplTest {
@@ -128,8 +129,29 @@ class IssueServiceImplTest {
         assertTrue(labels.contains(labelEntity1.getName()));
     }
 
+    @Test
+    @DisplayName("Test deleteIssue Success")
+    void deleteIssue() throws Exception {
 
+       IssueEntity issueEntity = new IssueEntity();
+       issueEntity.setId(1L);
+       doReturn(Optional.of(issueEntity)).when(issueRepository).findById(1L);
 
+       issueService.deleteIssue(1L);
 
+       verify(issueRepository, times(1)).delete(issueEntity);
+
+    }
+
+    @Test
+    @DisplayName("Test findById Not Found")
+    void testFindByIdNotFound() {
+
+        // Setup our mock repository
+        doReturn(Optional.empty()).when(issueRepository).findById(1L);
+
+        // Assert the response
+        assertThrows(EntityNotFoundException.class,()->issueService.findById(1L));
+    }
 
 }
