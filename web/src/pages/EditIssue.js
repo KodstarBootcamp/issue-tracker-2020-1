@@ -23,22 +23,43 @@ function EditIssue(props) {
   ]);
 
   useEffect(async () => {
-    const URL = "http://localhost:5000/issues/";
-    const response = await Axios.get(URL + id);
-    console.log(response);
+    const response = await Axios.get("/issues/labels");
+    const UppercaseLabels = response.data.map(
+      (item) => item.charAt(0).toUpperCase() + item.slice(1)
+    );
+
+    const optionsText = options.map((item) => item.Label);
+
+    const allText = [...optionsText, ...UppercaseLabels];
+    const uniques = [...new Set(allText)];
+
+    const allOptions = uniques.map((item) => ({ Label: item }));
+    setOptions(allOptions);
+  }, []);
+
+  useEffect(async () => {
+    const response = await Axios.get("/issue/" + id);
+    console.log(response, "edit");
 
     const { title, description, labels } = response.data;
+
+    const UppercaseLabels = labels.map(
+      (item) => item.charAt(0).toUpperCase() + item.slice(1)
+    );
+
     setTitle(title);
     setDescription(description);
 
-    const select = options.filter(
-      (item) => labels.includes(item.Label) === true
-    );
+    const select = UppercaseLabels.map((item) => ({ Label: item }));
+
     setPreselect(select);
+    setLabels(select);
   }, []);
 
   const titleHandler = (event) => {
-    setTitle(event.target.value);
+    setTitle(
+      event.target.value.charAt(0).toUpperCase() + event.target.value.slice(1)
+    );
   };
 
   const descriptionHandler = (event) => {
@@ -62,23 +83,16 @@ function EditIssue(props) {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    let labelText;
-    if (Object.values(labels).length < 1) {
-      labelText = [];
-    } else {
-      labelText = labels.data.map((item) => item.Label);
-    }
+    const labelText = labels.map((item) => item.Label);
 
     const UpdatedIssue = {
-      title: title,
+      title: title.trim(),
       description: description,
       labels: labelText,
     };
 
-    const URL = "http://localhost:5000/issues/";
-
     if (validate(UpdatedIssue)) {
-      const response = await Axios.put(URL + id, UpdatedIssue);
+      const response = await Axios.put("/issue/" + id, UpdatedIssue);
       console.log(response);
       alert("Succesfully edited");
       history.push("/");
@@ -98,8 +112,19 @@ function EditIssue(props) {
     const newLabelObject = {
       Label: labelName.charAt(0).toUpperCase() + labelName.slice(1),
     };
-
+    setLabels([...labels, newLabelObject]);
+    setPreselect([...preselect, newLabelObject]);
     setOptions([...options, newLabelObject]);
+  };
+
+  const onSelect = (data) => {
+    setPreselect(data);
+    setLabels(data);
+  };
+
+  const onRemove = (data) => {
+    setPreselect(data);
+    setLabels(data);
   };
 
   return (
@@ -134,8 +159,8 @@ function EditIssue(props) {
             options={options}
             selectedValues={preselect}
             displayValue="Label"
-            onSelect={(data) => setLabels({ ...data, data })}
-            onRemove={(data) => setLabels({ ...data, data })}
+            onSelect={onSelect}
+            onRemove={onRemove}
             emptyRecordMsg="No options available. Add new one"
           />
         </div>
