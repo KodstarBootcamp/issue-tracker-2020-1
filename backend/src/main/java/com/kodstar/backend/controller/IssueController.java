@@ -13,7 +13,7 @@ import java.util.Set;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200"})
+@CrossOrigin(origins = {"*"})
 public class IssueController {
 
     private final IssueService issueService;
