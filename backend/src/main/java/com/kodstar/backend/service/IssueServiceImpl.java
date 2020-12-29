@@ -3,6 +3,7 @@ package com.kodstar.backend.service;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
+import com.kodstar.backend.model.enums.IssueState;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -103,6 +103,7 @@ public class IssueServiceImpl implements IssueService {
         issue.setTitle(issueEntity.getTitle());
         issue.setDescription(issueEntity.getDescription());
         issue.setLabels(labels);
+        issue.setState(issueEntity.getIssueState().toString().toLowerCase());
 
         return issue;
     }
@@ -124,6 +125,7 @@ public class IssueServiceImpl implements IssueService {
         issueEntity.setTitle(issue.getTitle());
         issueEntity.setId(issue.getId());
         issueEntity.setLabels(labels);
+        issueEntity.setIssueState(IssueState.fromString(issue.getState()));
 
         return issueEntity;
     }

@@ -2,6 +2,7 @@ package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
+import com.kodstar.backend.model.enums.IssueState;
 import com.kodstar.backend.repository.IssueRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ class IssueServiceImplTest {
     void saveIssueEntity() {
 
         Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", labelSet);
+        Issue issue = new Issue(null, "test", "test is important", labelSet, IssueState.BACKLOG.name());
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
         issueEntity.setId(2l);
