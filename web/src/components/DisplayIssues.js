@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
+import "../../src/components/DisplayIssues.css";
 
 export default function DisplayIssues({ issues }) {
   let history = useHistory();
@@ -31,7 +32,7 @@ export default function DisplayIssues({ issues }) {
   const Display = !issues
     ? history.push("/createIssue")
     : issues.map((item) => (
-        <div key={item.id} className="card mt-3 " style={{ width: "18rem" }}>
+        <div key={item.id} className="card mt-3" style={{ width: "18rem" }}>
           <div className="card-body">
             <h5 className="card-title">{item.title}</h5>
             <p className="card-text">{item.description}</p>
@@ -42,7 +43,7 @@ export default function DisplayIssues({ issues }) {
                 </li>
               ))}
             </ul>
-            <div>
+            <div className="btn-1">
               <button
                 id={item.id}
                 onClick={editHandler}
