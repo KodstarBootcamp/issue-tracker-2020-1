@@ -44,10 +44,6 @@ public class IssueEntity {
     @Column(name = "modified_at")
     private LocalDateTime modified;
 
-    public IssueEntity(Long id) {
-        this.id = id;
-    }
-
     @PrePersist
     void onCreate(){
         created=LocalDateTime.now();
