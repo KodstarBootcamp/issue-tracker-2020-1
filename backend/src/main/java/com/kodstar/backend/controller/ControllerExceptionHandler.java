@@ -3,10 +3,12 @@ package com.kodstar.backend.controller;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +31,18 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public void badRequest(HttpServletRequest request, Exception e) {
         log.info("illegal argument: {}", request.getRequestURL().toString(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public void httpMessageNotReadable(HttpServletRequest request, Exception e) {
+        log.info("invalid format: {}", request.getRequestURL().toString(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public void invalidFormat(HttpServletRequest request, Exception e) {
+        log.info("invalid format: {}", request.getRequestURL().toString(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
