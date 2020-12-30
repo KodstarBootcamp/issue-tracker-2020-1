@@ -1,5 +1,6 @@
 package com.kodstar.backend.service;
 
+import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,6 +42,25 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
 
         issueRepository.delete(issueEntity);
+    }
+
+    @Override
+    public void deleteMultipleIssues(BatchDeleteRequest request) {
+
+        if (!request.getMethod().equals("delete"))
+            throw new IllegalArgumentException();
+
+        // As we know the entities' ids we can make direct fetching by findAllById.
+        // It is simplest and more efficient.
+        Collection<IssueEntity> deleteBatchIssues = issueRepository.findAllById(request.getIds());
+
+        // We should get back an entity for each id
+        // if sizes are not match, throw 404 not found
+        if (deleteBatchIssues.size() != request.getIds().size())
+            throw new EntityNotFoundException();
+
+        issueRepository.deleteInBatch(deleteBatchIssues);
+
     }
 
     @Override

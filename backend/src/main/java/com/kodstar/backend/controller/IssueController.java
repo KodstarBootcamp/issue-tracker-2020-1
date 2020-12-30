@@ -1,5 +1,6 @@
 package com.kodstar.backend.controller;
 
+import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.service.IssueService;
 import lombok.RequiredArgsConstructor;
@@ -64,5 +65,13 @@ public class IssueController {
         var labels = issueService.getAllLabels();
 
         return ResponseEntity.ok(labels);
+    }
+
+    @PostMapping("/issues/batch")
+    public ResponseEntity<Void> deleteMultipleIssues(@Valid @RequestBody BatchDeleteRequest request){
+
+        issueService.deleteMultipleIssues(request);
+
+        return ResponseEntity.noContent().build();
     }
 }
