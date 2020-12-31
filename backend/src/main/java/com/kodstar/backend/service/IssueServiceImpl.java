@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -77,7 +78,7 @@ public class IssueServiceImpl implements IssueService {
     public Collection<Issue> getAllIssues() {
         return issueRepository.findAll()
                 .stream()
-                .map(issue -> convertToDTO(issue))
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -130,8 +131,7 @@ public class IssueServiceImpl implements IssueService {
 
     private void setIdFromExistingLabel(IssueEntity source){
 
-        Set<LabelEntity> labelEntities = labelRepository.findAll().stream()
-                .collect(Collectors.toSet());
+        Set<LabelEntity> labelEntities = new HashSet<>(labelRepository.findAll());
 
         for (LabelEntity label : labelEntities){
             source.getLabels().stream()

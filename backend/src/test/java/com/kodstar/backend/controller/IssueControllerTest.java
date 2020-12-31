@@ -155,12 +155,12 @@ class IssueControllerTest {
     @Test
     @DisplayName("Test shouldVerifyInvalidSaveIssue")
     public void shouldVerifyInvalidSaveIssue() throws Exception {
-        // Execute the POST request
+            // Execute the POST request
         this.mockMvc.perform(post("/issue")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"description\": \"\",\"labels\": \"\"}")
+                .content("{\"description\": \"\",\"labels\":[ \"\"]}")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

@@ -47,7 +47,6 @@ public class IssueController {
 
     }
 
- 
     @DeleteMapping("/issue/{id}")
     public ResponseEntity<Void> deleteIssue(@Valid @PathVariable Long id){
 
@@ -56,8 +55,6 @@ public class IssueController {
         return ResponseEntity.noContent().build();
     }
 
-
-
     @GetMapping("/issues/labels")
     public ResponseEntity<Collection<String>> getAllLabels(){
 
@@ -65,4 +62,5 @@ public class IssueController {
 
         return ResponseEntity.ok(labels);
     }
+
 }
