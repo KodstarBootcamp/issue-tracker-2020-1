@@ -1,5 +1,6 @@
 package com.kodstar.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +15,11 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class BaseEntity {
 
+    @JsonIgnore
     @Column(name = "created_at", updatable = false)
     private LocalDateTime created;
 
+    @JsonIgnore
     @Column(name = "modified_at")
     private LocalDateTime modified;
 
