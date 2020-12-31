@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -22,6 +23,9 @@ public class LabelEntity extends BaseEntity{
     @NotBlank
     @Column(length = 50)
     private  String name;
+
+    @Column(length = 6)
+    private String color;
 
     @Override
     public boolean equals(Object o) {

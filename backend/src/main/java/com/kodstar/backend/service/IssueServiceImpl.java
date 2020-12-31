@@ -139,6 +139,7 @@ public class IssueServiceImpl implements IssueService {
                 .map(label -> {
                     LabelEntity entity = new LabelEntity();
                     entity.setName(label.trim().toLowerCase());
+                    entity.setColor("47bd1c");
                     return entity;
                 }).collect(Collectors.toSet());
 
