@@ -1,5 +1,6 @@
 package com.kodstar.backend.service;
 
+import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
@@ -14,4 +15,6 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     Issue updateIssueEntity(Long id,Issue issue);
     Issue findById(Long id);
     void deleteIssue(Long id);
+
+    void deleteMultipleIssues(BatchDeleteRequest request);
 }

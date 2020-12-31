@@ -1,5 +1,6 @@
 package com.kodstar.backend.model.entity;
 
+import com.kodstar.backend.model.enums.IssueState;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,12 +33,20 @@ public class IssueEntity {
     inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<LabelEntity> labels;
 
+    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
+    private IssueState issueState;
+
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime created;
 
     @Column(name = "modified_at")
     private LocalDateTime modified;
+
+    public IssueEntity(Long id) {
+        this.id = id;
+    }
 
     @PrePersist
     void onCreate(){

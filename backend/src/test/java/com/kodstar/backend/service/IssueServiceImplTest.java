@@ -2,6 +2,7 @@ package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
+import com.kodstar.backend.model.enums.IssueState;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
@@ -37,7 +38,7 @@ class IssueServiceImplTest {
     void saveIssueEntity() {
         // Setup our mock repository
         Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", labelSet);
+        Issue issue = new Issue(null, "test", "test is important", labelSet, IssueState.BACKLOG.name());
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
         issueEntity.setId(2L);

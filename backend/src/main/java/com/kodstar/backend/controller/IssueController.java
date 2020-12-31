@@ -1,5 +1,6 @@
 package com.kodstar.backend.controller;
 
+import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.service.IssueService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200"})
+@CrossOrigin(origins = {"*"})
 public class IssueController {
 
     private final IssueService issueService;
@@ -63,4 +64,11 @@ public class IssueController {
         return ResponseEntity.ok(labels);
     }
 
+    @PostMapping("/issues/batch")
+    public ResponseEntity<Void> deleteMultipleIssues(@Valid @RequestBody BatchDeleteRequest request){
+
+        issueService.deleteMultipleIssues(request);
+
+        return ResponseEntity.noContent().build();
+    }
 }
