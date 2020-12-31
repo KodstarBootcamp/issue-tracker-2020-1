@@ -1,7 +1,9 @@
 package com.kodstar.backend.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.enums.IssueState;
@@ -10,11 +12,10 @@ import com.kodstar.backend.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -105,11 +106,15 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Collection<String> getAllLabels() {
+    public Collection<Label> getAllLabels() {
         return labelRepository.findAll()
                 .stream()
-                .map(LabelEntity::getName)
-                .collect(Collectors.toSet());
+                .map(labelEntity -> {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.convertValue(labelEntity, Label.class);
+
+                })
+                .collect(Collectors.toList());
     }
 
 

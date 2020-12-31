@@ -1,6 +1,7 @@
 package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.enums.IssueState;
@@ -123,11 +124,11 @@ class IssueServiceImplTest {
         doReturn(Arrays.asList(labelEntity1)).when(labelRepository).findAll();
 
         // Execute the service call
-        Collection<String> labels = issueService.getAllLabels();
+        Collection<Label> labels = issueService.getAllLabels();
 
         // Assert the response
         assertEquals(1, labels.size(), "getAlllabels should return 1 issues");
-        assertTrue(labels.contains(labelEntity1.getName()));
+
     }
 
     @Test

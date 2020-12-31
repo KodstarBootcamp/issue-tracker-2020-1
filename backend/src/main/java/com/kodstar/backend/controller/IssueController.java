@@ -2,6 +2,7 @@ package com.kodstar.backend.controller;
 
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,10 +58,8 @@ public class IssueController {
         return ResponseEntity.noContent().build();
     }
 
-
-
     @GetMapping("/issues/labels")
-    public ResponseEntity<Collection<String>> getAllLabels(){
+    public ResponseEntity<Collection<Label>> getAllLabels(){
 
         var labels = issueService.getAllLabels();
 
