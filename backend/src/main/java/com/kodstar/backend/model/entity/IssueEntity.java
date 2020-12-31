@@ -1,11 +1,10 @@
 package com.kodstar.backend.model.entity;
 
-import com.kodstar.backend.model.enums.IssueState;
+import com.kodstar.backend.model.enums.IssueCategory;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -35,6 +34,6 @@ public class IssueEntity extends BaseEntity{
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private IssueState issueState;
+    private IssueCategory issueCategory;
 
 }
