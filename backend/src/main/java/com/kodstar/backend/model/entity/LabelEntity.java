@@ -13,7 +13,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @Table(name = "label")
-public class LabelEntity {
+public class LabelEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,23 +22,6 @@ public class LabelEntity {
     @NotBlank
     @Column(length = 50)
     private  String name;
-
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime created;
-
-    @Column(name = "modified_at")
-    private LocalDateTime modified;
-
-    @PrePersist
-    void onCreate(){
-        created=LocalDateTime.now();
-        modified=LocalDateTime.now();
-    }
-
-    @PreUpdate
-    void onUpdate(){
-        modified = LocalDateTime.now();
-    }
 
     @Override
     public boolean equals(Object o) {

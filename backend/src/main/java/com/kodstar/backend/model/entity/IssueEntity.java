@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @ToString
 @Table(name = "issue")
-public class IssueEntity {
+public class IssueEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,21 +37,4 @@ public class IssueEntity {
     @Enumerated(EnumType.STRING)
     private IssueState issueState;
 
-
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime created;
-
-    @Column(name = "modified_at")
-    private LocalDateTime modified;
-
-    @PrePersist
-    void onCreate(){
-        created=LocalDateTime.now();
-        modified=LocalDateTime.now();
-    }
-
-    @PreUpdate
-    void onUpdate(){
-        modified = LocalDateTime.now();
-    }
 }
