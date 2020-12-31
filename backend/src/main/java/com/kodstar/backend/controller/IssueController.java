@@ -28,7 +28,7 @@ public class IssueController {
 
     @GetMapping("/issues")
     public ResponseEntity<Collection<Issue>> getIssues(){
-        var issues = issueService.getAllIssues();
+        Collection<Issue> issues = issueService.getAllIssues();
 
         if (issues.isEmpty())
             return ResponseEntity.noContent().build();
@@ -61,7 +61,7 @@ public class IssueController {
     @GetMapping("/issues/labels")
     public ResponseEntity<Collection<Label>> getAllLabels(){
 
-        var labels = issueService.getAllLabels();
+        Collection<Label> labels = issueService.getAllLabels();
 
         return ResponseEntity.ok(labels);
     }
