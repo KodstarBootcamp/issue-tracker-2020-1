@@ -57,14 +57,6 @@ public class IssueController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/issues/labels")
-    public ResponseEntity<Collection<Label>> getAllLabels(){
-
-        Collection<Label> labels = issueService.getAllLabels();
-
-        return ResponseEntity.ok(labels);
-    }
-
     @PostMapping("/issues/batch")
     public ResponseEntity<Void> deleteMultipleIssues(@Valid @RequestBody BatchDeleteRequest request){
 

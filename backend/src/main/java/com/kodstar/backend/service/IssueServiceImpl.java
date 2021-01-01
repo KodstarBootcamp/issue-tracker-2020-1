@@ -116,15 +116,6 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Collection<Label> getAllLabels() {
-        return labelService.findAll()
-                .stream()
-                .map(labelEntity -> objectMapper.convertValue(labelEntity, Label.class))
-                .collect(Collectors.toList());
-    }
-
-
-    @Override
     public Issue convertToDTO(IssueEntity issueEntity) {
 
         Issue issue = new Issue();

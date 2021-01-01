@@ -113,24 +113,6 @@ class IssueServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test getAlllabels")
-    void testGetAllLabels() {
-        // Setup our mock repository
-        LabelEntity labelEntity1 = new LabelEntity();
-        labelEntity1.setId(1L);
-        labelEntity1.setName("bug");
-
-        doReturn(Arrays.asList(labelEntity1)).when(labelRepository).findAll();
-
-        // Execute the service call
-        Collection<Label> labels = issueService.getAllLabels();
-
-        // Assert the response
-        assertEquals(1, labels.size(), "getAlllabels should return 1 issues");
-
-    }
-
-    @Test
     @DisplayName("Test deleteIssue Success")
     void deleteIssue() throws Exception {
 
