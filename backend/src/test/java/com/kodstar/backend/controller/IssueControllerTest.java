@@ -2,8 +2,11 @@ package com.kodstar.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.service.IssueService;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,9 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
+
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -167,9 +169,25 @@ class IssueControllerTest {
     @DisplayName("Test getAllLabels")
     void testGetAllLabels() throws Exception{
                 // Setup our mocked service
-        when(issueService.getAllLabels()).thenReturn(Arrays.asList("story","bug","backend"));
+        Label label1 = new Label();
+        label1.setId("1");
+        label1.setName("bug");
+        label1.setColor("47bd1c");
 
-                // Execute the GET request
+        Label label2 = new Label();
+        label2.setId("1");
+        label2.setName("bug");
+        label2.setColor("47bd1c");
+
+
+        Collection<Label> labels = new ArrayList<>();
+        labels.add(label1);
+        labels.add(label2);
+
+        when(issueService.getAllLabels()).thenReturn(labels);
+
+
+        // Execute the GET request
         mockMvc.perform(get("/issues/labels"))
 
                 // Validate the response code and content type
@@ -177,7 +195,7 @@ class IssueControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
                 // Validate the returned fields
-                .andExpect(jsonPath("$", hasSize(3)));
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     static String asJsonString(final Object obj) {
