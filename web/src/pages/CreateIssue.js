@@ -18,7 +18,7 @@ function CreateIssue() {
     { Label: "Critical" },
   ]);
 
-  useEffect(async () => {
+  /* useEffect(async () => {
     const response = await Axios.get("/issues/labels");
     const UppercaseLabels = response.data.map(
       (item) => item.charAt(0).toUpperCase() + item.slice(1)
@@ -31,7 +31,7 @@ function CreateIssue() {
 
     const allOptions = uniques.map((item) => ({ Label: item }));
     setOptions(allOptions);
-  }, []);
+  }, []); */
 
   const titleHandler = (event) => {
     setTitle(

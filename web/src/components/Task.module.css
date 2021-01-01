@@ -1,0 +1,50 @@
+.container {
+  border: 1px solid lightgray;
+  border-radius: 8px;
+  background-color: white;
+  height: auto;
+  margin: 10px auto;
+  width: 300px;
+}
+
+.container:hover {
+  outline: none !important;
+  border-color: #719ece;
+  box-shadow: 0 0 10px #719ece;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: bold;
+  color: rgb(61, 61, 245);
+  text-align: left;
+  margin: 10px;
+}
+
+.cardText {
+  font-size: 12px;
+  text-align: left;
+  padding-left: 15px;
+}
+
+.listLabels {
+  font-size: 10px;
+  list-style-type: none;
+  margin: 10px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 200px;
+}
+.itemLabels {
+  padding: 8px 10px;
+  border-radius: 7px;
+  background-color: lightslategrey;
+  margin-right: 10px;
+}
+.buttons {
+  visibility: hidden;
+}
+.container:hover .buttons {
+  visibility: visible;
+}
