@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 
 @RestController
 @RequestMapping
@@ -24,6 +25,22 @@ public class LabelController {
     public ResponseEntity<Label> createLabel(@Valid @RequestBody Label label){
 
         return new ResponseEntity(labelService.saveLabelEntity(label), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/label/{id}")
+    public ResponseEntity<Label> getLabelById(@Valid @PathVariable Long id){
+
+        return ResponseEntity.ok(labelService.findById(id));
+    }
+
+    @GetMapping("/labels")
+    public ResponseEntity<Collection<Label>> getLabels(){
+        Collection<Label> labels = labelService.getAllLabels();
+
+        if (labels.isEmpty())
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(labels);
     }
 
 }

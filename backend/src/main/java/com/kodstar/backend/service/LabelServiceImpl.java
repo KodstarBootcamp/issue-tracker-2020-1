@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,6 +25,7 @@ public class LabelServiceImpl implements LabelService{
 
     private final LabelRepository labelRepository;
     private final ObjectMapper objectMapper;
+
 
     @Override
     public Label saveLabelEntity(Label label) {
@@ -40,6 +42,14 @@ public class LabelServiceImpl implements LabelService{
                 .orElseThrow(()->new EntityNotFoundException("Error: Label not found for this id " + id));
 
         return convertToDTO(labelEntity);
+    }
+
+    @Override
+    public Collection<Label> getAllLabels() {
+        return labelRepository.findAll()
+                .stream()
+                .map(label->convertToDTO(label))
+                .collect(Collectors.toList());
     }
 
     @Override
