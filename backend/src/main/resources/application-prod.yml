@@ -1,0 +1,20 @@
+server:
+    port: 8081
+spring:
+    datasource:
+        password: Sanane.123
+        url: jdbc:mysql://localhost:3306/issue-tracker?useSSL=false
+        username: root
+    jpa:
+        hibernate:
+            ddl-auto: validate
+            naming:
+                implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
+                physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL5Dialect
+        show-sql: true
+    output:
+        ansi:
+            enabled: always
