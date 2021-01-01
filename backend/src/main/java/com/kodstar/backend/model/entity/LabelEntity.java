@@ -1,10 +1,11 @@
 package com.kodstar.backend.model.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -13,7 +14,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @Table(name = "label")
-public class LabelEntity {
+public class LabelEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,22 +24,8 @@ public class LabelEntity {
     @Column(length = 50)
     private  String name;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime created;
-
-    @Column(name = "modified_at")
-    private LocalDateTime modified;
-
-    @PrePersist
-    void onCreate(){
-        created=LocalDateTime.now();
-        modified=LocalDateTime.now();
-    }
-
-    @PreUpdate
-    void onUpdate(){
-        modified = LocalDateTime.now();
-    }
+    @Column(length = 6)
+    private String color;
 
     @Override
     public boolean equals(Object o) {

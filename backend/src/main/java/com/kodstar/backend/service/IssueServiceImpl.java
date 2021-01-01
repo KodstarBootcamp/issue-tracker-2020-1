@@ -1,20 +1,21 @@
 package com.kodstar.backend.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
-import com.kodstar.backend.model.enums.IssueState;
+import com.kodstar.backend.model.enums.IssueCategory;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -105,11 +106,15 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Collection<String> getAllLabels() {
+    public Collection<Label> getAllLabels() {
         return labelRepository.findAll()
                 .stream()
-                .map(LabelEntity::getName)
-                .collect(Collectors.toSet());
+                .map(labelEntity -> {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.convertValue(labelEntity, Label.class);
+
+                })
+                .collect(Collectors.toList());
     }
 
 
@@ -126,7 +131,7 @@ public class IssueServiceImpl implements IssueService {
         issue.setTitle(issueEntity.getTitle());
         issue.setDescription(issueEntity.getDescription());
         issue.setLabels(labels);
-        issue.setState(issueEntity.getIssueState().toString().toLowerCase());
+        issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
 
         return issue;
     }
@@ -139,6 +144,7 @@ public class IssueServiceImpl implements IssueService {
                 .map(label -> {
                     LabelEntity entity = new LabelEntity();
                     entity.setName(label.trim().toLowerCase());
+                    entity.setColor("47bd1c");
                     return entity;
                 }).collect(Collectors.toSet());
 
@@ -148,7 +154,7 @@ public class IssueServiceImpl implements IssueService {
         issueEntity.setTitle(issue.getTitle());
         issueEntity.setId(issue.getId());
         issueEntity.setLabels(labels);
-        issueEntity.setIssueState(IssueState.fromString(issue.getState()));
+        issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
 
         return issueEntity;
     }

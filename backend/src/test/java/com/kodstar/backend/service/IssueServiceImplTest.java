@@ -1,9 +1,10 @@
 package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.IssueEntity;
-import com.kodstar.backend.model.enums.IssueState;
 import com.kodstar.backend.model.entity.LabelEntity;
+import com.kodstar.backend.model.enums.IssueCategory;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +39,7 @@ class IssueServiceImplTest {
     void saveIssueEntity() {
         // Setup our mock repository
         Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", labelSet, IssueState.BACKLOG.name());
+        Issue issue = new Issue(null, "test", "test is important", labelSet, IssueCategory.BACKLOG.name());
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
         issueEntity.setId(2L);
@@ -76,7 +77,7 @@ class IssueServiceImplTest {
     void testFindById() {
         // Setup our mock repository
         Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", labelSet);
+        Issue issue = new Issue(null, "test", "test is important", labelSet, IssueCategory.BACKLOG.name());
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
         issueEntity.setId(1L);
@@ -96,7 +97,7 @@ class IssueServiceImplTest {
     void testFindAll() {
         // Setup our mock repository
         Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", labelSet);
+        Issue issue = new Issue(null, "test", "test is important", labelSet, IssueCategory.BACKLOG.name());
 
         IssueEntity issueEntity1 = issueService.convertToEntity(issue);
         issueEntity1.setId(1L);
@@ -123,11 +124,11 @@ class IssueServiceImplTest {
         doReturn(Arrays.asList(labelEntity1)).when(labelRepository).findAll();
 
         // Execute the service call
-        Collection<String> labels = issueService.getAllLabels();
+        Collection<Label> labels = issueService.getAllLabels();
 
         // Assert the response
         assertEquals(1, labels.size(), "getAlllabels should return 1 issues");
-        assertTrue(labels.contains(labelEntity1.getName()));
+
     }
 
     @Test
