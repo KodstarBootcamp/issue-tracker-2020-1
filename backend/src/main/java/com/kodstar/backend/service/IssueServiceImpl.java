@@ -45,7 +45,13 @@ public class IssueServiceImpl implements IssueService {
         IssueEntity issueEntity = issueRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
 
+        issueEntity.setLabels(null);
         issueRepository.delete(issueEntity);
+    }
+
+    @Override
+    public Collection<IssueEntity> findAll() {
+        return issueRepository.findAll();
     }
 
     @Override
@@ -63,6 +69,8 @@ public class IssueServiceImpl implements IssueService {
         if (deleteBatchIssues.size() != request.getIds().size())
             throw new EntityNotFoundException();
 
+        deleteBatchIssues.stream()
+                .forEach(issue -> issue.setLabels(null));
         issueRepository.deleteInBatch(deleteBatchIssues);
 
     }

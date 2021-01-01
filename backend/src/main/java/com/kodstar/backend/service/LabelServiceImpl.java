@@ -3,7 +3,6 @@ package com.kodstar.backend.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.LabelEntity;
-import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,7 +54,16 @@ public class LabelServiceImpl implements LabelService{
 
     @Override
     public Label updateLabelEntity(Long id, Label label) {
-        return null;
+        if(labelRepository.findById(id) == null)
+                throw new EntityNotFoundException("Error: Label not found for this id " + id);
+
+        LabelEntity labelEntityToUpdate = convertToEntity(label);
+        labelEntityToUpdate.setId(id);
+        labelEntityToUpdate.setModified(LocalDateTime.now());
+
+        labelEntityToUpdate = labelRepository.save(labelEntityToUpdate);
+
+        return convertToDTO(labelEntityToUpdate);
     }
 
     @Override
@@ -62,6 +71,8 @@ public class LabelServiceImpl implements LabelService{
         LabelEntity labelEntity = labelRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("Error: Label not found for this id " + id));
 
+        issueService.findAll().stream()
+                .forEach(issue->issue.removeLabel(labelEntity));
         labelRepository.delete(labelEntity);
     }
 

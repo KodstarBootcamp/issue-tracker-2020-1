@@ -17,5 +17,8 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     Issue findById(Long id);
     void deleteIssue(Long id);
 
+    //to use in issue service
+    Collection<IssueEntity> findAll();
+
     void deleteMultipleIssues(BatchDeleteRequest request);
 }
