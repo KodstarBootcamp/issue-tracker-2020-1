@@ -20,7 +20,7 @@ public class IssueEntity extends BaseEntity{
     private Long id;
 
     @NotBlank
-    @Column(length = 250)
+    @Column(length = 250,unique = true)
     private String title;
 
     @Column(length = 1500)
