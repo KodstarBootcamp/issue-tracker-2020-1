@@ -1,9 +1,11 @@
-package com.kodstar.backend.service;
+package com.kodstar.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.repository.LabelRepository;
+import com.kodstar.backend.service.IssueService;
+import com.kodstar.backend.service.LabelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class LabelServiceImpl implements LabelService{
+public class LabelServiceImpl implements LabelService {
 
     @Autowired
     private IssueService issueService;

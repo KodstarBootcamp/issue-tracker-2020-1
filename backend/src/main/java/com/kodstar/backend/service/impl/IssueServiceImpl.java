@@ -1,4 +1,4 @@
-package com.kodstar.backend.service;
+package com.kodstar.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
@@ -8,6 +8,8 @@ import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.enums.*;
 import com.kodstar.backend.repository.IssueRepository;
+import com.kodstar.backend.service.IssueService;
+import com.kodstar.backend.service.LabelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
