@@ -8,8 +8,8 @@ import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.enums.IssueCategory;
 import com.kodstar.backend.repository.IssueRepository;
-import com.kodstar.backend.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +25,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IssueServiceImpl implements IssueService {
 
-    private final LabelRepository labelRepository;
+    @Autowired
+    private LabelService labelService;
+
     private final IssueRepository issueRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Issue findById(Long id) {
@@ -52,7 +55,7 @@ public class IssueServiceImpl implements IssueService {
         if (!request.getMethod().equals("delete"))
             throw new IllegalArgumentException();
 
-        // As we know the entities' ids we can make direct fetching by findAllById.
+        // If we know the entities' ids, we can make direct fetching by findAllById.
         // It is simplest and more efficient.
         Collection<IssueEntity> deleteBatchIssues = issueRepository.findAllById(request.getIds());
 
@@ -70,9 +73,10 @@ public class IssueServiceImpl implements IssueService {
 
         IssueEntity issueEntity = convertToEntity(issue);
 
+        //check if label exist and then set id
         setIdFromExistingLabel(issueEntity);
+        labelService.saveAll(issueEntity.getLabels());
 
-        labelRepository.saveAll(issueEntity.getLabels());
         issueEntity = issueRepository.save(issueEntity);
 
         return convertToDTO(issueEntity);
@@ -81,7 +85,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public Issue updateIssueEntity(Long id, Issue issue) {
 
-        if(issueRepository.findById(id).isEmpty())
+        if(issueRepository.findById(id) == null)
             throw new EntityNotFoundException("Error: Issue not found for this id " + id);
 
         IssueEntity issueEntityToUpdate = convertToEntity(issue);
@@ -90,7 +94,7 @@ public class IssueServiceImpl implements IssueService {
 
         setIdFromExistingLabel(issueEntityToUpdate);
 
-        labelRepository.saveAll(issueEntityToUpdate.getLabels());
+        labelService.saveAll(issueEntityToUpdate.getLabels());
         issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
         return convertToDTO(issueEntityToUpdate);
@@ -107,30 +111,22 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public Collection<Label> getAllLabels() {
-        return labelRepository.findAll()
+        return labelService.findAll()
                 .stream()
-                .map(labelEntity -> {
-                    ObjectMapper mapper = new ObjectMapper();
-                    return mapper.convertValue(labelEntity, Label.class);
-
-                })
+                .map(labelEntity -> objectMapper.convertValue(labelEntity, Label.class))
                 .collect(Collectors.toList());
     }
 
 
     @Override
     public Issue convertToDTO(IssueEntity issueEntity) {
-        Set<String> labels  = issueEntity.getLabels()
-                .stream()
-                .map(LabelEntity::getName)
-                .collect(Collectors.toSet());
 
         Issue issue = new Issue();
 
         issue.setId(issueEntity.getId());
         issue.setTitle(issueEntity.getTitle());
         issue.setDescription(issueEntity.getDescription());
-        issue.setLabels(labels);
+        issue.setLabels(issueEntity.getLabels());
         issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
 
         return issue;
@@ -138,22 +134,14 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public IssueEntity convertToEntity(Issue issue) {
-        //Convert explicitly, handling is easier for this case
-        Set<LabelEntity> labels = issue.getLabels()
-                .stream()
-                .map(label -> {
-                    LabelEntity entity = new LabelEntity();
-                    entity.setName(label.trim().toLowerCase());
-                    entity.setColor("47bd1c");
-                    return entity;
-                }).collect(Collectors.toSet());
 
+        //Convert explicitly, handling is easier for this case
         IssueEntity issueEntity = new IssueEntity();
 
         issueEntity.setDescription(issue.getDescription());
         issueEntity.setTitle(issue.getTitle());
         issueEntity.setId(issue.getId());
-        issueEntity.setLabels(labels);
+        issueEntity.setLabels(issue.getLabels());
         issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
 
         return issueEntity;
@@ -161,7 +149,7 @@ public class IssueServiceImpl implements IssueService {
 
     private void setIdFromExistingLabel(IssueEntity source){
 
-        Set<LabelEntity> labelEntities = labelRepository.findAll().stream()
+        Set<LabelEntity> labelEntities = labelService.findAll().stream()
                 .collect(Collectors.toSet());
 
         for (LabelEntity label : labelEntities){

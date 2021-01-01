@@ -21,7 +21,7 @@ public class LabelEntity extends BaseEntity{
     private Long id;
 
     @NotBlank
-    @Column(length = 50)
+    @Column(unique = true, length = 50)
     private  String name;
 
     @Column(length = 6)

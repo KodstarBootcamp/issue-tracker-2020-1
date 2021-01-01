@@ -1,5 +1,6 @@
 package com.kodstar.backend.model.dto;
 
+import com.kodstar.backend.model.entity.LabelEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class Issue {
     private Long id;
     private String title;
     private String description;
-    private Set<String> labels;
+    private Set<LabelEntity> labels;
     private String category;
 
     public Issue(String title) {
