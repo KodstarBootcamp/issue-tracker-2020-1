@@ -8,9 +8,9 @@ public enum IssueState {
   OPEN,
   CLOSED;
 
-  public static IssueState fromString(String status) {
+  public static IssueState fromString(String state) {
     for (IssueState issueState : IssueState.values()) {
-      if (issueState.name().equalsIgnoreCase(status)) {
+      if (issueState.name().equalsIgnoreCase(state)) {
         return issueState;
       }
     }

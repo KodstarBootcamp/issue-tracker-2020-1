@@ -7,15 +7,16 @@ import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.enums.IssueCategory;
+import com.kodstar.backend.model.enums.IssueState;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -96,7 +97,6 @@ public class IssueServiceImpl implements IssueService {
         return convertToDTO(issueEntityToUpdate);
     }
 
-
     @Override
     public Collection<Issue> getAllIssues() {
         return issueRepository.findAll()
@@ -117,7 +117,6 @@ public class IssueServiceImpl implements IssueService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public Issue convertToDTO(IssueEntity issueEntity) {
         Set<String> labels  = issueEntity.getLabels()
@@ -132,6 +131,7 @@ public class IssueServiceImpl implements IssueService {
         issue.setDescription(issueEntity.getDescription());
         issue.setLabels(labels);
         issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
+        issue.setState(issueEntity.getIssueState().toString().toLowerCase());
 
         return issue;
     }
@@ -155,6 +155,7 @@ public class IssueServiceImpl implements IssueService {
         issueEntity.setId(issue.getId());
         issueEntity.setLabels(labels);
         issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
+        issueEntity.setIssueState(IssueState.fromString(issue.getState()));
 
         return issueEntity;
     }

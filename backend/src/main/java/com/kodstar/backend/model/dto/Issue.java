@@ -18,6 +18,7 @@ public class Issue {
     private String description;
     private Set<String> labels;
     private String category;
+    private String state;
 
     public Issue(String title) {
         this.title = title;
