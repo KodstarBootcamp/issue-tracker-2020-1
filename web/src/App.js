@@ -5,6 +5,7 @@ import CreateIssue from "./pages/CreateIssue";
 import EditIssue from "./pages/EditIssue";
 import Home from "./pages/Home";
 import DisplayAllIssues from "./components/DisplayAllIssues";
+import CommentPage from "./components/CommentPage"
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/createIssue" exact component={CreateIssue} />
       <Route path="/editIssue/:id" exact component={EditIssue} />
       <Route path="/allIssues" exact component={DisplayAllIssues} />
+      <Route path="/commentPage" exact component={CommentPage} />
     </Switch>
   );
 }
