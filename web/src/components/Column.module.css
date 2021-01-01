@@ -1,0 +1,19 @@
+.column {
+  border: 2px solid rgb(184, 182, 182);
+  border-radius: 8px;
+  margin: 10px;
+  min-width: 350px;
+  min-height: 300px;
+  background-color: rgb(#fff);
+}
+
+.column:active {
+  outline: none !important;
+  border-color: #719ece;
+  box-shadow: 0 0 10px #719ece;
+}
+.columnHeader {
+  font-size: 16px;
+  margin: 10px;
+  font-weight: 700;
+}
