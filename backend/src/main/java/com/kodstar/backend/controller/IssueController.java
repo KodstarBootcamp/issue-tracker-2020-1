@@ -49,7 +49,6 @@ public class IssueController {
 
     }
 
- 
     @DeleteMapping("/issue/{id}")
     public ResponseEntity<Void> deleteIssue(@Valid @PathVariable Long id){
 

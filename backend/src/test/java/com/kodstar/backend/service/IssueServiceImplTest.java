@@ -3,8 +3,8 @@ package com.kodstar.backend.service;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.IssueEntity;
+import com.kodstar.backend.model.enums.*;
 import com.kodstar.backend.model.entity.LabelEntity;
-import com.kodstar.backend.model.enums.IssueCategory;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +39,7 @@ class IssueServiceImplTest {
     void saveIssueEntity() {
         // Setup our mock repository
         Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", labelSet, IssueCategory.BACKLOG.name());
+        Issue issue = new Issue(null, "test", "test is important", null, IssueCategory.BACKLOG.name(), IssueState.OPEN.name());
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
         issueEntity.setId(2L);
@@ -64,20 +64,19 @@ class IssueServiceImplTest {
         Issue issue = new Issue();
         issue.setId(1L);
         issue.setDescription("test is important");
-        issue.setLabels(labelSet);
+        //issue.setLabels(labelSet);
 
         // Assert the response
         assertThrows(NullPointerException.class,()->
                 issueService.saveIssueEntity(issue));
     }
 
-
     @Test
     @DisplayName("Test findById Success")
     void testFindById() {
         // Setup our mock repository
         Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", labelSet, IssueCategory.BACKLOG.name());
+        Issue issue = new Issue(null, "test", "test is important", null, IssueCategory.BACKLOG.name(), IssueState.OPEN.name());
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
         issueEntity.setId(1L);
@@ -96,8 +95,8 @@ class IssueServiceImplTest {
     @DisplayName("Test getAllIssues")
     void testFindAll() {
         // Setup our mock repository
-        Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", labelSet, IssueCategory.BACKLOG.name());
+       // Set<String> labelSet = Set.of("story", "bug");
+        Issue issue = new Issue(null, "test", "test is important", null, IssueCategory.BACKLOG.name(), IssueState.OPEN.name());
 
         IssueEntity issueEntity1 = issueService.convertToEntity(issue);
         issueEntity1.setId(1L);
