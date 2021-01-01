@@ -6,13 +6,12 @@ import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
-import com.kodstar.backend.model.enums.IssueCategory;
+import com.kodstar.backend.model.enums.*;
 import com.kodstar.backend.repository.IssueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -100,7 +99,6 @@ public class IssueServiceImpl implements IssueService {
         return convertToDTO(issueEntityToUpdate);
     }
 
-
     @Override
     public Collection<Issue> getAllIssues() {
         return issueRepository.findAll()
@@ -128,6 +126,7 @@ public class IssueServiceImpl implements IssueService {
         issue.setDescription(issueEntity.getDescription());
         issue.setLabels(issueEntity.getLabels());
         issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
+        issue.setState(issueEntity.getIssueState().toString().toLowerCase());
 
         return issue;
     }
@@ -143,6 +142,7 @@ public class IssueServiceImpl implements IssueService {
         issueEntity.setId(issue.getId());
         issueEntity.setLabels(issue.getLabels());
         issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
+        issueEntity.setIssueState(IssueState.fromString(issue.getState()));
 
         return issueEntity;
     }

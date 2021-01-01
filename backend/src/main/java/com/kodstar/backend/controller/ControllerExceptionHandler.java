@@ -2,14 +2,12 @@ package com.kodstar.backend.controller;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -34,18 +32,6 @@ public class ControllerExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public void httpMessageNotReadable(HttpServletRequest request, Exception e) {
-        log.info("invalid format: {}", request.getRequestURL().toString(), e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public void invalidFormat(HttpServletRequest request, Exception e) {
-        log.info("invalid format: {}", request.getRequestURL().toString(), e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
     public Error validationFail(HttpServletRequest request, ConstraintViolationException e){
@@ -57,6 +43,12 @@ public class ControllerExceptionHandler {
         }
 
         return new Error(errorMessage,errors);
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public void conflict(HttpServletRequest request,DataIntegrityViolationException e){
+        log.info("Data integrity violation: {}", request.getRequestURL().toString(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
