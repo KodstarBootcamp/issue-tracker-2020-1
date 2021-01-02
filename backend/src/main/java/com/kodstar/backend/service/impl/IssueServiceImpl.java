@@ -66,6 +66,13 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    public Collection<Issue> findAll(Pageable pageable) {
+        return issueRepository.findAll(pageable).stream()
+                .map(issueEntity -> convertToDTO(issueEntity))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteMultipleIssues(BatchDeleteRequest request) {
 
         if (!request.getMethod().equals("delete"))
