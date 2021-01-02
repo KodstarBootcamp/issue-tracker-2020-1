@@ -1,10 +1,15 @@
 server:
     port: 8081
+jasypt:
+    encryptor:
+        algorithm: PBEWithMD5AndDES
+        iv-generator-classname: org.jasypt.iv.NoIvGenerator
+        password: '@mysql-credentials-key@'
 spring:
     datasource:
-        password: Sanane.123
+        password: ENC(PKazajCWIgZcxMU9puuoFfjVL/90Vv71)
         url: jdbc:mysql://localhost:3306/issue-tracker?useSSL=false
-        username: root
+        username: ENC(hKWTH5AH7wvBTOg7OAXOoQ==)
     jpa:
         hibernate:
             ddl-auto: validate
