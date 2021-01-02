@@ -39,4 +39,8 @@ public class IssueEntity extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private IssueState issueState;
 
+    public void removeLabel(LabelEntity entity){
+        this.labels.remove(entity);
+    }
+
 }

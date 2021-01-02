@@ -1,4 +1,4 @@
-package com.kodstar.backend.service;
+package com.kodstar.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
@@ -8,6 +8,8 @@ import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.enums.*;
 import com.kodstar.backend.repository.IssueRepository;
+import com.kodstar.backend.service.IssueService;
+import com.kodstar.backend.service.LabelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,13 @@ public class IssueServiceImpl implements IssueService {
         IssueEntity issueEntity = issueRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
 
+        issueEntity.setLabels(null);
         issueRepository.delete(issueEntity);
+    }
+
+    @Override
+    public Collection<IssueEntity> findAll() {
+        return issueRepository.findAll();
     }
 
     @Override
@@ -63,6 +71,8 @@ public class IssueServiceImpl implements IssueService {
         if (deleteBatchIssues.size() != request.getIds().size())
             throw new EntityNotFoundException();
 
+        deleteBatchIssues.stream()
+                .forEach(issue -> issue.setLabels(null));
         issueRepository.deleteInBatch(deleteBatchIssues);
 
     }
@@ -106,15 +116,6 @@ public class IssueServiceImpl implements IssueService {
                 .map(issue -> convertToDTO(issue))
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public Collection<Label> getAllLabels() {
-        return labelService.findAll()
-                .stream()
-                .map(labelEntity -> objectMapper.convertValue(labelEntity, Label.class))
-                .collect(Collectors.toList());
-    }
-
 
     @Override
     public Issue convertToDTO(IssueEntity issueEntity) {

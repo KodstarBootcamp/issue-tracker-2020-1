@@ -165,39 +165,6 @@ class IssueControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    @DisplayName("Test getAllLabels")
-    void testGetAllLabels() throws Exception{
-                // Setup our mocked service
-        Label label1 = new Label();
-        label1.setId("1");
-        label1.setName("bug");
-        label1.setColor("47bd1c");
-
-        Label label2 = new Label();
-        label2.setId("1");
-        label2.setName("bug");
-        label2.setColor("47bd1c");
-
-
-        Collection<Label> labels = new ArrayList<>();
-        labels.add(label1);
-        labels.add(label2);
-
-        when(issueService.getAllLabels()).thenReturn(labels);
-
-
-        // Execute the GET request
-        mockMvc.perform(get("/issues/labels"))
-
-                // Validate the response code and content type
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-
-                // Validate the returned fields
-                .andExpect(jsonPath("$", hasSize(2)));
-    }
-
     static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
