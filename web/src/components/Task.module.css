@@ -39,8 +39,8 @@
 .itemLabels {
   padding: 8px 10px;
   border-radius: 7px;
-  background-color: lightslategrey;
   margin-right: 10px;
+  color: white;
 }
 .buttons {
   visibility: hidden;

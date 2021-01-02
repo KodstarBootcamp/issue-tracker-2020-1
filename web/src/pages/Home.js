@@ -2,104 +2,91 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Column from "../components/Column";
 import { DragDropContext } from "react-beautiful-dnd";
+import Search from "../components/Search";
+import { Link } from "react-router-dom";
+import Loader from "react-loader-spinner";
 
+const groupBy = function (xs, key) {
+  return xs.reduce(function (rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
+const getIDs = function (arr = []) {
+  return arr.map((e) => e.id);
+};
+
+const formatTasks = function (arr) {
+  return arr.reduce(function (acc, cur) {
+    acc[cur.id] = cur;
+    return acc;
+  }, {});
+};
+
+const formatToStringId = function (arr) {
+  return arr.map((e) => {
+    return { ...e, id: `task-${e.id}` };
+  });
+};
 function Home() {
-  const [state, setState] = useState();
-
+  const [state, setState] = useState(null);
   useEffect(() => {
     fetchIssues();
   }, []);
-
   const fetchIssues = async () => {
     const response = await Axios.get("/issues");
-    console.log(response.data, "Home.js");
-
-    const newData = response.data.map((item) => {
-      item.id = `task-${item.id}`;
-      return item;
-    });
-
-    if (response.data.length > 1) {
-      let newObj = {};
-      newData.forEach((data) => {
-        return (newObj[data.id] = data);
-      });
-
-      const backlogIds = newData
-        .filter((item) => item.category === "backlog")
-        .map((item) => item.id);
-
-      const newIds = newData
-        .filter((item) => item.category === "new")
-        .map((item) => item.id);
-
-      const startedIds = newData
-        .filter((item) => item.category === "started")
-        .map((item) => item.id);
-      console.log(startedIds, 27);
-      const reviewIds = newData
-        .filter((item) => item.category === "review")
-        .map((item) => item.id);
-      console.log(reviewIds);
-
-      const finishedIds = newData
-        .filter((item) => item.category === "finished")
-        .map((item) => item.id);
-
-      const initialData = {
-        tasks: newObj,
-        columns: {
-          "column-1": {
-            id: "column-1",
-            title: "New",
-            taskIds: newIds || [],
-          },
-          "column-2": {
-            id: "column-2",
-            title: "Backlog",
-            taskIds: backlogIds || [],
-          },
-          "column-3": {
-            id: "column-3",
-            title: "Started",
-            taskIds: startedIds || [],
-          },
-          "column-4": {
-            id: "column-4",
-            title: "Review",
-            taskIds: reviewIds || [],
-          },
-          "column-5": {
-            id: "column-5",
-            title: "Finished",
-            taskIds: finishedIds || [],
-          },
+    console.log(response.data, 35);
+    const formattedResponseData = formatToStringId(response.data);
+    const tasks = groupBy(formattedResponseData, "category");
+    const initialData = {
+      tasks: formatTasks(formattedResponseData),
+      columns: {
+        new: {
+          id: "new",
+          title: "New",
+          taskIds: getIDs(tasks.new),
         },
-        // Facilitate reordering of the columns
-        columnOrder: [
-          "column-1",
-          "column-2",
-          "column-3",
-          "column-4",
-          "column-5",
-        ],
-      };
-      setState(initialData);
-    }
+        backlog: {
+          id: "backlog",
+          title: "Backlog",
+          taskIds: getIDs(tasks.backlog),
+        },
+        started: {
+          id: "started",
+          title: "Started",
+          taskIds: getIDs(tasks.started),
+        },
+        review: {
+          id: "review",
+          title: "Review",
+          taskIds: getIDs(tasks.review),
+        },
+        finished: {
+          id: "finished",
+          title: "Finished",
+          taskIds: getIDs(tasks.finished),
+        },
+      },
+      // Facilitate reordering of the columns
+      columnOrder: ["new", "backlog", "started", "review", "finished"],
+    };
+    setState(initialData);
   };
 
-  const onDragEndHandler = (result) => {
+  const findTask = (id) => {
+    const task = state.tasks[id];
+    return task;
+  };
+
+  // ondrag handler
+  const onDragEndHandler = async (result) => {
     const { destination, source, draggableId } = result;
 
-    console.log(state, 100);
-    console.log(result);
-    console.log(draggableId, 87);
     // hedef yoksa oldugun yere geri dön
     if (!destination) {
-      console.log("hey");
+      console.log("destination is null");
       return;
     }
-
     //task aynı yere tekrar konduysa bir şey yapma
     if (
       destination.droppableId === source.droppableId &&
@@ -107,22 +94,18 @@ function Home() {
     ) {
       return;
     }
-
     const start = state.columns[source.droppableId]; // başlangıc
-    console.log(start);
+
     const finish = state.columns[destination.droppableId]; // hedef
-    console.log(finish);
 
     if (start === finish) {
       const newTaskIds = Array.from(start.taskIds);
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId);
-
       const newColumn = {
         ...finish,
         taskIds: newTaskIds,
       };
-
       const newState = {
         ...state,
         columns: {
@@ -130,7 +113,6 @@ function Home() {
           [newColumn.id]: newColumn,
         },
       };
-
       setState(newState);
       return;
     }
@@ -150,6 +132,13 @@ function Home() {
       taskIds: finishTaskIds,
     };
 
+    const draggedTask = findTask(draggableId);
+
+    const UpdatedTask = { ...draggedTask, category: newFinish.id };
+    delete UpdatedTask.id;
+
+    const id = draggedTask.id.slice(5);
+
     const newState = {
       ...state,
       columns: {
@@ -159,19 +148,38 @@ function Home() {
       },
     };
     setState(newState);
+    const response = await Axios.put("/issue/" + id, UpdatedTask);
+    console.log(response);
   };
 
   return (
     <DragDropContext onDragEnd={onDragEndHandler}>
-      <div className="d-flex overflow-auto mt-5">
-        {state === undefined ? (
-          <p>Add</p>
+      <div className="d-flex mt-5 justify-content-between">
+        <Search />
+        <Link to="/allIssues">
+          <button className="btn btn-info btn-sm ml-5">All Issues</button>
+        </Link>
+        <Link to="/createIssue">
+          <button className="btn btn-success btn-sm ml-5">New Issue</button>
+        </Link>
+      </div>
+      <div className="d-flex overflow-auto mt-1">
+        {state === null ? (
+          <div
+            style={{
+              width: "100%",
+              height: "100",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
+          </div>
         ) : (
           state.columnOrder.map((columnId) => {
             const column = state.columns[columnId];
-
             const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
-
             return <Column key={column.id} column={column} tasks={tasks} />;
           })
         )}
@@ -179,5 +187,4 @@ function Home() {
     </DragDropContext>
   );
 }
-
 export default Home;

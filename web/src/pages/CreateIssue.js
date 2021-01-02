@@ -11,11 +11,11 @@ function CreateIssue() {
   const [addLabelSelect, setAddLabelSelect] = useState([]);
   const [labels, setLabels] = useState([]);
   const [options, setOptions] = useState([
-    { Label: "Bug" },
-    { Label: "Enhancement" },
-    { Label: "Question" },
-    { Label: "Suggestion" },
-    { Label: "Critical" },
+    { name: "Bug", color: "D73A4A" },
+    { name: "Enhancement", color: "A2EEEF" },
+    { name: "Question", color: "346eeb" },
+    { name: "Suggestion", color: "d929d9" },
+    { name: "Critical", color: "c40c37" },
   ]);
 
   /* useEffect(async () => {
@@ -60,21 +60,21 @@ function CreateIssue() {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const labelText = labels.map((item) => item.Label);
-
     // create a template to send to database
     const newIssue = {
       title: title.trim(),
       description: description,
-      labels: labelText,
+      labels: labels,
     };
 
+    console.log(newIssue, 72);
     if (validate(newIssue)) {
       // make a post request to send data
       const response = await Axios.post("/issue", newIssue);
       console.log(response);
       alert("Succesfully created");
       history.push("/");
+      window.location.reload();
     }
   };
 
@@ -89,7 +89,7 @@ function CreateIssue() {
     }
 
     const newLabelObject = {
-      Label: labelName.charAt(0).toUpperCase() + labelName.slice(1),
+      name: labelName.charAt(0).toUpperCase() + labelName.slice(1),
     };
     setLabels([...labels, newLabelObject]);
     setOptions([...options, newLabelObject]);
@@ -137,7 +137,7 @@ function CreateIssue() {
           <Multiselect
             options={options}
             selectedValues={addLabelSelect}
-            displayValue="Label"
+            displayValue="name"
             emptyRecordMsg="No options available. Add new one"
             onSelect={onSelect}
             onRemove={onRemove}
