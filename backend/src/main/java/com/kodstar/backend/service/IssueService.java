@@ -20,6 +20,6 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     //to use in label service
     Collection<IssueEntity> findAll();
     Collection<Issue> findAll(Sort sort);
-
+    Collection<Issue> findAll(Pageable pageable);
     void deleteMultipleIssues(BatchDeleteRequest request);
 }
