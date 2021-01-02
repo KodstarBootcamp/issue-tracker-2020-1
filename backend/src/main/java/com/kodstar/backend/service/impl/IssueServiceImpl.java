@@ -12,6 +12,8 @@ import com.kodstar.backend.service.IssueService;
 import com.kodstar.backend.service.LabelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
@@ -54,6 +56,13 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public Collection<IssueEntity> findAll() {
         return issueRepository.findAll();
+    }
+
+    @Override
+    public Collection<Issue> findAll(Sort sort) {
+        return issueRepository.findAll(sort).stream()
+                .map(issueEntity -> convertToDTO(issueEntity))
+                .collect(Collectors.toList());
     }
 
     @Override
