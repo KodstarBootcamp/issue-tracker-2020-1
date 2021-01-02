@@ -8,7 +8,7 @@ jasypt:
 spring:
     datasource:
         password: ENC(PKazajCWIgZcxMU9puuoFfjVL/90Vv71)
-        url: jdbc:mysql://localhost:3306/issue-tracker?useSSL=false
+        url: ENC(opax6sV/V5hDz/gXk59t/2TP3cM//nSUCVoOLMwfUSDcEC8CA0NC9iyARqg2b91TFKaFvV9EMbbIadgtBpxXcw==)
         username: ENC(hKWTH5AH7wvBTOg7OAXOoQ==)
     jpa:
         hibernate:
