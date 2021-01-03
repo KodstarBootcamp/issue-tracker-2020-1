@@ -45,7 +45,7 @@ class IssueControllerTest {
 
     @BeforeEach
     void setUp() {
-        Set<String> labelSet = Set.of("story", "bug");
+     Set<String> labelSet = Set.of("story", "bug");
         this.issue = new Issue();
         issue.setId(1L);
         issue.setTitle("test");
