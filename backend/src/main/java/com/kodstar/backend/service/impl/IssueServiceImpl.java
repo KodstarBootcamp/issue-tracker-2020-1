@@ -3,23 +3,22 @@ package com.kodstar.backend.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
-import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
-import com.kodstar.backend.model.enums.*;
+import com.kodstar.backend.model.enums.IssueCategory;
+import com.kodstar.backend.model.enums.IssueState;
 import com.kodstar.backend.repository.IssueRepository;
+import com.kodstar.backend.repository.LabelRepository;
 import com.kodstar.backend.service.IssueService;
 import com.kodstar.backend.service.LabelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -28,11 +27,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IssueServiceImpl implements IssueService {
 
+    private final IssueRepository issueRepository;
+    private final ObjectMapper objectMapper;
+
     @Autowired
     private LabelService labelService;
 
-    private final IssueRepository issueRepository;
-    private final ObjectMapper objectMapper;
+    @Autowired
+    private LabelRepository labelRepository;
 
     @Override
     public Issue findById(Long id) {
@@ -66,13 +68,6 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Collection<Issue> findAll(Pageable pageable) {
-        return issueRepository.findAll(pageable).stream()
-                .map(issueEntity -> convertToDTO(issueEntity))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public void deleteMultipleIssues(BatchDeleteRequest request) {
 
         if (!request.getMethod().equals("delete"))
@@ -90,7 +85,25 @@ public class IssueServiceImpl implements IssueService {
         deleteBatchIssues.stream()
                 .forEach(issue -> issue.setLabels(null));
         issueRepository.deleteInBatch(deleteBatchIssues);
+    }
 
+    @Override
+    public Collection<Issue> findByTitleContaining(String title, Sort sort) {
+        return issueRepository.findByTitleContaining(title,sort).stream()
+                .map(issueEntity -> convertToDTO(issueEntity))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<Issue> findByLabels(LabelEntity labelEntity, Sort sort) {
+        return issueRepository.findByLabels(labelEntity,sort).stream()
+                .map(issueEntity -> convertToDTO(issueEntity)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<Issue> findByDescriptionContaining(String searchWord, Sort sort) {
+        return issueRepository.findByDescriptionContaining(searchWord, sort).stream()
+                .map(issueEntity -> convertToDTO(issueEntity)).collect(Collectors.toList());
     }
 
     @Override
@@ -101,7 +114,6 @@ public class IssueServiceImpl implements IssueService {
         //check if label exist and then set id
         setIdFromExistingLabel(issueEntity);
         labelService.saveAll(issueEntity.getLabels());
-
         issueEntity = issueRepository.save(issueEntity);
 
         return convertToDTO(issueEntity);
@@ -116,9 +128,7 @@ public class IssueServiceImpl implements IssueService {
         IssueEntity issueEntityToUpdate = convertToEntity(issue);
         issueEntityToUpdate.setId(id);
         issueEntityToUpdate.setModified(LocalDateTime.now());
-
         setIdFromExistingLabel(issueEntityToUpdate);
-
         labelService.saveAll(issueEntityToUpdate.getLabels());
         issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
@@ -176,6 +186,5 @@ public class IssueServiceImpl implements IssueService {
                     .ifPresent(entity -> entity.setId(label.getId()));
         }
     }
-
 }
 
