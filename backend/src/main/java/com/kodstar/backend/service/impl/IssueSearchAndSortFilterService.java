@@ -4,6 +4,7 @@ import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.repository.LabelRepository;
 import com.kodstar.backend.service.IssueService;
+import com.kodstar.backend.service.LabelService;
 import com.kodstar.backend.service.SearchAndSortFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,13 @@ import java.util.*;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class IssueSearchAndSortFilterService extends SearchAndSortFilter<Issue> {
 
     @Autowired
     private IssueService issueService;
 
     @Autowired
-    private LabelRepository labelRepository;
+    private LabelService labelService;
 
     @Override
     public Collection<Issue> filterAndSort(String field, String key, String sort) {
@@ -31,7 +31,7 @@ public class IssueSearchAndSortFilterService extends SearchAndSortFilter<Issue> 
 
         switch (field) {
             case "labels":
-                Optional<LabelEntity> labelEntity = labelRepository.findByName(key);
+                Optional<LabelEntity> labelEntity = labelService.findByName(key);
 
                 if(labelEntity.isPresent())
                     return issueService.findByLabels(labelEntity.get(),Sort.by(orders));

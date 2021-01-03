@@ -68,16 +68,17 @@ public class IssueController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("issues/search/{field}")
-    public ResponseEntity<Collection<Issue>> filterAndSort(@Valid @PathVariable String field,
-            @RequestParam( required = false) String key,
-            @RequestParam String sort) {
+    @GetMapping("/issues/search")
+    public ResponseEntity<Collection<Issue>> filterAndSort(
+            @RequestParam( defaultValue = "") String field,
+            @RequestParam( defaultValue = "") String key,
+            @RequestParam (defaultValue = "newest")String sort) {
 
         Collection<Issue> response = searchAndSortFilterService.filterAndSort(field,key,sort);
 
-        if(response.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity(response, HttpStatus.OK);
+        if(response.isEmpty())
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(response);
     }
 }
