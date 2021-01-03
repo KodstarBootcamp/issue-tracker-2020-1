@@ -43,6 +43,20 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    sortedIssues();
+  }, []);
+
+  const sortedIssues = async () => {
+    const response = await Axios.get("/issues");
+
+    if (response.data.length < 1) {
+      setIssues();
+    } else {
+      setIssues(response.data);
+    }
+  };
+
   const deleteHandler = (event) => {
     // get id to delete sprecific item
     const id = event.target.id.slice(5);
@@ -67,7 +81,7 @@ function App() {
 
   return (
     <IssueContex.Provider
-      value={{ issues, deleteHandler, editHandler, labels }}
+      value={{ issues, deleteHandler, editHandler, labels, setIssues }}
     >
       <Switch>
         <Route path="/" exact component={Home} />
