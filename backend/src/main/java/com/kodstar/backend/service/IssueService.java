@@ -3,6 +3,8 @@ package com.kodstar.backend.service;
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
+import com.kodstar.backend.model.entity.LabelEntity;
+import org.springframework.data.domain.Sort;
 
 import java.util.Collection;
 
@@ -17,6 +19,11 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
 
     //to use in label service
     Collection<IssueEntity> findAll();
+    Collection<Issue> findAll(Sort sort);
 
     void deleteMultipleIssues(BatchDeleteRequest request);
+    Collection<Issue> findByTitleContaining(String title, Sort sort);
+    Collection<Issue> findByDescriptionContaining(String searchWord, Sort sort);
+    Collection<Issue> findByLabels(LabelEntity labelEntity, Sort sort);
+
 }
