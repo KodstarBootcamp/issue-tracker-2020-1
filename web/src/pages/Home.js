@@ -159,6 +159,9 @@ function Home() {
         <Link to="/allIssues">
           <button className="btn btn-info btn-sm ml-5">All Issues</button>
         </Link>
+        <Link to="/labels">
+          <button className="btn btn-secondary btn-sm ml-5">All Labels</button>
+        </Link>
         <Link to="/createIssue">
           <button className="btn btn-success btn-sm ml-5">New Issue</button>
         </Link>
