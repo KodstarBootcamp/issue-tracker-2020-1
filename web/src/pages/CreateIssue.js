@@ -1,37 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { Multiselect } from "multiselect-react-dropdown";
 import Axios from "axios";
 import { Link, useHistory } from "react-router-dom";
+import { IssueContex } from "../App";
+import styles from "./CreateIssue.module.css";
+import { CirclePicker } from "react-color";
 
 function CreateIssue() {
   let history = useHistory();
   const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
+  const [color, setcolor] = useState("#cddc39");
+  const [open, setOpen] = useState(false);
   const [description, setDescription] = useState("");
   const [addLabelSelect, setAddLabelSelect] = useState([]);
-  const [labels, setLabels] = useState([]);
-  const [options, setOptions] = useState([
-    { name: "Bug", color: "D73A4A" },
-    { name: "Enhancement", color: "A2EEEF" },
-    { name: "Question", color: "346eeb" },
-    { name: "Suggestion", color: "d929d9" },
-    { name: "Critical", color: "c40c37" },
-  ]);
+  const [labelList, setLabelsList] = useState([]);
 
-  /* useEffect(async () => {
-    const response = await Axios.get("/issues/labels");
-    const UppercaseLabels = response.data.map(
-      (item) => item.charAt(0).toUpperCase() + item.slice(1)
-    );
-
-    const optionsText = options.map((item) => item.Label);
-
-    const allText = [...optionsText, ...UppercaseLabels];
-    const uniques = [...new Set(allText)];
-
-    const allOptions = uniques.map((item) => ({ Label: item }));
-    setOptions(allOptions);
-  }, []); */
+  const { labels } = useContext(IssueContex);
 
   const titleHandler = (event) => {
     setTitle(
@@ -60,14 +46,18 @@ function CreateIssue() {
   const submitHandler = async (event) => {
     event.preventDefault();
 
+    const labelInfo = labelList.map((item) => {
+      delete item.id;
+      return item;
+    });
+
     // create a template to send to database
     const newIssue = {
       title: title.trim(),
       description: description,
-      labels: labels,
+      labels: labelInfo,
     };
 
-    console.log(newIssue, 72);
     if (validate(newIssue)) {
       // make a post request to send data
       const response = await Axios.post("/issue", newIssue);
@@ -79,31 +69,43 @@ function CreateIssue() {
   };
 
   const addLabelHandler = () => {
-    const labelName = prompt("Please enter  label name", "");
-    if (labelName === null) {
-      return;
-    }
-    if (labelName.length < 1) {
-      alert("Title can not be left blank");
-      return;
-    }
-
-    const newLabelObject = {
-      name: labelName.charAt(0).toUpperCase() + labelName.slice(1),
-    };
-    setLabels([...labels, newLabelObject]);
-    setOptions([...options, newLabelObject]);
-    setAddLabelSelect([...addLabelSelect, newLabelObject]);
+    setOpen(!open);
   };
 
   const onSelect = (data) => {
     setAddLabelSelect(data);
-    setLabels(data);
+    setLabelsList(data);
   };
 
   const onRemove = (data) => {
     setAddLabelSelect(data);
-    setLabels(data);
+    setLabelsList(data);
+  };
+
+  const nameHandler = (event) => {
+    const name = event.target.value;
+    setName(name.trim());
+  };
+
+  const cancelHandler = () => {
+    setOpen(false);
+  };
+
+  const createLabelHandler = async (event) => {
+    event.preventDefault();
+    if (name.length < 1) {
+      alert("Name can not left blank");
+      return;
+    }
+    const newLabel = {
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      color: color.slice(1),
+    };
+    const response = await Axios.post("/label", newLabel);
+    console.log(response, 33);
+    alert("Succesfully created");
+    setOpen(false);
+    window.location.reload();
   };
 
   return (
@@ -135,7 +137,7 @@ function CreateIssue() {
         <div className="form-group  flex-grow-1 mt-3">
           <label htmlFor="exampleFormControlSelect1"> Label selection </label>
           <Multiselect
-            options={options}
+            options={labels}
             selectedValues={addLabelSelect}
             displayValue="name"
             emptyRecordMsg="No options available. Add new one"
@@ -151,6 +153,54 @@ function CreateIssue() {
           >
             Add New Label
           </button>
+        </div>
+      </div>
+
+      <div
+        style={{ display: open ? "flex" : "none" }}
+        className={styles.addLabel}
+      >
+        <input
+          value={name}
+          onChange={nameHandler}
+          style={{ width: "200px" }}
+          type="text"
+          className="form-control"
+          placeholder="Label Name"
+        ></input>
+        <button
+          className={styles.pickerbutton}
+          style={{ backgroundColor: color }}
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          Select Color
+        </button>
+
+        <div>
+          <button
+            onClick={cancelHandler}
+            type="button"
+            className="btn btn-secondary mx-3"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={createLabelHandler}
+            type="button"
+            className="btn btn-success"
+          >
+            Create
+          </button>
+        </div>
+      </div>
+      <div className={styles.pickerarea}>
+        <div style={{ display: open ? "block" : "none" }}>
+          <CirclePicker
+            color={color}
+            onChangeComplete={(color) => setcolor(color.hex)}
+          />
         </div>
       </div>
 

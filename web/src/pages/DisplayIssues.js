@@ -28,8 +28,7 @@ export default function AllIssues() {
       );
       setmultipleDeleteIds(deleted);
     }
-    const a = event.target.value;
-    const b = event.target.checked;
+
     setCheck(!isCheck);
   };
 
