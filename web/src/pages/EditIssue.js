@@ -1,59 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Axios from "axios";
+import { IssueContex } from "../App";
 import "bootstrap/dist/css/bootstrap.css";
 import { Multiselect } from "multiselect-react-dropdown";
 import { useHistory, Link } from "react-router-dom";
+import styles from "./CreateIssue.module.css";
+import { CirclePicker } from "react-color";
 
 function EditIssue(props) {
   let history = useHistory();
 
   // get id of the issue to edit
-  const id = props.match.params.id;
+  const id = props.match.params.id.slice(5);
 
   const [title, setTitle] = useState("");
+  const [color, setcolor] = useState("#cddc39");
+  const [name, setName] = useState("");
+  const [open, setOpen] = useState(false);
   const [description, setDescription] = useState("");
-  const [labels, setLabels] = useState([]);
+  const [labelsList, setLabelsList] = useState([]);
   const [preselect, setPreselect] = useState([]);
-  const [options, setOptions] = useState([
-    { Label: "Bug" },
-    { Label: "Enhancement" },
-    { Label: "Question" },
-    { Label: "Suggestion" },
-    { Label: "Critical" },
-  ]);
 
-  useEffect(async () => {
-    const response = await Axios.get("/issues/labels");
-    const UppercaseLabels = response.data.map(
-      (item) => item.charAt(0).toUpperCase() + item.slice(1)
-    );
-
-    const optionsText = options.map((item) => item.Label);
-
-    const allText = [...optionsText, ...UppercaseLabels];
-    const uniques = [...new Set(allText)];
-
-    const allOptions = uniques.map((item) => ({ Label: item }));
-    setOptions(allOptions);
-  }, []);
+  const { labels } = useContext(IssueContex);
 
   useEffect(async () => {
     const response = await Axios.get("/issue/" + id);
-    console.log(response, "edit");
+    console.log(response.data, "edit");
 
     const { title, description, labels } = response.data;
-
-    const UppercaseLabels = labels.map(
-      (item) => item.charAt(0).toUpperCase() + item.slice(1)
-    );
 
     setTitle(title);
     setDescription(description);
 
-    const select = UppercaseLabels.map((item) => ({ Label: item }));
-
-    setPreselect(select);
-    setLabels(select);
+    setPreselect(labels);
+    setLabelsList(labels);
   }, []);
 
   const titleHandler = (event) => {
@@ -83,48 +63,58 @@ function EditIssue(props) {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const labelText = labels.map((item) => item.Label);
-
-    const UpdatedIssue = {
+    /*   const UpdatedIssue = {
       title: title.trim(),
       description: description,
       labels: labelText,
-    };
+    }; */
 
-    if (validate(UpdatedIssue)) {
+    /*   if (validate(UpdatedIssue)) {
       const response = await Axios.put("/issue/" + id, UpdatedIssue);
       console.log(response);
       alert("Succesfully edited");
       history.push("/");
-    }
+    } */
   };
 
   const addLabelHandler = () => {
-    const labelName = prompt("Please enter  label name", "");
-    if (labelName === null) {
-      return;
-    }
-    if (labelName.length < 1) {
-      alert("Title can not be left blank");
-      return;
-    }
-
-    const newLabelObject = {
-      Label: labelName.charAt(0).toUpperCase() + labelName.slice(1),
-    };
-    setLabels([...labels, newLabelObject]);
-    setPreselect([...preselect, newLabelObject]);
-    setOptions([...options, newLabelObject]);
+    setOpen(!open);
   };
 
   const onSelect = (data) => {
     setPreselect(data);
-    setLabels(data);
+    setLabelsList(data);
   };
 
   const onRemove = (data) => {
     setPreselect(data);
-    setLabels(data);
+    setLabelsList(data);
+  };
+
+  const nameHandler = (event) => {
+    const name = event.target.value;
+    setName(name.trim());
+  };
+
+  const cancelHandler = () => {
+    setOpen(false);
+  };
+
+  const createLabelHandler = async (event) => {
+    event.preventDefault();
+    if (name.length < 1) {
+      alert("Name can not left blank");
+      return;
+    }
+    const newLabel = {
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      color: color.slice(1),
+    };
+    const response = await Axios.post("/label", newLabel);
+    console.log(response, 33);
+    alert("Succesfully created");
+    setOpen(false);
+    window.location.reload();
   };
 
   return (
@@ -156,9 +146,9 @@ function EditIssue(props) {
         <div className="form-group  flex-grow-1 mt-3">
           <label htmlFor="exampleFormControlSelect1"> Label selection </label>
           <Multiselect
-            options={options}
+            options={labels}
             selectedValues={preselect}
-            displayValue="Label"
+            displayValue="name"
             onSelect={onSelect}
             onRemove={onRemove}
             emptyRecordMsg="No options available. Add new one"
@@ -172,6 +162,53 @@ function EditIssue(props) {
           >
             Add New Label
           </button>
+        </div>
+      </div>
+      <div
+        style={{ display: open ? "flex" : "none" }}
+        className={styles.addLabel}
+      >
+        <input
+          value={name}
+          onChange={nameHandler}
+          style={{ width: "200px" }}
+          type="text"
+          className="form-control"
+          placeholder="Label Name"
+        ></input>
+        <button
+          className={styles.pickerbutton}
+          style={{ backgroundColor: color }}
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          Select Color
+        </button>
+
+        <div>
+          <button
+            onClick={cancelHandler}
+            type="button"
+            className="btn btn-secondary mx-3"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={createLabelHandler}
+            type="button"
+            className="btn btn-success"
+          >
+            Create
+          </button>
+        </div>
+      </div>
+      <div className={styles.pickerarea}>
+        <div style={{ display: open ? "block" : "none" }}>
+          <CirclePicker
+            color={color}
+            onChangeComplete={(color) => setcolor(color.hex)}
+          />
         </div>
       </div>
 
