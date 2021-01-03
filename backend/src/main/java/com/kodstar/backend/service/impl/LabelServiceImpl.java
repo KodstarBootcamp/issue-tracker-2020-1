@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,11 @@ public class LabelServiceImpl implements LabelService {
                 .orElseThrow(()->new EntityNotFoundException("Error: Label not found for this id " + id));
 
         return convertToDTO(labelEntity);
+    }
+
+    @Override
+    public Optional<LabelEntity> findByName(String name) {
+        return labelRepository.findByName(name);
     }
 
     @Override
