@@ -2,11 +2,9 @@ package com.kodstar.backend.service.impl;
 
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.LabelEntity;
-import com.kodstar.backend.repository.LabelRepository;
 import com.kodstar.backend.service.IssueService;
 import com.kodstar.backend.service.LabelService;
 import com.kodstar.backend.service.SearchAndSortFilter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
