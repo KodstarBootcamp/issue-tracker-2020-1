@@ -19,6 +19,7 @@ function Labels() {
   const cancelHandler = () => {
     setopenNewLabel(false);
     setedit(false);
+    setopen(false);
   };
 
   const createLabelHandler = async (event) => {
