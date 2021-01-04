@@ -6,7 +6,7 @@ import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.enums.IssueCategory;
-import com.kodstar.backend.model.enums.IssueState;
+import com.kodstar.backend.model.enums.State;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
 import com.kodstar.backend.service.IssueService;
@@ -169,7 +169,7 @@ public class IssueServiceImpl implements IssueService {
         issueEntity.setId(issue.getId());
         issueEntity.setLabels(issue.getLabels());
         issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
-        issueEntity.setIssueState(IssueState.fromString(issue.getState()));
+        issueEntity.setIssueState(State.fromString(issue.getState()));
 
         return issueEntity;
     }

@@ -39,7 +39,7 @@ class IssueServiceImplTest {
     void saveIssueEntity() {
         // Setup our mock repository
        // Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", null, IssueCategory.BACKLOG.name(), IssueState.OPEN.name());
+        Issue issue = new Issue(null, "test", "test is important", null, IssueCategory.BACKLOG.name(), State.OPEN.name());
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
         issueEntity.setId(2L);
@@ -76,7 +76,7 @@ class IssueServiceImplTest {
     void testFindById() {
         // Setup our mock repository
         //Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", null, IssueCategory.BACKLOG.name(), IssueState.OPEN.name());
+        Issue issue = new Issue(null, "test", "test is important", null, IssueCategory.BACKLOG.name(), State.OPEN.name());
 
         IssueEntity issueEntity = issueService.convertToEntity(issue);
         issueEntity.setId(1L);
@@ -96,7 +96,7 @@ class IssueServiceImplTest {
     void testFindAll() {
         // Setup our mock repository
        // Set<String> labelSet = Set.of("story", "bug");
-        Issue issue = new Issue(null, "test", "test is important", null, IssueCategory.BACKLOG.name(), IssueState.OPEN.name());
+        Issue issue = new Issue(null, "test", "test is important", null, IssueCategory.BACKLOG.name(), State.OPEN.name());
 
         IssueEntity issueEntity1 = issueService.convertToEntity(issue);
         issueEntity1.setId(1L);
