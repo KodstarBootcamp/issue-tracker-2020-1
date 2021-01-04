@@ -20,7 +20,7 @@ public class ProjectEntity extends BaseEntity{
 
   @NotBlank
   @Column(length = 250,unique = true)
-  private String title;
+  private String name;
 
   @Column(length = 1500)
   private String description;
