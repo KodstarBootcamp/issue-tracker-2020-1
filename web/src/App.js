@@ -43,31 +43,52 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    sortedIssues();
+  }, []);
+
+  const sortedIssues = async () => {
+    const response = await Axios.get("/issues");
+
+    if (response.data.length < 1) {
+      setIssues();
+    } else {
+      setIssues(response.data);
+    }
+  };
+
   const deleteHandler = (event) => {
     // get id to delete sprecific item
-    const id = event.target.id.slice(5);
-    console.log(id);
 
-    // make delete request
-    Axios.delete("/issue/" + id)
-      .then((res) => {
-        console.log(res, "delete");
-      })
-      .then(() => {
-        window.location.reload();
-        history.push("/");
-      });
+    let usersAnswer = window.confirm("Are you sure?");
+    if (usersAnswer === true) {
+      const id =
+        event.target.id.length > 2 ? event.target.id.slice(5) : event.target.id;
+
+      // make delete request
+      Axios.delete("/issue/" + id)
+        .then((res) => {
+          console.log(res, "delete");
+        })
+        .then(() => {
+          window.location.reload();
+          history.push("/");
+        });
+    } else {
+    }
   };
 
   const editHandler = (event) => {
-    const id = event.target.id;
+    const id =
+      event.target.id.length > 2 ? event.target.id.slice(5) : event.target.id;
+    console.log(id);
 
     history.push(`/editIssue/${id}`);
   };
 
   return (
     <IssueContex.Provider
-      value={{ issues, deleteHandler, editHandler, labels }}
+      value={{ issues, deleteHandler, editHandler, labels, setIssues }}
     >
       <Switch>
         <Route path="/" exact component={Home} />

@@ -1,19 +1,60 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { IssueContex } from "../App";
-import Search from "../components/Search";
-import SortOptions from "../components/SortOptions";
 import styles from "./DisplayIssues.module.css";
 import Axios from "axios";
 import Loader from "react-loader-spinner";
 
 export default function AllIssues() {
   const [isCheck, setCheck] = useState(false);
+  const [search, setSearch] = useState("");
+  const [option, setoption] = useState("");
   const [multipleDeleteIds, setmultipleDeleteIds] = useState([]);
 
-  const { issues } = useContext(IssueContex);
+  let { issues, setIssues } = useContext(IssueContex);
   const { deleteHandler } = useContext(IssueContex);
   const { editHandler } = useContext(IssueContex);
+
+  useEffect(() => {
+    sortedandSearchedIssues();
+  }, [option, search]);
+
+  const sortedandSearchedIssues = async () => {
+    if (option !== "" && search.length > 6) {
+      const field = search.split(":")[0];
+      const key = search.split(":")[1];
+      const URL = `/issues/search?field=${field}&key=${key}&sort=${option}`;
+      const response = await Axios.get(URL);
+      if (response.data.length > 0) {
+        setIssues(response.data);
+      }
+    } else if (option === "" && search.length > 6) {
+      console.log("hey2");
+      const field = search.split(":")[0];
+      const key = search.split(":")[1];
+      const URL = `/issues/search?field=${field}&key=${key}`;
+      const response = await Axios.get(URL);
+      console.log(response.data);
+      if (response.data.length > 0) {
+        setIssues(response.data);
+      }
+    } else if (option !== "" && search.length < 1) {
+      console.log("hey3");
+
+      const URL = `/issues/search?sort=${option}`;
+      const response = await Axios.get(URL);
+      setIssues(response.data);
+    }
+  };
+
+  const optionHandler = (event) => {
+    setoption(event.target.value);
+  };
+
+  const searchHandler = (event) => {
+    const query = event.target.value;
+    setSearch(query.trim().toLowerCase());
+  };
 
   const CheckHandler = (event) => {
     const { checked, value } = event.target;
@@ -127,8 +168,29 @@ export default function AllIssues() {
               Delete All
             </button>
           </Link>
-          <SortOptions />
-          <Search />
+          <select
+            style={{ width: "150px" }}
+            value={option}
+            onChange={optionHandler}
+            className="form-control "
+          >
+            <option value="">Sort By</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="recent">Recent Updated</option>
+            <option value="latest">Latest Updated</option>
+          </select>
+          <form className={styles.searchArea}>
+            <input
+              style={{ width: "250px" }}
+              value={search}
+              onChange={searchHandler}
+              className="form-control ml-3"
+              type="text"
+              placeholder="title:keyword ,description:keyword"
+              aria-label="Search"
+            />
+          </form>
         </div>
         <div>{Display}</div>
       </div>

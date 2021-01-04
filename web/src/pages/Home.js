@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Column from "../components/Column";
 import { DragDropContext } from "react-beautiful-dnd";
-import Search from "../components/Search";
 import { Link } from "react-router-dom";
 import Loader from "react-loader-spinner";
 
@@ -154,8 +153,7 @@ function Home() {
 
   return (
     <DragDropContext onDragEnd={onDragEndHandler}>
-      <div className="d-flex mt-5 justify-content-between">
-        <Search />
+      <div className="d-flex mt-5 justify-content-center">
         <Link to="/allIssues">
           <button className="btn btn-info btn-sm ml-5">All Issues</button>
         </Link>
