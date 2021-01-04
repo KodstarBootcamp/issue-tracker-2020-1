@@ -180,14 +180,14 @@ export default function AllIssues() {
             <option value="recent">Recent Updated</option>
             <option value="latest">Latest Updated</option>
           </select>
-          <form className="form-inline">
+          <form className={styles.searchArea}>
             <input
               style={{ width: "250px" }}
               value={search}
               onChange={searchHandler}
               className="form-control ml-3"
               type="text"
-              placeholder="Search"
+              placeholder="title:keyword ,description:keyword"
               aria-label="Search"
             />
           </form>

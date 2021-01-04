@@ -11,7 +11,7 @@ function EditIssue(props) {
   let history = useHistory();
 
   // get id of the issue to edit
-  const id = props.match.params.id.slice(5);
+  const id = props.match.params.id;
 
   const [title, setTitle] = useState("");
   const [color, setcolor] = useState("#cddc39");
