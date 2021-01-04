@@ -28,7 +28,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     return convertToDTO(projectEntity);
   }
-  
+
   @Override
   public void deleteProject(Long id) {
 
