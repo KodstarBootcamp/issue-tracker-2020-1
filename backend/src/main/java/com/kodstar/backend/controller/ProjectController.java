@@ -1,8 +1,11 @@
 package com.kodstar.backend.controller;
 
+import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.Project;
+import com.kodstar.backend.service.IssueService;
 import com.kodstar.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,9 @@ import java.util.Collection;
 public class ProjectController {
 
   private final ProjectService projectService;
+
+  @Autowired
+  private IssueService issueService;
 
   @GetMapping("/project/{id}")
   public ResponseEntity<Project> getProjectById(@Valid @PathVariable Long id){
@@ -56,4 +62,16 @@ public class ProjectController {
     return ResponseEntity.noContent().build();
 
   }
+
+  @GetMapping("/project/issues/{id}")
+  public ResponseEntity<Collection<Issue>> getIssuesByProjectId(@PathVariable Long id){
+
+    Collection<Issue> projectIssues = issueService.findByProjectId(id);
+
+    if(projectIssues.isEmpty())
+      return ResponseEntity.noContent().build();
+
+    return ResponseEntity.ok(projectIssues);
+  }
+
 }

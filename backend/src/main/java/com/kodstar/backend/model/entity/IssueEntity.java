@@ -39,6 +39,9 @@ public class IssueEntity extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private State issueState;
 
+    @Column(name = "project_id")
+    private Long projectId;
+
     public void removeLabel(LabelEntity entity){
         this.labels.remove(entity);
     }

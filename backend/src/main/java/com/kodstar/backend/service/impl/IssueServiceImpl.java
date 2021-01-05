@@ -144,6 +144,13 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    public Collection<Issue> findByProjectId(Long id){
+        return issueRepository.findByProjectId(id).stream()
+                .map(issueEntity -> convertToDTO(issueEntity))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Issue convertToDTO(IssueEntity issueEntity) {
 
         Issue issue = new Issue();
@@ -154,6 +161,7 @@ public class IssueServiceImpl implements IssueService {
         issue.setLabels(issueEntity.getLabels());
         issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
         issue.setState(issueEntity.getIssueState().toString().toLowerCase());
+        issue.setProjectId(issueEntity.getProjectId());
 
         return issue;
     }
@@ -170,6 +178,7 @@ public class IssueServiceImpl implements IssueService {
         issueEntity.setLabels(issue.getLabels());
         issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
         issueEntity.setIssueState(State.fromString(issue.getState()));
+        issueEntity.setProjectId(issue.getProjectId());
 
         return issueEntity;
     }
