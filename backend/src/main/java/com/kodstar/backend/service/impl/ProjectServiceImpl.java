@@ -1,5 +1,6 @@
 package com.kodstar.backend.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Project;
 import com.kodstar.backend.model.entity.ProjectEntity;
 import com.kodstar.backend.model.enums.State;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
 
   private final ProjectRepository projectRepository;
+  private final ObjectMapper objectMapper;
 
   @Override
   public Project findById(Long id) {
@@ -81,7 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
     project.setDescription(projectEntity.getDescription());
     project.setState(projectEntity.getProjectState().toString().toLowerCase());
 
-    return project;
+    return objectMapper.convertValue(projectEntity,Project.class);
   }
 
   @Override
@@ -94,6 +96,6 @@ public class ProjectServiceImpl implements ProjectService {
     projectEntity.setDescription(project.getDescription());
     projectEntity.setProjectState(State.fromString(project.getState()));
 
-    return projectEntity;
+    return objectMapper.convertValue(project,ProjectEntity.class);
   }
 }
