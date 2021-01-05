@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class IssueServiceImpl implements IssueService {
 
     private final IssueRepository issueRepository;
-    private final ObjectMapper objectMapper;
 
     @Autowired
     private LabelService labelService;
