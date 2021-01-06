@@ -19,6 +19,7 @@ public class Issue {
     private Set<LabelEntity> labels;
     private String category;
     private String state;
+    private Long projectId;
 
     public Issue(String title) {
         this.title = title;
