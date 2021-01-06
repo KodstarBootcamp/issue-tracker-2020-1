@@ -63,7 +63,7 @@ public class ProjectController {
 
   }
 
-  @GetMapping("/project/issues/{id}")
+  @GetMapping("/project/{id}/issues")
   public ResponseEntity<Collection<Issue>> getIssuesByProjectId(@PathVariable Long id){
 
     Collection<Issue> projectIssues = issueService.findByProjectId(id);
