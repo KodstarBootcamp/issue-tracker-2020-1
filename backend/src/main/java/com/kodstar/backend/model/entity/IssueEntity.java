@@ -12,7 +12,9 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@Table(name = "issue")
+@Table(name = "issue",uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"title","project_id"})
+})
 public class IssueEntity extends BaseEntity{
 
     @Id
@@ -20,7 +22,7 @@ public class IssueEntity extends BaseEntity{
     private Long id;
 
     @NotBlank
-    @Column(length = 250,unique = true)
+    @Column(length = 250)
     private String title;
 
     @Column(length = 1500)
