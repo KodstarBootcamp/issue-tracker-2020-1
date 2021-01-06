@@ -53,7 +53,7 @@ const Login = () => {
                 <hr></hr>
 
                 <div className="form-group">
-                  <label Htmlfor="email">Email</label>
+                  <label htmlFor="email">Email</label>
                   <input
                     type="email"
                     className="form-control email"
@@ -64,13 +64,13 @@ const Login = () => {
                     onChange={handleChange}
                   />
                   {errors.email && (
-                    <p style={{ fontSize: 14, color: "red" }}>
+                    <p style={{ fontSize: 14, color: "red", paddingLeft:14}}>
                       <i>{errors.email}</i>
                     </p>
                   )}
                 </div>
                 <div className="form-group">
-                  <label Htmlfor="password">Password</label>
+                  <label htmlFor="password">Password</label>
                   <input
                     type="password"
                     className="form-control password"
@@ -81,7 +81,7 @@ const Login = () => {
                     onChange={handleChange}
                   />
                   {errors.password && (
-                    <p style={{ fontSize: 14, color: "red" }}>
+                    <p style={{ fontSize: 14, color: "red", paddingLeft:14 }}>
                       <i>{errors.password}</i>
                     </p>
                   )}
