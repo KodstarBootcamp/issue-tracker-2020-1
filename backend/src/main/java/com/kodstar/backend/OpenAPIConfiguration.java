@@ -22,7 +22,10 @@ public class OpenAPIConfiguration {
         return new OpenAPI()
                 .components(new Components())
                 .info(metaData(appVersion))
-                .servers(getServers());
+                .servers(getServers())
+                .addTagsItem(new Tag().name("issue"))
+                .addTagsItem(new Tag().name("label"))
+                .addTagsItem(new Tag().name("project"));
     }
 
     private Info metaData(String appVersion){
