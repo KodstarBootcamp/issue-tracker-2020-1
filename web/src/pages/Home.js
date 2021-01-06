@@ -163,6 +163,12 @@ function Home() {
         <Link to="/createIssue">
           <button className="btn btn-success btn-sm ml-5">New Issue</button>
         </Link>
+        <Link to="/createProject">
+          <button className="btn btn-success btn-sm ml-5">New Project</button>
+        </Link>
+        <Link to="/projects">
+          <button className="btn btn-success btn-sm ml-5">Projects</button>
+        </Link>
       </div>
       <div className="d-flex overflow-auto mt-1">
         {state === null ? (
