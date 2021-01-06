@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class IssueServiceImplTest {
 
-    @Autowired
+    /*@Autowired
     private IssueService issueService;
 
     @MockBean
@@ -135,6 +135,6 @@ class IssueServiceImplTest {
 
         // Assert the response
         assertThrows(EntityNotFoundException.class,()->issueService.findById(1L));
-    }
+    }*/
 
 }
