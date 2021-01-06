@@ -1,4 +1,4 @@
-package com.kodstar.backend.model.annotations;
+package com.kodstar.backend.model.annotation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
