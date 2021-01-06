@@ -9,6 +9,8 @@ import Axios from "axios";
 import { useHistory } from "react-router-dom";
 import Labels from "./pages/Labels";
 import Login from "./pages/Login";
+import CreateProject from "./pages/CreateProject";
+import Projects from "./pages/Projects";
 
 
 export const IssueContex = createContext();
@@ -99,7 +101,8 @@ function App() {
         <Route path="/allIssues" exact component={DisplayIssues} />
         <Route path="/labels" exact component={Labels} />
         <Route path="/login" exact component={Login} />
-        
+        <Route path="/createProject" exact component={CreateProject} />
+        <Route path="/projects" exact component={Projects} />
       </Switch>
     </IssueContex.Provider>
   );
