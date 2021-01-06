@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom";
 import Labels from "./pages/Labels";
 import Login from "./pages/Login";
 
+
 export const IssueContex = createContext();
 
 function App() {
@@ -98,6 +99,7 @@ function App() {
         <Route path="/allIssues" exact component={DisplayIssues} />
         <Route path="/labels" exact component={Labels} />
         <Route path="/login" exact component={Login} />
+        
       </Switch>
     </IssueContex.Provider>
   );

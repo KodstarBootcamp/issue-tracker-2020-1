@@ -44,19 +44,19 @@ const Login = () => {
 
   return (
     <div>
-      <body class="h-100">
-        <div class="container h-100">
-          <div class="row h-100 justify-content-center align-items-center">
-            <div class="col-10 col-md-8 col-lg-6">
-              <form class="form-example" action="" method="post">
+      <body className="h-100">
+        <div className="container h-100">
+          <div className="row h-100 justify-content-center align-items-center">
+            <div className="col-10 col-md-8 col-lg-6">
+              <form className="form-example" action="" method="post">
                 <h2 style={{ marginTop: 50 }}>Login</h2>
                 <hr></hr>
 
-                <div class="form-group">
-                  <label for="email">Email</label>
+                <div className="form-group">
+                  <label Htmlfor="email">Email</label>
                   <input
                     type="email"
-                    class="form-control email"
+                    className="form-control email"
                     id="email"
                     placeholder="Enter your email"
                     name="email"
@@ -69,11 +69,11 @@ const Login = () => {
                     </p>
                   )}
                 </div>
-                <div class="form-group">
-                  <label for="password">Password</label>
+                <div className="form-group">
+                  <label Htmlfor="password">Password</label>
                   <input
                     type="password"
-                    class="form-control password"
+                    className="form-control password"
                     id="password"
                     placeholder="Enter your password"
                     name="password"
@@ -89,7 +89,7 @@ const Login = () => {
                 <div>
                   <button
                     type="submit"
-                    class="btn btn-primary btn-customized"
+                    className="btn btn-primary btn-customized"
                     onClick={handleSubmit}
                   >
                     Login
