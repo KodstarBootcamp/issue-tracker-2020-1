@@ -1,6 +1,6 @@
 package com.kodstar.backend.model.entity;
 
-import com.kodstar.backend.model.annotations.EmailValidator;
+import com.kodstar.backend.model.annotation.EmailValidator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
