@@ -22,8 +22,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    //changeUserPassword() will be implemented
-
     @Override
     public User editUserEntity(Long id,User user) {
 

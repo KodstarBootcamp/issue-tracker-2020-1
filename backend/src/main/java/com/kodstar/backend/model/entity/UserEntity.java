@@ -1,6 +1,6 @@
 package com.kodstar.backend.model.entity;
 
-import com.kodstar.backend.model.annotation.EmailValidator;
+import com.kodstar.backend.utils.EmailValidator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +31,6 @@ public class UserEntity extends BaseEntity {
     private String email;
 
     @NotBlank
-    @Size(max = 120)
     private String password;
 
     public UserEntity(String username, String email, String password) {

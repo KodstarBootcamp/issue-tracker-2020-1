@@ -29,6 +29,4 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUserEntity(id);
     }
-
-    //changeUserPassword() will be implemented
 }

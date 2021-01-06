@@ -5,6 +5,7 @@ import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.repository.AuthRepository;
 import com.kodstar.backend.service.AuthService;
+import com.kodstar.backend.utils.PasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.jasypt.util.password.PasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,6 @@ public class AuthServiceImpl implements AuthService {
         userEntity.setPassword(encoder.encryptPassword(userEntity.getPassword()));
         userEntity = authRepository.save(userEntity);
         return convertToDTO(userEntity);
-
     }
 
     // Not completed

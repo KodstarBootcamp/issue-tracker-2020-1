@@ -1,4 +1,4 @@
-package com.kodstar.backend.service;
+package com.kodstar.backend.utils;
 
 import org.springframework.data.domain.Sort;
 import java.util.ArrayList;

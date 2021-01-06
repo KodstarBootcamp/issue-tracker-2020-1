@@ -2,6 +2,7 @@ package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.entity.LabelEntity;
+import com.kodstar.backend.utils.Converter;
 
 import java.util.Collection;
 import java.util.Optional;

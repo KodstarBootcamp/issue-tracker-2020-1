@@ -2,6 +2,7 @@ package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.UserEntity;
+import com.kodstar.backend.utils.Converter;
 
 
 public interface UserService extends Converter<User, UserEntity> {
