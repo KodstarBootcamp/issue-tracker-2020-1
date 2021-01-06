@@ -7,41 +7,35 @@ import Home from "./pages/Home";
 import DisplayIssues from "./pages/DisplayIssues";
 import Axios from "axios";
 import { useHistory } from "react-router-dom";
+import Labels from "./pages/Labels";
 
 export const IssueContex = createContext();
 
 function App() {
   let history = useHistory();
   const [issues, setIssues] = useState();
+  const [labels, setLabels] = useState();
 
-  const deleteHandler = (event) => {
-    // get id to delete sprecific item
-    const id = event.target.id;
-    console.log(id);
+  //for labels
+  useEffect(() => {
+    fetchLabels();
+  }, []);
 
-    // make delete request
-    Axios.delete("/issue/" + id)
-      .then((res) => {
-        console.log(res, "delete");
-      })
-      .then(() => {
-        window.location.reload();
-        history.push("/");
-      });
+  const fetchLabels = async () => {
+    const response = await Axios.get("/labels");
+
+    if (response.data !== undefined) {
+      setLabels(response.data);
+    }
   };
-
-  const editHandler = (event) => {
-    const id = event.target.id;
-
-    history.push(`/editIssue/${id}`);
-  };
-
+  //for issues
   useEffect(() => {
     fetchIssues();
   }, []);
 
   const fetchIssues = async () => {
     const response = await Axios.get("/issues");
+
     if (response.data.length < 1) {
       setIssues();
     } else {
@@ -49,13 +43,59 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    sortedIssues();
+  }, []);
+
+  const sortedIssues = async () => {
+    const response = await Axios.get("/issues");
+
+    if (response.data.length < 1) {
+      setIssues();
+    } else {
+      setIssues(response.data);
+    }
+  };
+
+  const deleteHandler = (event) => {
+    // get id to delete sprecific item
+
+    let usersAnswer = window.confirm("Are you sure?");
+    if (usersAnswer === true) {
+      const id =
+        event.target.id.length > 2 ? event.target.id.slice(5) : event.target.id;
+
+      // make delete request
+      Axios.delete("/issue/" + id)
+        .then((res) => {
+          console.log(res, "delete");
+        })
+        .then(() => {
+          window.location.reload();
+          history.push("/");
+        });
+    } else {
+    }
+  };
+
+  const editHandler = (event) => {
+    const id =
+      event.target.id.length > 2 ? event.target.id.slice(5) : event.target.id;
+    console.log(id);
+
+    history.push(`/editIssue/${id}`);
+  };
+
   return (
-    <IssueContex.Provider value={{ issues, deleteHandler, editHandler }}>
+    <IssueContex.Provider
+      value={{ issues, deleteHandler, editHandler, labels, setIssues }}
+    >
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/createIssue" exact component={CreateIssue} />
         <Route path="/editIssue/:id" exact component={EditIssue} />
         <Route path="/allIssues" exact component={DisplayIssues} />
+        <Route path="/labels" exact component={Labels} />
       </Switch>
     </IssueContex.Provider>
   );
