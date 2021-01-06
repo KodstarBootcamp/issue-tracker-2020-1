@@ -5,7 +5,6 @@ import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.entity.ProjectEntity;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Collection;
 
 public interface IssueRepository extends JpaRepository<IssueEntity,Long>{

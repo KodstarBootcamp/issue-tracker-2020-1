@@ -2,11 +2,14 @@ package com.kodstar.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Project;
+import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.ProjectEntity;
 import com.kodstar.backend.model.enums.State;
+import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.ProjectRepository;
 import com.kodstar.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
@@ -20,7 +23,11 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
 
   private final ProjectRepository projectRepository;
+
   private final ObjectMapper objectMapper;
+
+  @Autowired
+  private IssueRepository issueRepository;
 
   @Override
   public Project findById(Long id) {
@@ -36,6 +43,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     ProjectEntity projectEntity = projectRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Error: Project not found for this id " + id));
+
+    Collection<IssueEntity> deleteBatchIssues = issueRepository.findByProjectEntity(projectEntity);
+
+    if(!deleteBatchIssues.isEmpty())
+      deleteBatchIssues
+              .forEach(issue -> issue.setLabels(null));
+      issueRepository.deleteInBatch(deleteBatchIssues);
 
     projectRepository.delete(projectEntity);
   }
