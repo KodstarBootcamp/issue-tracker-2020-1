@@ -76,26 +76,18 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   public Project convertToDTO(ProjectEntity projectEntity) {
 
-    Project project = new Project();
-
-    project.setId(projectEntity.getId());
-    project.setName(projectEntity.getName());
-    project.setDescription(projectEntity.getDescription());
+    Project project = objectMapper.convertValue(projectEntity,Project.class);
     project.setState(projectEntity.getProjectState().toString().toLowerCase());
 
-    return objectMapper.convertValue(projectEntity,Project.class);
+    return project;
   }
 
   @Override
   public ProjectEntity convertToEntity(Project project) {
 
-    ProjectEntity projectEntity = new ProjectEntity();
-
-    projectEntity.setId(project.getId());
-    projectEntity.setName(project.getName());
-    projectEntity.setDescription(project.getDescription());
+    ProjectEntity projectEntity = objectMapper.convertValue(project,ProjectEntity.class);
     projectEntity.setProjectState(State.fromString(project.getState()));
 
-    return objectMapper.convertValue(project,ProjectEntity.class);
+    return projectEntity;
   }
 }
