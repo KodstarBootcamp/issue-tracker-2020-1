@@ -6,10 +6,10 @@ import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.repository.AuthRepository;
 import com.kodstar.backend.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.jasypt.util.password.PasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 @Transactional
@@ -21,10 +21,18 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private PasswordEncryptor encoder;
+
     @Override
     public User register(UserEntity userEntity) {
+        if(!PasswordValidator.isValid(userEntity.getPassword())){
+            throw new IllegalArgumentException("Password is not valid");
+        }
+        userEntity.setPassword(encoder.encryptPassword(userEntity.getPassword()));
         userEntity = authRepository.save(userEntity);
         return convertToDTO(userEntity);
+
     }
 
     // Not completed
