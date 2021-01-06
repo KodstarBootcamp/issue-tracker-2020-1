@@ -1,28 +1,34 @@
 package com.kodstar.backend.controller;
 
 import com.kodstar.backend.model.dto.User;
+import com.kodstar.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = {"*"})
+@RequiredArgsConstructor
 public class UserController {
 
+    private final UserService userService;
+
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long userId) {
-        //Not completed
-        return null;
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long userid, @RequestBody User user) {
-        //Not completed
-        return null;
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
+        return ResponseEntity.ok(userService.editUserEntity(id,user));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long userId) {
-        //Not completed
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUserEntity(id);
     }
 
-
+    //changeUserPassword() will be implemented
 }
