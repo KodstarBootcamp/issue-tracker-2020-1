@@ -5,6 +5,7 @@ import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
+import com.kodstar.backend.model.entity.ProjectEntity;
 import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.model.enums.IssueCategory;
 import com.kodstar.backend.model.enums.State;
@@ -204,8 +205,7 @@ public class IssueServiceImpl implements IssueService {
 
         Issue issue = new Issue();
 
-        ProjectEntity projectEntity = projectRepository.findById(issueEntity.getProjectEntity().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Error: Project not found"));
+        ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId()).get();
 
         issue.setId(issueEntity.getId());
         issue.setTitle(issueEntity.getTitle());
@@ -214,7 +214,6 @@ public class IssueServiceImpl implements IssueService {
         issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
         issue.setState(issueEntity.getIssueState().toString().toLowerCase());
         issue.setProjectId(projectEntity.getId());
-
 
         if(issueEntity.getUsers()!=null){
             Set<User> users = issueEntity.getUsers().stream()
@@ -232,8 +231,7 @@ public class IssueServiceImpl implements IssueService {
         //Convert explicitly, handling is easier for this case
         IssueEntity issueEntity = new IssueEntity();
 
-        ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId())
-                .orElseThrow(() -> new EntityNotFoundException("Error: Project not found"));
+        ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId()).get();
 
         issueEntity.setDescription(issue.getDescription());
         issueEntity.setTitle(issue.getTitle());
