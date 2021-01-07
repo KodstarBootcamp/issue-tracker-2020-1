@@ -19,9 +19,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -125,7 +125,7 @@ class LabelControllerTest {
     when(labelService.getAllLabels()).thenReturn(Collections.emptyList());
 
     // Execute the GET request
-    mockMvc.perform(get("/issues"))
+    mockMvc.perform(get("/labels"))
 
             // Validate the response code
             .andExpect(status().isNoContent());
@@ -145,7 +145,18 @@ class LabelControllerTest {
   }
 
   @Test
-  void deleteLabel() {
+  @DisplayName("Test deleteLabel")
+  void deleteLabel() throws Exception {
+
+    // Setup our mocked service
+    doNothing().when(labelService).deleteLabel(1L);
+
+    // Execute the DELETE request
+    mockMvc.perform(delete("/label/{id}",1))
+            .andExpect(status().isNoContent());
+
+    verify(labelService, times(1)).deleteLabel(1L);
+
   }
 
   static String asJsonString(final Object obj) {
