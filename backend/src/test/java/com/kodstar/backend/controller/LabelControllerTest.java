@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import java.util.Arrays;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -86,7 +88,32 @@ class LabelControllerTest {
   }
 
   @Test
-  void getLabels() {
+  @DisplayName("Test getAllLabels Success")
+  void getLabels() throws Exception{
+
+    Label label1 = new Label();
+    label1.setId(2L);
+    label1.setName("bug");
+    label1.setColor("045fb4");
+
+    // Setup our mocked service
+    when(labelService.getAllLabels()).thenReturn(Arrays.asList(label,label1));
+
+    // Execute the GET request
+    mockMvc.perform(get("/labels"))
+
+            // Validate the response code and content type
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+            // Validate the returned fields
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].id", is(1)))
+            .andExpect(jsonPath("$[0].name", is(label.getName())))
+            .andExpect(jsonPath("$[0].color", is(label.getColor())))
+            .andExpect(jsonPath("$[1].id", is(2)))
+            .andExpect(jsonPath("$[1].name", is(label1.getName())))
+            .andExpect(jsonPath("$[1].color", is(label1.getColor())));
   }
 
   @Test
