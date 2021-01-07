@@ -13,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
+import java.util.Collections;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
@@ -114,6 +116,19 @@ class LabelControllerTest {
             .andExpect(jsonPath("$[1].id", is(2)))
             .andExpect(jsonPath("$[1].name", is(label1.getName())))
             .andExpect(jsonPath("$[1].color", is(label1.getColor())));
+  }
+
+  @Test
+  @DisplayName("Test getAllLabels No Content")
+  void getLabelsNoContent() throws Exception{
+    // Setup our mocked service
+    when(labelService.getAllLabels()).thenReturn(Collections.emptyList());
+
+    // Execute the GET request
+    mockMvc.perform(get("/issues"))
+
+            // Validate the response code
+            .andExpect(status().isNoContent());
   }
 
   @Test
