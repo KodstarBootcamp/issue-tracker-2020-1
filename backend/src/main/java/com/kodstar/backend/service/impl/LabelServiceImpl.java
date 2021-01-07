@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -96,9 +95,7 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public Label convertToDTO(LabelEntity labelEntity) {
-
         return objectMapper.convertValue(labelEntity,Label.class);
-
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.kodstar.backend;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
-import org.modelmapper.ModelMapper;
+import org.jasypt.util.password.PasswordEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +16,8 @@ public class BackendApplication {
 	}
 
 	@Bean
-	public ModelMapper modelMapper(){
-		return new ModelMapper();
+	public PasswordEncryptor passwordEncryptor(){
+		//return new BasicPasswordEncryptor();
+		return new StrongPasswordEncryptor();
 	}
-
 }

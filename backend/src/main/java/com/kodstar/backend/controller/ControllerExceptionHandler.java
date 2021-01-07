@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,6 +44,12 @@ public class ControllerExceptionHandler {
         }
 
         return new Error(errorMessage,errors);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public void invalidArgument(HttpServletRequest request, Exception e) {
+        log.info("invalid argument: {}", request.getRequestURL().toString(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
