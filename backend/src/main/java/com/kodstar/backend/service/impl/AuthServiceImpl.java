@@ -3,7 +3,7 @@ package com.kodstar.backend.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.UserEntity;
-import com.kodstar.backend.repository.AuthRepository;
+import com.kodstar.backend.repository.UserRepository;
 import com.kodstar.backend.service.AuthService;
 import com.kodstar.backend.utils.PasswordValidator;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final AuthRepository authRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Password is not valid");
         }
         userEntity.setPassword(encoder.encryptPassword(userEntity.getPassword()));
-        userEntity = authRepository.save(userEntity);
+        userEntity = userRepository.save(userEntity);
         return convertToDTO(userEntity);
     }
 

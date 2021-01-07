@@ -9,5 +9,4 @@ public interface AuthService extends Converter<User, UserEntity> {
     User register(UserEntity user);
     User login(User user);
     void logout(User user);
-
 }
