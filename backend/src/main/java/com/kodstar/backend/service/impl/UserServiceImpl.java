@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -21,6 +24,20 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Override
+    public User getUserById(Long id) {
+        UserEntity userEntity = checkId(id);
+
+        return convertToDTO(userEntity);
+    }
+
+    @Override
+    public List<User> getAllUsers(){
+        return userRepository.findAll().stream()
+                .map(userEntity -> convertToDTO(userEntity))
+                .collect(Collectors.toList());
+    }
 
     @Override
     public User editUserEntity(Long id,User user) {
@@ -38,13 +55,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUserEntity(Long id) {
         UserEntity userEntity = checkId(id);
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public User getUserById(Long id) {
-        UserEntity userEntity = checkId(id);
-
-      return convertToDTO(userEntity);
     }
 
     private UserEntity checkId(Long id) {
