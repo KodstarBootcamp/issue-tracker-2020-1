@@ -23,9 +23,7 @@ public class OpenAPIConfiguration {
                 .components(new Components())
                 .info(metaData(appVersion))
                 .servers(getServers())
-                .addTagsItem(new Tag().name("issue"))
-                .addTagsItem(new Tag().name("label"))
-                .addTagsItem(new Tag().name("project"));
+                .tags(getTags());
     }
 
     private Info metaData(String appVersion){
@@ -39,18 +37,21 @@ public class OpenAPIConfiguration {
         return info;
     }
 
+    private List<Tag> getTags(){
+        return new ArrayList(){{
+            add(new Tag().name("issue").description("Issue related endpoints"));
+            add(new Tag().name("label").description("Label related endpoints"));
+            add(new Tag().name("project").description("Project related endpoints"));
+            add(new Tag().name("user").description("User related endpoints"));
+            add(new Tag().name("auth").description("Auth related endpoints"));
+        }};
+    }
+
     private List<Server> getServers(){
-        List<Server> servers = new ArrayList<>();
-        Server server1 = new Server();
-        Server server2 = new Server();
-
-        server1.setUrl("http://localhost:8080");
-        server2.setUrl("https://mini-track.herokuapp.com");
-
-        servers.add(server1);
-        servers.add(server2);
-
-        return servers;
+        return new ArrayList(){{
+            add(new Server().url("http://localhost:8080"));
+            add(new Server().url("https://mini-track.herokuapp.com"));
+        }};
     }
 
 }

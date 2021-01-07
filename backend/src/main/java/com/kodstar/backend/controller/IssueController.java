@@ -20,7 +20,7 @@ import java.util.Set;
 @RequestMapping
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"*"})
-@Tag(name = "issue", description = "Issue related endpoints")
+@Tag(name = "issue")
 public class IssueController {
 
     private final IssueService issueService;
@@ -62,6 +62,7 @@ public class IssueController {
     }
 
     @PutMapping("/issue/{id}/assignee")
+    @Operation(summary = "Update assignees of an issue")
     public ResponseEntity<Issue> assign(@Valid @PathVariable Long id, @RequestBody Set<User> assignees) {
 
         return  ResponseEntity.ok(issueService.assignUsersToIssue(id, assignees));

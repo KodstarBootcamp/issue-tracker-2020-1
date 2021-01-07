@@ -18,7 +18,7 @@ import java.util.Collection;
 @RequestMapping
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"*"})
-@Tag(name = "project", description = "Project related endpoints")
+@Tag(name = "project")
 public class ProjectController {
 
   private final ProjectService projectService;

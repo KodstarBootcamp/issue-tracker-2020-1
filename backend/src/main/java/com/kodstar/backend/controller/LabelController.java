@@ -18,7 +18,7 @@ import java.util.Collection;
 @RequestMapping
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"*"})
-@Tag(name = "label", description = "Label related endpoints")
+@Tag(name = "label")
 public class LabelController {
 
     private final LabelService labelService;
