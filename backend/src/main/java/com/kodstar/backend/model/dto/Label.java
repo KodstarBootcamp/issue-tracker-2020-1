@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class Label {
 
-    private String id;
+    private Long id;
     private String name;
     private String color;
 
