@@ -2,11 +2,14 @@ package com.kodstar.backend.service;
 
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
+import com.kodstar.backend.utils.Converter;
 import org.springframework.data.domain.Sort;
 
 import java.util.Collection;
+import java.util.Set;
 
 
 public interface IssueService extends Converter<Issue, IssueEntity> {
@@ -27,4 +30,5 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     Collection<Issue> findByLabels(LabelEntity labelEntity, Sort sort);
     Collection<Issue> findByProjectId(Long id);
 
+    Issue assignUsersToIssue(Long id, Set<User> assignees);
 }
