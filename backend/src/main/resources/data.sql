@@ -1,3 +1,8 @@
+insert into USER (id, created_at, modified_at, email, password, username)
+values ('1', '2018-03-17 07:42:44.136', '2018-03-17 07:42:44.136', 'user1@mail.com', 'qt4Nl8mangQv0FFV+sCO48Pxf9aKv2eE3GbDrxSQ3gZhSG8+A58wwGrgHZv0HmZT', 'user1');
+insert into USER (id, created_at, modified_at, email, password, username)
+values ('2', '2018-05-18 07:42:44.136', '2018-05-18 07:42:44.136', 'user2@mail.com', 'qt4Nl8mangQv0FFV+sCO48Pxf9aKv2eE3GbDrxSQ3gZhSG8+A58wwGrgHZv0HmZT', 'user2');
+
 insert into PROJECT (id, created_at, modified_at, name, description, state)
 values ('1', '2018-08-17 07:42:44.136', '2018-08-17 07:42:44.136', 'project 1', 'description 1', 'OPEN');
 insert into PROJECT (id, created_at, modified_at, name, description, state)
