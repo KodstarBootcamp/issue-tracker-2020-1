@@ -132,6 +132,15 @@ class LabelControllerTest {
   }
 
   @Test
+  @DisplayName("Test shouldVerifyInvalidLabelId")
+  public void shouldVerifyInvalidLabelId() throws Exception {
+    // Execute the GET request
+    mockMvc.perform(get("/label/{id}", "abc")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+  }
+
+  @Test
   void updateLabel() {
   }
 
