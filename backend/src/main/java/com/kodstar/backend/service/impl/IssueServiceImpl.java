@@ -126,20 +126,14 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(()->new EntityNotFoundException("Error: Issue not found for this id " + id));
 
         // get new assignees from user table (UserEntity)
-        Set<UserEntity> newUserEntities = assignees.stream().map(user -> {
+        Set<UserEntity> newAssignees = assignees.stream().map(user -> {
             UserEntity userEntity = userRepository.findById(user.getId())
                     .orElseThrow(()->new EntityNotFoundException("Error: User not found for this id " + user.getId()));
             return userEntity;
         }).collect(Collectors.toSet());
 
-        // get exist assignees
-        Set<UserEntity> userEntities = issueEntity.getUsers();
-
-        // add new assignees to the set
-        userEntities.addAll(newUserEntities);
-
-        // set all assignees to the issueEntity
-        issueEntity.setUsers(userEntities);
+        // set assignees to the issueEntity
+        issueEntity.setUsers(newAssignees);
 
         issueEntity = issueRepository.save(issueEntity);
 
