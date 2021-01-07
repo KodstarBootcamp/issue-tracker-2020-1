@@ -31,7 +31,7 @@ class IssueControllerTest {
 
     private Issue issue;
 
-    @MockBean
+    /*@MockBean
     private IssueService issueService;
 
     @MockBean
@@ -171,7 +171,7 @@ class IssueControllerTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
 
 }
