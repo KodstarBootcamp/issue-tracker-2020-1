@@ -205,7 +205,7 @@ public class IssueServiceImpl implements IssueService {
 
         Issue issue = new Issue();
 
-        ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId()).get();
+        ProjectEntity projectEntity = projectRepository.findById(issueEntity.getProjectEntity().getId()).get();
 
         issue.setId(issueEntity.getId());
         issue.setTitle(issueEntity.getTitle());
