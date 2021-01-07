@@ -31,6 +31,12 @@ public class IssueEntity extends BaseEntity{
     inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<LabelEntity> labels;
 
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "issue_user", joinColumns = @JoinColumn(name = "issue_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<UserEntity> users;
+
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private IssueCategory issueCategory;

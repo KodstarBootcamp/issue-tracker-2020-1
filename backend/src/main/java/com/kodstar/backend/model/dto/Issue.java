@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.Set;
 
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public class Issue {
     private String title;
     private String description;
     private Set<LabelEntity> labels;
+    private Set<User> users;
     private String category;
     private String state;
 
