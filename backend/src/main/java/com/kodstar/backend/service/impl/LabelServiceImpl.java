@@ -61,8 +61,8 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public Label updateLabelEntity(Long id, Label label) {
-//        if(labelRepository.findById(id) == null)
-//                throw new EntityNotFoundException("Error: Label not found for this id " + id);
+        if(labelRepository.findById(id) == null)
+                throw new EntityNotFoundException("Error: Label not found for this id " + id);
 
         LabelEntity labelEntityToUpdate = convertToEntity(label);
         labelEntityToUpdate.setId(id);
