@@ -2,6 +2,7 @@ package com.kodstar.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Label;
+import com.kodstar.backend.repository.LabelRepository;
 import com.kodstar.backend.service.LabelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,16 +15,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.Collections;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,6 +30,9 @@ class LabelControllerTest {
 
   @MockBean
   private LabelService labelService;
+
+  @MockBean
+  private LabelRepository labelRepository;
 
   @Autowired
   private MockMvc mockMvc;
@@ -77,7 +77,7 @@ class LabelControllerTest {
     when(labelService.findById(1L)).thenReturn(label);
 
     // Execute the GET request
-    mockMvc.perform(get("/label/{id}", 1L))
+    mockMvc.perform(get("/label/{id}", 1))
 
             // Validate the response code and content type
             .andExpect(status().isOk())
@@ -141,7 +141,17 @@ class LabelControllerTest {
   }
 
   @Test
-  void updateLabel() {
+  @DisplayName("Test updateLabel")
+  void updateLabel() throws Exception {
+
+    // Execute the PUT request
+    mockMvc.perform(put("/label/{id}", 1)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(label))
+            .accept(MediaType.APPLICATION_JSON))
+
+            // Validate the response code
+            .andExpect(status().isOk());
   }
 
   @Test
