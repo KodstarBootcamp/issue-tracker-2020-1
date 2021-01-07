@@ -1,6 +1,5 @@
 package com.kodstar.backend.service.impl;
 
-import com.kodstar.backend.controller.UserController;
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.User;
