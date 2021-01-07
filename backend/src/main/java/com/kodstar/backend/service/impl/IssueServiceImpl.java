@@ -1,24 +1,30 @@
 package com.kodstar.backend.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kodstar.backend.controller.UserController;
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
+import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.model.enums.IssueCategory;
 import com.kodstar.backend.model.enums.IssueState;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
+import com.kodstar.backend.repository.UserRepository;
 import com.kodstar.backend.service.IssueService;
 import com.kodstar.backend.service.LabelService;
+import com.kodstar.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -34,6 +40,12 @@ public class IssueServiceImpl implements IssueService {
 
     @Autowired
     private LabelRepository labelRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Issue findById(Long id) {
@@ -51,6 +63,7 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
 
         issueEntity.setLabels(null);
+        issueEntity.setUsers(null);
         issueRepository.delete(issueEntity);
     }
 
@@ -82,7 +95,11 @@ public class IssueServiceImpl implements IssueService {
             throw new EntityNotFoundException();
 
         deleteBatchIssues.stream()
-                .forEach(issue -> issue.setLabels(null));
+                .forEach(issue -> {
+                    issue.setLabels(null);
+                    issue.setUsers(null);
+                });
+
         issueRepository.deleteInBatch(deleteBatchIssues);
     }
 
@@ -97,6 +114,33 @@ public class IssueServiceImpl implements IssueService {
     public Collection<Issue> findByLabels(LabelEntity labelEntity, Sort sort) {
         return issueRepository.findByLabels(labelEntity,sort).stream()
                 .map(issueEntity -> convertToDTO(issueEntity)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Issue assignUsersToIssue(Long id, Set<User> assignees) {
+        // get IssueEntity by id.
+        IssueEntity issueEntity = issueRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Error: Issue not found for this id " + id));
+
+        // get new assignees from user table (UserEntity)
+        Set<UserEntity> newUserEntities = assignees.stream().map(user -> {
+            UserEntity userEntity = userRepository.findById(user.getId())
+                    .orElseThrow(()->new EntityNotFoundException("Error: User not found for this id " + user.getId()));
+            return userEntity;
+        }).collect(Collectors.toSet());
+
+        // get exist assignees
+        Set<UserEntity> userEntities = issueEntity.getUsers();
+
+        // add new assignees to the set
+        userEntities.addAll(newUserEntities);
+
+        // set all assignees to the issueEntity
+        issueEntity.setUsers(userEntities);
+
+        issueEntity = issueRepository.save(issueEntity);
+
+        return convertToDTO(issueEntity);
     }
 
     @Override
@@ -153,6 +197,13 @@ public class IssueServiceImpl implements IssueService {
         issue.setLabels(issueEntity.getLabels());
         issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
         issue.setState(issueEntity.getIssueState().toString().toLowerCase());
+
+        if(issueEntity.getUsers()!=null){
+            Set<User> users = issueEntity.getUsers().stream()
+                    .map(userEntity -> userService.convertToDTO(userEntity))
+                    .collect(Collectors.toSet());
+            issue.setUsers(users);
+        }
 
         return issue;
     }
