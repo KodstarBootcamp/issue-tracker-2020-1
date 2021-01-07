@@ -7,10 +7,11 @@ import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.model.enums.IssueCategory;
-import com.kodstar.backend.model.enums.IssueState;
+import com.kodstar.backend.model.enums.State;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.repository.LabelRepository;
 import com.kodstar.backend.repository.UserRepository;
+import com.kodstar.backend.repository.ProjectRepository;
 import com.kodstar.backend.service.IssueService;
 import com.kodstar.backend.service.LabelService;
 import com.kodstar.backend.service.UserService;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 public class IssueServiceImpl implements IssueService {
 
     private final IssueRepository issueRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Autowired
     private LabelService labelService;
@@ -186,9 +189,23 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    public Collection<Issue> findByProjectId(Long id){
+
+        ProjectEntity projectEntity = projectRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Error: Project not found for this id " + id));
+
+        return issueRepository.findByProjectEntity(projectEntity).stream()
+                .map(issueEntity -> convertToDTO(issueEntity))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Issue convertToDTO(IssueEntity issueEntity) {
 
         Issue issue = new Issue();
+
+        ProjectEntity projectEntity = projectRepository.findById(issueEntity.getProjectEntity().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Error: Project not found"));
 
         issue.setId(issueEntity.getId());
         issue.setTitle(issueEntity.getTitle());
@@ -196,6 +213,8 @@ public class IssueServiceImpl implements IssueService {
         issue.setLabels(issueEntity.getLabels());
         issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
         issue.setState(issueEntity.getIssueState().toString().toLowerCase());
+        issue.setProjectId(projectEntity.getId());
+
 
         if(issueEntity.getUsers()!=null){
             Set<User> users = issueEntity.getUsers().stream()
@@ -213,12 +232,16 @@ public class IssueServiceImpl implements IssueService {
         //Convert explicitly, handling is easier for this case
         IssueEntity issueEntity = new IssueEntity();
 
+        ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId())
+                .orElseThrow(() -> new EntityNotFoundException("Error: Project not found"));
+
         issueEntity.setDescription(issue.getDescription());
         issueEntity.setTitle(issue.getTitle());
         issueEntity.setId(issue.getId());
         issueEntity.setLabels(issue.getLabels());
         issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
-        issueEntity.setIssueState(IssueState.fromString(issue.getState()));
+        issueEntity.setIssueState(State.fromString(issue.getState()));
+        issueEntity.setProjectEntity(projectEntity);
 
         return issueEntity;
     }

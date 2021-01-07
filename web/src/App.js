@@ -8,6 +8,13 @@ import DisplayIssues from "./pages/DisplayIssues";
 import Axios from "axios";
 import { useHistory } from "react-router-dom";
 import Labels from "./pages/Labels";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import CreateProject from "./pages/CreateProject";
+import Projects from "./pages/Projects"
+
+
+
 
 export const IssueContex = createContext();
 
@@ -59,22 +66,29 @@ function App() {
 
   const deleteHandler = (event) => {
     // get id to delete sprecific item
-    const id = event.target.id.slice(5);
-    console.log(id);
 
-    // make delete request
-    Axios.delete("/issue/" + id)
-      .then((res) => {
-        console.log(res, "delete");
-      })
-      .then(() => {
-        window.location.reload();
-        history.push("/");
-      });
+    let usersAnswer = window.confirm("Are you sure?");
+    if (usersAnswer === true) {
+      const id =
+        event.target.id.length > 2 ? event.target.id.slice(5) : event.target.id;
+
+      // make delete request
+      Axios.delete("/issue/" + id)
+        .then((res) => {
+          console.log(res, "delete");
+        })
+        .then(() => {
+          window.location.reload();
+          history.push("/");
+        });
+    } else {
+    }
   };
 
   const editHandler = (event) => {
-    const id = event.target.id;
+    const id =
+      event.target.id.length > 2 ? event.target.id.slice(5) : event.target.id;
+    console.log(id);
 
     history.push(`/editIssue/${id}`);
   };
@@ -89,6 +103,13 @@ function App() {
         <Route path="/editIssue/:id" exact component={EditIssue} />
         <Route path="/allIssues" exact component={DisplayIssues} />
         <Route path="/labels" exact component={Labels} />
+        <Route path="/login" exact component={Login} />
+        <Route path="/register" exact component={Register} />
+        <Route path="/createProject" exact component={CreateProject} />
+        <Route path="/projects" exact component={Projects} />
+
+       
+
       </Switch>
     </IssueContex.Provider>
   );

@@ -5,7 +5,7 @@ import styles from "./DisplayIssues.module.css";
 import Axios from "axios";
 import Loader from "react-loader-spinner";
 
-export default function AllIssues() {
+export default function Projects() {
   const [isCheck, setCheck] = useState(false);
   const [search, setSearch] = useState("");
   const [option, setoption] = useState("");
@@ -152,9 +152,9 @@ export default function AllIssues() {
       </div>
       <div className={styles.container}>
         <div className={styles.navbar}>
-          <Link to="/createIssue">
+          <Link to="/createProject">
             <button className="btn btn-outline-success btn-sm">
-              Create New Issue
+              Create New Project
             </button>
           </Link>
           <Link to="/allIssues">
