@@ -5,47 +5,62 @@ import styles from "./DisplayIssues.module.css";
 import Axios from "axios";
 import Loader from "react-loader-spinner";
 
-export default function AllIssues() {
+export default function AllIssues(props) {
+  const id = props.match.params.id;
   const [isCheck, setCheck] = useState(false);
   const [search, setSearch] = useState("");
   const [option, setoption] = useState("");
   const [multipleDeleteIds, setmultipleDeleteIds] = useState([]);
+  const [issues, setIssues] = useState([]);
 
-  let { issues, setIssues } = useContext(IssueContex);
+  useEffect(() => {
+    fetchIssues();
+  }, []);
+
+  const fetchIssues = async () => {
+    Axios.get(`/project/${id}/issues`)
+      .then((res) => {
+        console.log(res.data);
+        setIssues(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const { deleteHandler } = useContext(IssueContex);
   const { editHandler } = useContext(IssueContex);
 
   useEffect(() => {
-    sortedandSearchedIssues();
-  }, [option, search]);
+    async function fetchData() {
+      if (option !== "" && search.length > 6) {
+        const field = search.split(":")[0];
+        const key = search.split(":")[1];
+        const URL = `/issues/search?field=${field}&key=${key}&sort=${option}`;
+        const response = await Axios.get(URL);
+        if (response.data.length > 0) {
+          setIssues(response.data);
+        }
+      } else if (option === "" && search.length > 6) {
+        console.log("hey2");
+        const field = search.split(":")[0];
+        const key = search.split(":")[1];
+        const URL = `/issues/search?field=${field}&key=${key}`;
+        const response = await Axios.get(URL);
+        console.log(response.data);
+        if (response.data.length > 0) {
+          setIssues(response.data);
+        }
+      } else if (option !== "" && search.length < 1) {
+        console.log("hey3");
 
-  const sortedandSearchedIssues = async () => {
-    if (option !== "" && search.length > 6) {
-      const field = search.split(":")[0];
-      const key = search.split(":")[1];
-      const URL = `/issues/search?field=${field}&key=${key}&sort=${option}`;
-      const response = await Axios.get(URL);
-      if (response.data.length > 0) {
+        const URL = `/issues/search?sort=${option}`;
+        const response = await Axios.get(URL);
         setIssues(response.data);
       }
-    } else if (option === "" && search.length > 6) {
-      console.log("hey2");
-      const field = search.split(":")[0];
-      const key = search.split(":")[1];
-      const URL = `/issues/search?field=${field}&key=${key}`;
-      const response = await Axios.get(URL);
-      console.log(response.data);
-      if (response.data.length > 0) {
-        setIssues(response.data);
-      }
-    } else if (option !== "" && search.length < 1) {
-      console.log("hey3");
-
-      const URL = `/issues/search?sort=${option}`;
-      const response = await Axios.get(URL);
-      setIssues(response.data);
     }
-  };
+    fetchData();
+  }, [option, search]);
 
   const optionHandler = (event) => {
     setoption(event.target.value);
@@ -144,7 +159,7 @@ export default function AllIssues() {
   return (
     <div>
       <div className="d-flex mt-5 justify-content-center">
-        <Link to="/">
+        <Link to={`/projects/${id}`}>
           <button className="btn btn-outline-secondary btn-sm">
             Back Home
           </button>
@@ -152,7 +167,7 @@ export default function AllIssues() {
       </div>
       <div className={styles.container}>
         <div className={styles.navbar}>
-          <Link to="/createIssue">
+          <Link to={`/createIssue/${id}`}>
             <button className="btn btn-outline-success btn-sm">
               Create New Issue
             </button>

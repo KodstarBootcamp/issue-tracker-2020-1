@@ -98,7 +98,7 @@ function Labels() {
         >
           New Label
         </button>
-        <Link to="/">
+        <Link to="/projects">
           <button className="btn btn-outline-secondary btn-sm">
             Back Home
           </button>

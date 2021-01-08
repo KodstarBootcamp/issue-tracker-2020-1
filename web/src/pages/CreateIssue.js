@@ -7,7 +7,8 @@ import { IssueContex } from "../App";
 import styles from "./CreateIssue.module.css";
 import { CirclePicker } from "react-color";
 
-function CreateIssue() {
+function CreateIssue(props) {
+  const Projectid = props.match.params.id;
   let history = useHistory();
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
@@ -43,7 +44,7 @@ function CreateIssue() {
     return true;
   };
 
-  const submitHandler = async (event) => {
+  const submitHandler = (event) => {
     event.preventDefault();
 
     const labelInfo = labelList.map((item) => {
@@ -56,15 +57,22 @@ function CreateIssue() {
       title: title.trim(),
       description: description,
       labels: labelInfo,
+      projectId: Projectid,
     };
 
     if (validate(newIssue)) {
       // make a post request to send data
-      const response = await Axios.post("/issue", newIssue);
-      console.log(response);
-      alert("Succesfully created");
-      history.push("/");
-      window.location.reload();
+      Axios.post("/issue", newIssue)
+        .then((res) => {
+          console.log(res.data);
+          alert("Succesfully Created");
+        })
+        .catch((error) => {
+          if (error.response.status === 409) {
+            alert("Title must be unique");
+            return;
+          }
+        });
     }
   };
 
@@ -91,7 +99,7 @@ function CreateIssue() {
     setOpen(false);
   };
 
-  const createLabelHandler = async (event) => {
+  const createLabelHandler = (event) => {
     event.preventDefault();
     if (name.length < 1) {
       alert("Name can not left blank");
@@ -101,11 +109,17 @@ function CreateIssue() {
       name: name.charAt(0).toUpperCase() + name.slice(1),
       color: color.slice(1),
     };
-    const response = await Axios.post("/label", newLabel);
-    console.log(response, 33);
-    alert("Succesfully created");
-    setOpen(false);
-    window.location.reload();
+
+    Axios.post("/label", newLabel)
+      .then((res) => {
+        console.log(res.data);
+        alert("Succesfully Created");
+        setOpen(false);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -171,9 +185,6 @@ function CreateIssue() {
         <button
           className={styles.pickerbutton}
           style={{ backgroundColor: color }}
-          onClick={() => {
-            setOpen(!open);
-          }}
         >
           Select Color
         </button>
@@ -208,8 +219,8 @@ function CreateIssue() {
         <button onClick={submitHandler} className="btn btn-primary">
           Submit
         </button>
-        <Link to="/">
-          <p style={{ textDecoration: "underline" }}>Back to Home Page</p>
+        <Link to={`/projects/${Projectid}`}>
+          <p style={{ textDecoration: "underline" }}>Back to Issue Page</p>
         </Link>
       </div>
     </form>

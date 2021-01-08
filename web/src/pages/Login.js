@@ -49,10 +49,9 @@ const Login = () => {
           <div className="row h-100 justify-content-center align-items-center">
             <div className="col-10 col-md-8 col-lg-6">
               <form className="form-example" action="" method="post">
-                <h2 style={{ marginTop: 50 }}>Login</h2>
-                <hr></hr>
+                <h2 style={{ marginTop: 50 }}>Welcome to Issue Tracker</h2>
 
-                <div className="form-group">
+                <div className="form-group mt-5">
                   <label htmlFor="email">Email</label>
                   <input
                     type="email"
@@ -64,7 +63,7 @@ const Login = () => {
                     onChange={handleChange}
                   />
                   {errors.email && (
-                    <p style={{ fontSize: 14, color: "red", paddingLeft:14}}>
+                    <p style={{ fontSize: 14, color: "red", paddingLeft: 14 }}>
                       <i>{errors.email}</i>
                     </p>
                   )}
@@ -81,7 +80,7 @@ const Login = () => {
                     onChange={handleChange}
                   />
                   {errors.password && (
-                    <p style={{ fontSize: 14, color: "red", paddingLeft:14 }}>
+                    <p style={{ fontSize: 14, color: "red", paddingLeft: 14 }}>
                       <i>{errors.password}</i>
                     </p>
                   )}
@@ -95,18 +94,16 @@ const Login = () => {
                     Login
                   </button>
                   <hr></hr>
-                  <span>
-                    <Link to="/register">
-                      <p
-                        style={{
-                          textDecoration: "underline",
-                          position: "absolute",
-                          bottom: 8,
-                          right: 16,
-                        }}
-                    > Register</p>
-                    </Link>
-                  </span>
+
+                  <p
+                    style={{
+                      position: "absolute",
+                      bottom: 8,
+                      right: 16,
+                    }}
+                  >
+                    New to Issue Tracker ?<Link to="/register"> Register</Link>
+                  </p>
                 </div>
               </form>
             </div>

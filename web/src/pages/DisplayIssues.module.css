@@ -21,7 +21,8 @@
 }
 .issueTitle {
   font-weight: bold;
-  margin-right: 15px;
+  margin-right: 25px;
+  margin-top: 20px;
 }
 .labelContainer {
   padding: 5px 15px;

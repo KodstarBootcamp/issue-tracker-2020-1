@@ -90,13 +90,6 @@ export default function Projects() {
 
   return (
     <div>
-      <div className="d-flex mt-5 justify-content-center">
-        <Link to="/">
-          <button className="btn btn-outline-secondary btn-sm">
-            Back Home
-          </button>
-        </Link>
-      </div>
       <div className={styles.container}>
         <div className={styles.navbar}>
           <Link to="/createProject">

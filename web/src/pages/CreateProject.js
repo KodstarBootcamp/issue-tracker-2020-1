@@ -31,7 +31,7 @@ function CreateProject() {
     return true;
   };
 
-  const submitHandler = async (event) => {
+  const submitHandler = (event) => {
     event.preventDefault();
     // create a template to send to database
     const newProject = {
@@ -39,11 +39,19 @@ function CreateProject() {
       description: description,
     };
     if (validate(newProject)) {
-      alert("Succesfully created");
-      console.log(newProject);
-      const response = await Axios.post("/project", newProject);
-      console.log(response);
-      window.location.reload();
+      Axios.post("/project", newProject)
+        .then((res) => {
+          console.log(res.data);
+          alert("Succesfully Created");
+
+          window.location.reload();
+        })
+        .catch((error) => {
+          if (error.response.status === 409) {
+            alert("Title must be unique");
+            return;
+          }
+        });
     }
   };
 
