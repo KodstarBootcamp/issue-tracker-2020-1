@@ -7,11 +7,12 @@ import com.kodstar.backend.repository.UserRepository;
 import com.kodstar.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +21,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+
     private final UserRepository userRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.getUserEntityByUsername(username)
+                .orElseThrow(()-> new UsernameNotFoundException(String.format("User %s not found", username)));
+    }
+
 
     @Override
     public User getUserById(Long id) {
@@ -72,4 +81,6 @@ public class UserServiceImpl implements UserService {
     public UserEntity convertToEntity(User user) {
         return objectMapper.convertValue(user, UserEntity.class);
     }
+
+
 }
