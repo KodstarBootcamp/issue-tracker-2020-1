@@ -11,10 +11,7 @@ import Labels from "./pages/Labels";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateProject from "./pages/CreateProject";
-import Projects from "./pages/Projects"
-
-
-
+import Projects from "./pages/Projects";
 
 export const IssueContex = createContext();
 
@@ -22,6 +19,7 @@ function App() {
   let history = useHistory();
   const [issues, setIssues] = useState();
   const [labels, setLabels] = useState();
+  const [projects, setProjects] = useState();
 
   //for labels
   useEffect(() => {
@@ -35,32 +33,16 @@ function App() {
       setLabels(response.data);
     }
   };
-  //for issues
+
+  //for projects
   useEffect(() => {
-    fetchIssues();
+    fetchProjects();
   }, []);
 
-  const fetchIssues = async () => {
-    const response = await Axios.get("/issues");
-
-    if (response.data.length < 1) {
-      setIssues();
-    } else {
-      setIssues(response.data);
-    }
-  };
-
-  useEffect(() => {
-    sortedIssues();
-  }, []);
-
-  const sortedIssues = async () => {
-    const response = await Axios.get("/issues");
-
-    if (response.data.length < 1) {
-      setIssues();
-    } else {
-      setIssues(response.data);
+  const fetchProjects = async () => {
+    const response = await Axios.get("/projects");
+    if (response.data !== undefined) {
+      setProjects(response.data);
     }
   };
 
@@ -79,7 +61,6 @@ function App() {
         })
         .then(() => {
           window.location.reload();
-          history.push("/");
         });
     } else {
     }
@@ -95,21 +76,25 @@ function App() {
 
   return (
     <IssueContex.Provider
-      value={{ issues, deleteHandler, editHandler, labels, setIssues }}
+      value={{
+        issues,
+        setIssues,
+        deleteHandler,
+        editHandler,
+        labels,
+        projects,
+      }}
     >
       <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/createIssue" exact component={CreateIssue} />
+        <Route path="/" exact component={Login} />
+        <Route path="/projects/:id" exact component={Home} />
+        <Route path="/createIssue/:id" exact component={CreateIssue} />
         <Route path="/editIssue/:id" exact component={EditIssue} />
-        <Route path="/allIssues" exact component={DisplayIssues} />
+        <Route path="/allIssues/:id" exact component={DisplayIssues} />
         <Route path="/labels" exact component={Labels} />
-        <Route path="/login" exact component={Login} />
         <Route path="/register" exact component={Register} />
         <Route path="/createProject" exact component={CreateProject} />
         <Route path="/projects" exact component={Projects} />
-
-       
-
       </Switch>
     </IssueContex.Provider>
   );
