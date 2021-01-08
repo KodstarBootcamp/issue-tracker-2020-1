@@ -3,12 +3,11 @@ import Axios from "axios";
 import { IssueContex } from "../App";
 import "bootstrap/dist/css/bootstrap.css";
 import { Multiselect } from "multiselect-react-dropdown";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./CreateIssue.module.css";
 import { CirclePicker } from "react-color";
 
 function EditIssue(props) {
-  let history = useHistory();
   // get id of the issue to edit
   const id = props.match.params.id;
 
@@ -37,7 +36,7 @@ function EditIssue(props) {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [id]);
 
   const titleHandler = (event) => {
     setTitle(

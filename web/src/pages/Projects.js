@@ -32,7 +32,7 @@ export default function Projects() {
       "Please enter description:",
       response.data.description
     );
-    if ((name == null || name == "") && description == null) {
+    if ((name === null || name === "") && description === null) {
       return;
     } else {
       const updatedProject = {

@@ -31,52 +31,54 @@ function Home(props) {
   const id = props.match.params.id;
 
   const [state, setState] = useState(null);
-  useEffect(() => {
-    fetchIssues();
-  }, []);
-  const fetchIssues = async () => {
-    const response = await Axios.get(`/project/${id}/issues`);
 
-    if (response.data) {
-      const formattedResponseData = formatToStringId(response.data);
-      const tasks = groupBy(formattedResponseData, "category");
-      const initialData = {
-        tasks: formatTasks(formattedResponseData),
-        columns: {
-          new: {
-            id: "new",
-            title: "New",
-            taskIds: getIDs(tasks.new),
+  useEffect(() => {
+    async function fetchIssues() {
+      const response = await Axios.get(`/project/${id}/issues`);
+
+      if (response.data) {
+        const formattedResponseData = formatToStringId(response.data);
+        const tasks = groupBy(formattedResponseData, "category");
+        const initialData = {
+          tasks: formatTasks(formattedResponseData),
+          columns: {
+            new: {
+              id: "new",
+              title: "New",
+              taskIds: getIDs(tasks.new),
+            },
+            backlog: {
+              id: "backlog",
+              title: "Backlog",
+              taskIds: getIDs(tasks.backlog),
+            },
+            started: {
+              id: "started",
+              title: "Started",
+              taskIds: getIDs(tasks.started),
+            },
+            review: {
+              id: "review",
+              title: "Review",
+              taskIds: getIDs(tasks.review),
+            },
+            finished: {
+              id: "finished",
+              title: "Finished",
+              taskIds: getIDs(tasks.finished),
+            },
           },
-          backlog: {
-            id: "backlog",
-            title: "Backlog",
-            taskIds: getIDs(tasks.backlog),
-          },
-          started: {
-            id: "started",
-            title: "Started",
-            taskIds: getIDs(tasks.started),
-          },
-          review: {
-            id: "review",
-            title: "Review",
-            taskIds: getIDs(tasks.review),
-          },
-          finished: {
-            id: "finished",
-            title: "Finished",
-            taskIds: getIDs(tasks.finished),
-          },
-        },
-        // Facilitate reordering of the columns
-        columnOrder: ["new", "backlog", "started", "review", "finished"],
-      };
-      setState(initialData);
-    } else {
-      return;
+          // Facilitate reordering of the columns
+          columnOrder: ["new", "backlog", "started", "review", "finished"],
+        };
+        setState(initialData);
+      } else {
+        return;
+      }
     }
-  };
+
+    fetchIssues();
+  }, [id]);
 
   const findTask = (id) => {
     const task = state.tasks[id];

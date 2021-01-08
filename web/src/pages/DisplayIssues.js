@@ -14,19 +14,19 @@ export default function AllIssues(props) {
   const [issues, setIssues] = useState([]);
 
   useEffect(() => {
-    fetchIssues();
-  }, []);
+    function fetchIssues() {
+      Axios.get(`/project/${id}/issues`)
+        .then((res) => {
+          console.log(res.data);
+          setIssues(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
-  const fetchIssues = async () => {
-    Axios.get(`/project/${id}/issues`)
-      .then((res) => {
-        console.log(res.data);
-        setIssues(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+    fetchIssues();
+  }, [id]);
 
   const { deleteHandler } = useContext(IssueContex);
   const { editHandler } = useContext(IssueContex);
