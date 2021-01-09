@@ -1,11 +1,12 @@
 package com.kodstar.backend.security.jwt;
 
 
-import com.kodstar.backend.security.serv.UserDetailsImpl;
+import com.kodstar.backend.security.userdetails.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +16,16 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-	@Autowired
-	private JwtConfiguration jwtConfiguration;
-
 	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
 	@Autowired
 	JwtUtils jwtUtils;
+
+	@Value("${app.jwt.secretKey}")
+	private String secretKey;
+
+	@Value("${app.jwt.tokenExpirationDays}")
+	private int tokenExpirationDays;
 
 	public String generateJwtToken(Authentication authentication) {
 
@@ -31,15 +35,15 @@ public class JwtUtils {
 				.setSubject((userPrincipal.getUsername()))
 				.setIssuedAt(new Date())
 				.setExpiration(java.sql.Date.valueOf(LocalDate.now()
-						.plusDays(jwtConfiguration.getExpirationDays())))
-				.signWith(SignatureAlgorithm.HS512, jwtConfiguration.getSecretKey())
+						.plusDays(tokenExpirationDays)))
+				.signWith(SignatureAlgorithm.HS512, secretKey)
 				.compact();
 	}
 
 	public String getUserNameFromJwtToken(String token) {
 
 		return Jwts.parser()
-				.setSigningKey(jwtConfiguration.getSecretKey())
+				.setSigningKey(secretKey)
 				.parseClaimsJws(token)
 				.getBody()
 				.getSubject();
@@ -48,7 +52,7 @@ public class JwtUtils {
 	public boolean validateJwtToken(String authToken) {
 		try {
 			Jwts.parser()
-					.setSigningKey(jwtConfiguration.getSecretKey())
+					.setSigningKey(secretKey)
 					.parseClaimsJws(authToken);
 
 			return true;
