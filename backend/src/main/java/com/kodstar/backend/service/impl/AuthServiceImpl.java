@@ -1,51 +1,68 @@
 package com.kodstar.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kodstar.backend.security.request.LoginRequest;
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.UserEntity;
-import com.kodstar.backend.repository.AuthRepository;
-import com.kodstar.backend.service.AuthService;
+import com.kodstar.backend.repository.UserRepository;
+import com.kodstar.backend.security.jwt.JwtUtils;
+import com.kodstar.backend.security.response.JwtResponse;
+import com.kodstar.backend.security.userdetails.UserDetailsImpl;
+import com.kodstar.backend.utils.Converter;
 import com.kodstar.backend.utils.PasswordValidator;
-import lombok.RequiredArgsConstructor;
-import org.jasypt.util.password.PasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl implements Converter<User, UserEntity> {
 
-    private final AuthRepository authRepository;
+    @Autowired
+    private PasswordEncoder encoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
-    private PasswordEncryptor encoder;
+    private JwtUtils jwtUtils;
 
-    @Override
     public User register(UserEntity userEntity) {
         if(!PasswordValidator.isValid(userEntity.getPassword())){
             throw new IllegalArgumentException("Password is not valid");
         }
-        userEntity.setPassword(encoder.encryptPassword(userEntity.getPassword()));
-        userEntity = authRepository.save(userEntity);
+        userEntity.setPassword(encoder.encode(userEntity.getPassword()));
+        userEntity = userRepository.save(userEntity);
         return convertToDTO(userEntity);
     }
 
-    // Not completed
-    @Override
-    public User login(User user) {
-        //
-        return null;
-    }
+    public ResponseEntity<?> login(LoginRequest loginRequest) {
 
-    // Not completed
-    @Override
-    public void logout(User user) {
+        Authentication authentication = authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        return ResponseEntity.ok( new JwtResponse(jwt,
+                                                   userDetails.getId(),
+                                                   userDetails.getUsername(),
+                                                   userDetails.getEmail()));
     }
 
     @Override

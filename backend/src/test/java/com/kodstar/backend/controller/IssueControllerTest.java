@@ -2,11 +2,8 @@ package com.kodstar.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Issue;
-import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.service.IssueService;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -16,7 +16,6 @@ import java.util.Collection;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"*"})
 @Tag(name = "project")
 public class ProjectController {
 
