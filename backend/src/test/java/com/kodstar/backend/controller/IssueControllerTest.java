@@ -2,11 +2,8 @@ package com.kodstar.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Issue;
-import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.service.IssueService;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +13,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.*;
-
+import java.util.Arrays;
+import java.util.Collections;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
 
 
 @SpringBootTest
@@ -155,14 +152,16 @@ class IssueControllerTest {
     }
 
     @Test
-    @DisplayName("Test shouldVerifyInvalidSaveIssue")
-    public void shouldVerifyInvalidSaveIssue() throws Exception {
-            // Execute the POST request
-        this.mockMvc.perform(post("/issue")
+    @DisplayName("Test updateIssue")
+    public void updateIssue() throws Exception {
+
+        // Execute the PUT request
+        mockMvc.perform(put("/issue/{id}",1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"description\": \"\",\"labels\":[ \"\"]}")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .content(asJsonString(issue)))
+
+                // Validate the response code
+                .andExpect(status().isOk());
     }
 
     static String asJsonString(final Object obj) {
