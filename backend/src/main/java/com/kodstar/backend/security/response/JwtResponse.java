@@ -1,4 +1,4 @@
-package com.kodstar.backend.response;
+package com.kodstar.backend.security.response;
 
 import lombok.Data;
 
