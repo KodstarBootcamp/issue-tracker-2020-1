@@ -1,10 +1,9 @@
 package com.kodstar.backend.security.jwt;
 
-import com.google.common.base.Strings;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,42 +22,36 @@ import java.io.IOException;
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired
-    private  JwtConfiguration jwtConfiguration;
-
-    @Autowired
     private JwtUtils jwtUtils;
-
 
     @Autowired
     private UserDetailsService userServiceImpl;
 
+    @Value("${app.jwt.tokenPrefix}")
+    private String tokenPrefix;
+
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest,
-                                    HttpServletResponse httpServletResponse,
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-
-        String authHeader = httpServletRequest.getHeader(jwtConfiguration.getAuthorizationHeader());
-
-        if (Strings.isNullOrEmpty(authHeader) || !authHeader.startsWith(jwtConfiguration.getTokenPrefix())) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-        }
-
-        String token = authHeader.replace(jwtConfiguration.getTokenPrefix(), "");
-
         try {
-            String jwt = parseJwt(httpServletRequest);
+            String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
                 UserDetails userDetails = userServiceImpl.loadUserByUsername(username);
 
+                /**
+                 * UsernamePasswordAuthenticationToken gets {username, password}
+                 * from login Request, AuthenticationManager will use it to authenticate a login account.
+                 */
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
 
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
@@ -66,13 +59,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             logger.error("Cannot set user authentication: {}", e);
         }
 
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+        filterChain.doFilter(request, response);
     }
 
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
 
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith(jwtConfiguration.getTokenPrefix())) {
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith(tokenPrefix)) {
             return headerAuth.substring(7, headerAuth.length());
         }
 
