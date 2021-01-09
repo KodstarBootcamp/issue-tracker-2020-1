@@ -1,4 +1,4 @@
-package com.kodstar.backend.jwt;
+package com.kodstar.backend.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.entity.UserEntity;
@@ -25,6 +25,7 @@ public class JwtCredentialsAuthenticationFilter extends UsernamePasswordAuthenti
     private final AuthenticationManager authenticationManager;
     private final JwtConfiguration jwtConfiguration;
 
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response)
@@ -39,6 +40,7 @@ public class JwtCredentialsAuthenticationFilter extends UsernamePasswordAuthenti
             Authentication authenticate = authenticationManager.authenticate(authentication);
 
             return  authenticate;
+
         } catch (IOException e) {
             throw new RuntimeException();
         }
@@ -58,7 +60,6 @@ public class JwtCredentialsAuthenticationFilter extends UsernamePasswordAuthenti
                         .plusDays(jwtConfiguration.getExpirationDays())))
                 .signWith(Keys.hmacShaKeyFor(jwtConfiguration.getSecretKey().getBytes()))
                 .compact();
-
 
         response.addHeader(jwtConfiguration.getAuthorizationHeader(),jwtConfiguration.getTokenPrefix() + token);
     }

@@ -1,4 +1,4 @@
-package com.kodstar.backend.jwt;
+package com.kodstar.backend.security.jwt;
 
 import com.google.common.net.HttpHeaders;
 import lombok.Data;

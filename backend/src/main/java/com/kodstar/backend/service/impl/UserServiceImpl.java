@@ -27,14 +27,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.getUserEntityByUsername(username)
-                .orElseThrow(()-> new UsernameNotFoundException(String.format("User %s not found", username)));
-    }
-
-
-    @Override
+   @Override
     public User getUserById(Long id) {
         UserEntity userEntity = checkId(id);
 

@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.List;
 
 
-public interface UserService extends Converter<User, UserEntity>, UserDetailsService {
+public interface UserService extends Converter<User, UserEntity>{
 
     User getUserById(Long id);
     public List<User> getAllUsers();
