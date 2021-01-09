@@ -182,11 +182,20 @@ public class IssueServiceImpl implements IssueService {
   }
 
   @Override
-  public Collection<Issue> findByProjectId(Long projectId, Sort sort) {
+  public Collection<Issue> findByProjectIdAndSort(Long projectId, Sort sort) {
 
     ProjectEntity projectEntity = getProject(projectId);
 
     return issueRepository.findByProjectEntity(projectEntity,sort).stream()
+            .map(issueEntity -> convertToDTO(issueEntity))
+            .collect(Collectors.toList());
+  }
+  @Override
+  public Collection<Issue> findByProjectId(Long projectId) {
+
+    ProjectEntity projectEntity = getProject(projectId);
+
+    return issueRepository.findByProjectEntity(projectEntity).stream()
             .map(issueEntity -> convertToDTO(issueEntity))
             .collect(Collectors.toList());
   }

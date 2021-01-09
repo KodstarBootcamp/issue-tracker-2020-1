@@ -24,7 +24,8 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     Collection<Issue> findByProjectAndTitleContaining(Long projectId, String title, Sort sort);
     Collection<Issue> findByProjectAndDescriptionContaining(Long projectId, String searchWord, Sort sort);
     Collection<Issue> findByProjectAndLabels(Long projectId, LabelEntity labelEntity, Sort sort);
-    Collection<Issue> findByProjectId(Long id, Sort sort);
+    Collection<Issue> findByProjectIdAndSort(Long id, Sort sort);
+    Collection<Issue> findByProjectId(Long id);
 
     Issue assignUsersToIssue(Long id, Set<User> assignees);
 }

@@ -39,7 +39,7 @@ public class IssueSearchAndSortFilterService extends SearchAndSortFilter<Issue> 
         return issueService.findByProjectAndDescriptionContaining(projectId, key, Sort.by(orders));
 
       default:
-        return issueService.findByProjectId(projectId, Sort.by(orders));
+        return issueService.findByProjectIdAndSort(projectId, Sort.by(orders));
     }
   }
 }
