@@ -9,9 +9,10 @@ import java.util.Collection;
 
 public interface IssueRepository extends JpaRepository<IssueEntity,Long>{
 
-    Collection<IssueEntity> findByTitleContaining(String key, Sort sort);
-    Collection<IssueEntity> findByDescriptionContaining(String searchWord, Sort sort);
-    Collection<IssueEntity> findByLabels(LabelEntity labelEntity, Sort sort);
+    Collection<IssueEntity> findByProjectEntityAndTitleContaining(ProjectEntity projectEntity, String key, Sort sort);
+    Collection<IssueEntity> findByProjectEntityAndDescriptionContaining(ProjectEntity projectEntity, String searchWord, Sort sort);
+    Collection<IssueEntity> findByProjectEntityAndLabels(ProjectEntity projectEntity, LabelEntity labelEntity, Sort sort);
+    Collection<IssueEntity> findByProjectEntity(ProjectEntity projectEntity,Sort sort);
     Collection<IssueEntity> findByProjectEntity(ProjectEntity projectEntity);
 
 }
