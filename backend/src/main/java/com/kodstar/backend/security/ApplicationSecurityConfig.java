@@ -76,8 +76,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedMethod(CorsConfiguration.ALL);
-        corsConfiguration.addAllowedOrigin("http://localhost:3000");
-        corsConfiguration.addAllowedOrigin("https://mini-track-ui.herokuapp.com");
+        corsConfiguration.addAllowedOrigin("*");
+        //corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        //corsConfiguration.addAllowedOrigin("https://mini-track-ui.herokuapp.com");
         corsConfiguration.addAllowedHeader(CorsConfiguration.ALL);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
