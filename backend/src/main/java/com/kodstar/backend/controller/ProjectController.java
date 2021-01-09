@@ -1,9 +1,10 @@
 package com.kodstar.backend.controller;
 
-import com.kodstar.backend.model.dto.Issue;
-import com.kodstar.backend.model.dto.Project;
-import com.kodstar.backend.service.IssueService;
-import com.kodstar.backend.service.ProjectService;
+import com.kodstar.backend.model.dto.*;
+import com.kodstar.backend.service.*;
+import com.kodstar.backend.service.impl.IssueSearchAndSortFilterService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,47 +16,54 @@ import java.util.Collection;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-//@CrossOrigin(origins = {"*"})
+@Tag(name = "project")
 public class ProjectController {
 
   private final ProjectService projectService;
+
+  private final IssueSearchAndSortFilterService searchAndSortFilterService;
 
   @Autowired
   private IssueService issueService;
 
   @GetMapping("/project/{id}")
-  public ResponseEntity<Project> getProjectById(@Valid @PathVariable Long id){
+  @Operation(summary = "Find a project by id")
+  public ResponseEntity<Project> getProjectById(@Valid @PathVariable Long id) {
 
     return ResponseEntity.ok(projectService.findById(id));
   }
 
   @GetMapping("/projects")
-  public ResponseEntity<Collection<Project>> getProjects(){
+  @Operation(summary = "Find all projects")
+  public ResponseEntity<Collection<Project>> getProjects() {
 
     Collection<Project> projects = projectService.getAllProjects();
 
-    if(projects.isEmpty())
+    if (projects.isEmpty())
       return ResponseEntity.noContent().build();
 
     return ResponseEntity.ok(projects);
   }
 
   @PostMapping("/project")
-  public ResponseEntity<Project> createProject(@Valid @RequestBody Project project){
+  @Operation(summary = "Add a new project")
+  public ResponseEntity<Project> createProject(@Valid @RequestBody Project project) {
 
     return new ResponseEntity(projectService.saveProjectEntity(project), HttpStatus.CREATED);
 
   }
 
   @PutMapping("/project/{id}")
-  public ResponseEntity<Project> updateProject(@Valid @PathVariable Long id, @RequestBody Project project){
+  @Operation(summary = "Update a project")
+  public ResponseEntity<Project> updateProject(@Valid @PathVariable Long id, @RequestBody Project project) {
 
-    return ResponseEntity.ok(projectService.updateProjectEntity(id,project));
+    return ResponseEntity.ok(projectService.updateProjectEntity(id, project));
 
   }
 
   @DeleteMapping("/project/{id}")
-  public ResponseEntity<Void> deleteProject(@Valid @PathVariable Long id){
+  @Operation(summary = "Delete a project")
+  public ResponseEntity<Void> deleteProject(@Valid @PathVariable Long id) {
 
     projectService.deleteProject(id);
 
@@ -64,14 +72,30 @@ public class ProjectController {
   }
 
   @GetMapping("/project/{id}/issues")
-  public ResponseEntity<Collection<Issue>> getIssuesByProjectId(@PathVariable Long id){
+  @Operation(summary = "Find all issues of a project")
+  public ResponseEntity<Collection<Issue>> getIssuesByProjectId(@PathVariable Long id) {
 
     Collection<Issue> projectIssues = issueService.findByProjectId(id);
 
-    if(projectIssues.isEmpty())
+    if (projectIssues.isEmpty())
       return ResponseEntity.noContent().build();
 
     return ResponseEntity.ok(projectIssues);
+  }
+
+  @GetMapping("/project/{id}/issues/search")
+  public ResponseEntity<Collection<Issue>> filterAndSort(
+          @PathVariable Long id,
+          @RequestParam(defaultValue = "") String field,
+          @RequestParam(defaultValue = "") String key,
+          @RequestParam(defaultValue = "newest") String sort) {
+
+    Collection<Issue> response = searchAndSortFilterService.filterAndSort(id, field, key, sort);
+
+    if (response.isEmpty())
+      return ResponseEntity.noContent().build();
+
+    return ResponseEntity.ok(response);
   }
 
 }

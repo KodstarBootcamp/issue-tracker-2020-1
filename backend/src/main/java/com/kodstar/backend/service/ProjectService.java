@@ -3,7 +3,6 @@ package com.kodstar.backend.service;
 import com.kodstar.backend.model.dto.Project;
 import com.kodstar.backend.model.entity.ProjectEntity;
 import com.kodstar.backend.utils.Converter;
-
 import java.util.Collection;
 
 public interface ProjectService extends Converter<Project, ProjectEntity> {

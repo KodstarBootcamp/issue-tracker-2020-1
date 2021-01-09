@@ -13,21 +13,25 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("auth")
-//@CrossOrigin(origins = {"*"})
+@Tag(name = "auth")
 public class AuthController {
 
+
     @Autowired
-    private AuthServiceImpl authService;
+    private AuthServiceImpl authServiceImpl;
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody UserEntity userEntity){
+    @Operation(summary = "User register")
+    public ResponseEntity<User> register(@Valid @RequestBody UserEntity userEntity) {
 
-        return new ResponseEntity(authService.register(userEntity), HttpStatus.CREATED);
+        return new ResponseEntity(authServiceImpl.register(userEntity), HttpStatus.CREATED);
     }
 
+    // Not completed
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest user){
+    @Operation(summary = "User login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest user) {
 
-        return authService.login(user);
+        return authServiceImpl.login(user);
+
     }
-}

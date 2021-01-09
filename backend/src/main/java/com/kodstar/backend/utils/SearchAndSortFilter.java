@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract class SearchAndSortFilter<T> {
 
-    public abstract Collection<T> filterAndSort(String field, String key, String sort);
+    public abstract Collection<T> filterAndSort(Long id, String field, String key, String sort);
 
     public List<Sort.Order> getOrders(String str){
 

@@ -2,11 +2,9 @@ package com.kodstar.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Project;
-import com.kodstar.backend.model.entity.IssueEntity;
-import com.kodstar.backend.model.entity.ProjectEntity;
+import com.kodstar.backend.model.entity.*;
 import com.kodstar.backend.model.enums.State;
-import com.kodstar.backend.repository.IssueRepository;
-import com.kodstar.backend.repository.ProjectRepository;
+import com.kodstar.backend.repository.*;
 import com.kodstar.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,8 @@ public class ProjectServiceImpl implements ProjectService {
 
   private final ProjectRepository projectRepository;
 
-  private final ObjectMapper objectMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @Autowired
   private IssueRepository issueRepository;
@@ -86,6 +85,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     return convertToDTO(projectEntityToUpdate);
   }
+
+  //Helper methods
 
   @Override
   public Project convertToDTO(ProjectEntity projectEntity) {

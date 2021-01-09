@@ -1,6 +1,5 @@
 package com.kodstar.backend.model.dto;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class Label {
 
-    private String id;
+    private Long id;
     private String name;
     private String color;
 

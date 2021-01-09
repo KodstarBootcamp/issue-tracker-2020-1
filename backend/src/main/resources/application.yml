@@ -6,4 +6,16 @@ app:
 
 spring:
     profiles:
-        active: prod
+        active: dev
+springdoc:
+    version: '@springdoc.version@'
+    api-docs:
+        enabled: true
+        path: /v3/api-docs
+    swagger-ui:
+        path: /swagger-ui.html
+        displayRequestDuration: true
+        tagsSorter: alpha
+        display-query-params-without-oauth2: true
+    cache:
+        disabled: true

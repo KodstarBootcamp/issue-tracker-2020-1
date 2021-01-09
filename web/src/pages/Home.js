@@ -27,50 +27,58 @@ const formatToStringId = function (arr) {
     return { ...e, id: `task-${e.id}` };
   });
 };
-function Home() {
+function Home(props) {
+  const id = props.match.params.id;
+
   const [state, setState] = useState(null);
+
   useEffect(() => {
+    async function fetchIssues() {
+      const response = await Axios.get(`/project/${id}/issues`);
+
+      if (response.data) {
+        const formattedResponseData = formatToStringId(response.data);
+        const tasks = groupBy(formattedResponseData, "category");
+        const initialData = {
+          tasks: formatTasks(formattedResponseData),
+          columns: {
+            new: {
+              id: "new",
+              title: "New",
+              taskIds: getIDs(tasks.new),
+            },
+            backlog: {
+              id: "backlog",
+              title: "Backlog",
+              taskIds: getIDs(tasks.backlog),
+            },
+            started: {
+              id: "started",
+              title: "Started",
+              taskIds: getIDs(tasks.started),
+            },
+            review: {
+              id: "review",
+              title: "Review",
+              taskIds: getIDs(tasks.review),
+            },
+            finished: {
+              id: "finished",
+              title: "Finished",
+              taskIds: getIDs(tasks.finished),
+            },
+          },
+          // Facilitate reordering of the columns
+          columnOrder: ["new", "backlog", "started", "review", "finished"],
+        };
+        setState(initialData);
+      } else {
+        return;
+      }
+    }
+
     fetchIssues();
-  }, []);
-  const fetchIssues = async () => {
-    const response = await Axios.get("/issues");
-    console.log(response.data, 35);
-    const formattedResponseData = formatToStringId(response.data);
-    const tasks = groupBy(formattedResponseData, "category");
-    const initialData = {
-      tasks: formatTasks(formattedResponseData),
-      columns: {
-        new: {
-          id: "new",
-          title: "New",
-          taskIds: getIDs(tasks.new),
-        },
-        backlog: {
-          id: "backlog",
-          title: "Backlog",
-          taskIds: getIDs(tasks.backlog),
-        },
-        started: {
-          id: "started",
-          title: "Started",
-          taskIds: getIDs(tasks.started),
-        },
-        review: {
-          id: "review",
-          title: "Review",
-          taskIds: getIDs(tasks.review),
-        },
-        finished: {
-          id: "finished",
-          title: "Finished",
-          taskIds: getIDs(tasks.finished),
-        },
-      },
-      // Facilitate reordering of the columns
-      columnOrder: ["new", "backlog", "started", "review", "finished"],
-    };
-    setState(initialData);
-  };
+  }, [id]);
 
   const findTask = (id) => {
     const task = state.tasks[id];
@@ -147,20 +155,25 @@ function Home() {
       },
     };
     setState(newState);
-    const response = await Axios.put("/issue/" + id, UpdatedTask);
-    console.log(response);
+    Axios.put("/issue/" + id, UpdatedTask)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
     <DragDropContext onDragEnd={onDragEndHandler}>
       <div className="d-flex mt-5 justify-content-center">
-        <Link to="/allIssues">
+        <Link to={`/allIssues/${id}`}>
           <button className="btn btn-info btn-sm ml-5">All Issues</button>
         </Link>
         <Link to="/labels">
           <button className="btn btn-secondary btn-sm ml-5">All Labels</button>
         </Link>
-        <Link to="/createIssue">
+        <Link to={`/createIssue/${id}`}>
           <button className="btn btn-success btn-sm ml-5">New Issue</button>
         </Link>
         <Link to="/createProject">
@@ -182,6 +195,10 @@ function Home() {
             }}
           >
             <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
+            <p style={{ position: "absolute", top: "300px" }}>
+              Have you added any issues? If you did not
+              <Link to={`/createIssue/${id}`}>Create</Link>
+            </p>
           </div>
         ) : (
           state.columnOrder.map((columnId) => {

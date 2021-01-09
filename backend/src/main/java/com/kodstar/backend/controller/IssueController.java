@@ -4,13 +4,11 @@ import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.service.IssueService;
-import com.kodstar.backend.service.impl.IssueSearchAndSortFilterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.Set;
 
 
@@ -22,23 +20,10 @@ public class IssueController {
 
     private final IssueService issueService;
 
-    private final IssueSearchAndSortFilterService searchAndSortFilterService;
-
-
     @GetMapping("/issue/{id}")
     public ResponseEntity<Issue> getIssueById(@Valid @PathVariable Long id) {
 
         return ResponseEntity.ok(issueService.findById(id));
-    }
-
-    @GetMapping("/issues")
-    public ResponseEntity<Collection<Issue>> getIssues() {
-        Collection<Issue> issues = issueService.getAllIssues();
-
-        if (issues.isEmpty())
-            return ResponseEntity.noContent().build();
-
-        return ResponseEntity.ok(issues);
     }
 
     @PostMapping("/issue")
@@ -76,17 +61,5 @@ public class IssueController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/issues/search")
-    public ResponseEntity<Collection<Issue>> filterAndSort(
-            @RequestParam( defaultValue = "") String field,
-            @RequestParam( defaultValue = "") String key,
-            @RequestParam (defaultValue = "newest")String sort) {
 
-        Collection<Issue> response = searchAndSortFilterService.filterAndSort(field,key,sort);
-
-        if(response.isEmpty())
-            return ResponseEntity.noContent().build();
-
-        return ResponseEntity.ok(response);
-    }
 }
