@@ -27,16 +27,6 @@ public class IssueController {
         return ResponseEntity.ok(issueService.findById(id));
     }
 
-    @GetMapping("/issues")
-    public ResponseEntity<Collection<Issue>> getIssues() {
-        Collection<Issue> issues = issueService.getAllIssues();
-
-        if (issues.isEmpty())
-            return ResponseEntity.noContent().build();
-
-        return ResponseEntity.ok(issues);
-    }
-
     @PostMapping("/issue")
     public ResponseEntity<Issue> createIssue(@Valid @RequestBody Issue issue) {
 

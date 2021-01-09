@@ -11,16 +11,16 @@ import java.util.Set;
 public interface IssueService extends Converter<Issue, IssueEntity> {
 
     Issue saveIssueEntity(Issue issue);
-    Collection<Issue> getAllIssues();
     Issue updateIssueEntity(Long id,Issue issue);
     Issue findById(Long id);
     void deleteIssue(Long id);
 
     //to use in label service
     Collection<IssueEntity> findAll();
-    Collection<Issue> findAll(Sort sort);
 
     void deleteMultipleIssues(BatchDeleteRequest request);
+
+    //to use search and sort
     Collection<Issue> findByProjectAndTitleContaining(Long projectId, String title, Sort sort);
     Collection<Issue> findByProjectAndDescriptionContaining(Long projectId, String searchWord, Sort sort);
     Collection<Issue> findByProjectAndLabels(Long projectId, LabelEntity labelEntity, Sort sort);

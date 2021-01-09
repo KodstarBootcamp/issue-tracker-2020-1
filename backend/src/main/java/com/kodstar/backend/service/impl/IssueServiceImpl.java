@@ -31,9 +31,6 @@ public class IssueServiceImpl implements IssueService {
   private LabelService labelService;
 
   @Autowired
-  private LabelRepository labelRepository;
-
-  @Autowired
   private UserRepository userRepository;
 
   @Autowired
@@ -65,13 +62,6 @@ public class IssueServiceImpl implements IssueService {
   }
 
   @Override
-  public Collection<Issue> findAll(Sort sort) {
-    return issueRepository.findAll(sort).stream()
-            .map(issueEntity -> convertToDTO(issueEntity))
-            .collect(Collectors.toList());
-  }
-
-  @Override
   public void deleteMultipleIssues(BatchDeleteRequest request) {
 
     if (!request.getMethod().equals("delete"))
@@ -93,55 +83,6 @@ public class IssueServiceImpl implements IssueService {
             });
 
     issueRepository.deleteInBatch(deleteBatchIssues);
-  }
-
-  @Override
-  public Collection<Issue> findByProjectAndTitleContaining(Long projectId, String title, Sort sort) {
-
-    ProjectEntity projectEntity = getProject(projectId);
-
-    return issueRepository.findByProjectEntityAndTitleContaining(projectEntity, title, sort).stream()
-            .map(issueEntity -> convertToDTO(issueEntity))
-            .collect(Collectors.toList());
-  }
-
-  @Override
-  public Collection<Issue> findByProjectAndLabels(Long projectId, LabelEntity labelEntity, Sort sort) {
-
-    ProjectEntity projectEntity = getProject(projectId);
-
-    return issueRepository.findByProjectEntityAndLabels(projectEntity, labelEntity, sort).stream()
-            .map(issueEntity -> convertToDTO(issueEntity)).collect(Collectors.toList());
-  }
-
-  @Override
-  public Issue assignUsersToIssue(Long id, Set<User> assignees) {
-    // get IssueEntity by id.
-    IssueEntity issueEntity = issueRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
-
-    // get new assignees from user table (UserEntity)
-    Set<UserEntity> newAssignees = assignees.stream().map(user -> {
-      UserEntity userEntity = userRepository.findById(user.getId())
-              .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this id " + user.getId()));
-      return userEntity;
-    }).collect(Collectors.toSet());
-
-    // set assignees to the issueEntity
-    issueEntity.setUsers(newAssignees);
-
-    issueEntity = issueRepository.save(issueEntity);
-
-    return convertToDTO(issueEntity);
-  }
-
-  @Override
-  public Collection<Issue> findByProjectAndDescriptionContaining(Long projectId, String searchWord, Sort sort) {
-
-    ProjectEntity projectEntity = getProject(projectId);
-
-    return issueRepository.findByProjectEntityAndDescriptionContaining(projectEntity, searchWord, sort).stream()
-            .map(issueEntity -> convertToDTO(issueEntity)).collect(Collectors.toList());
   }
 
   @Override
@@ -174,10 +115,34 @@ public class IssueServiceImpl implements IssueService {
   }
 
   @Override
-  public Collection<Issue> getAllIssues() {
-    return issueRepository.findAll()
-            .stream()
-            .map(issue -> convertToDTO(issue))
+  public Issue assignUsersToIssue(Long id, Set<User> assignees) {
+    // get IssueEntity by id.
+    IssueEntity issueEntity = issueRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
+
+    // get new assignees from user table (UserEntity)
+    Set<UserEntity> newAssignees = assignees.stream().map(user -> {
+      UserEntity userEntity = userRepository.findById(user.getId())
+              .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this id " + user.getId()));
+      return userEntity;
+    }).collect(Collectors.toSet());
+
+    // set assignees to the issueEntity
+    issueEntity.setUsers(newAssignees);
+
+    issueEntity = issueRepository.save(issueEntity);
+
+    return convertToDTO(issueEntity);
+  }
+
+  //Project related methods
+  @Override
+  public Collection<Issue> findByProjectId(Long projectId) {
+
+    ProjectEntity projectEntity = getProject(projectId);
+
+    return issueRepository.findByProjectEntity(projectEntity).stream()
+            .map(issueEntity -> convertToDTO(issueEntity))
             .collect(Collectors.toList());
   }
 
@@ -190,16 +155,36 @@ public class IssueServiceImpl implements IssueService {
             .map(issueEntity -> convertToDTO(issueEntity))
             .collect(Collectors.toList());
   }
+
   @Override
-  public Collection<Issue> findByProjectId(Long projectId) {
+  public Collection<Issue> findByProjectAndTitleContaining(Long projectId, String title, Sort sort) {
 
     ProjectEntity projectEntity = getProject(projectId);
 
-    return issueRepository.findByProjectEntity(projectEntity).stream()
+    return issueRepository.findByProjectEntityAndTitleContaining(projectEntity, title, sort).stream()
             .map(issueEntity -> convertToDTO(issueEntity))
             .collect(Collectors.toList());
   }
 
+  @Override
+  public Collection<Issue> findByProjectAndLabels(Long projectId, LabelEntity labelEntity, Sort sort) {
+
+    ProjectEntity projectEntity = getProject(projectId);
+
+    return issueRepository.findByProjectEntityAndLabels(projectEntity, labelEntity, sort).stream()
+            .map(issueEntity -> convertToDTO(issueEntity)).collect(Collectors.toList());
+  }
+
+  @Override
+  public Collection<Issue> findByProjectAndDescriptionContaining(Long projectId, String searchWord, Sort sort) {
+
+    ProjectEntity projectEntity = getProject(projectId);
+
+    return issueRepository.findByProjectEntityAndDescriptionContaining(projectEntity, searchWord, sort).stream()
+            .map(issueEntity -> convertToDTO(issueEntity)).collect(Collectors.toList());
+  }
+
+  //Helper methods
   @Override
   public Issue convertToDTO(IssueEntity issueEntity) {
 
@@ -257,7 +242,7 @@ public class IssueServiceImpl implements IssueService {
     }
   }
 
-  public ProjectEntity getProject(Long projectId) {
+  private ProjectEntity getProject(Long projectId) {
 
     ProjectEntity projectEntity = projectRepository.findById(projectId)
             .orElseThrow(() -> new EntityNotFoundException("Error: Project not found for this id " + projectId));
