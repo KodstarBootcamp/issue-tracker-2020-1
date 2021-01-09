@@ -1,4 +1,4 @@
-package com.kodstar.backend.security.serv;
+package com.kodstar.backend.security.userdetails;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,11 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 import java.util.Objects;
 
-/**
- * UserDetails contains necessary information
- * (such as: username, password, authorities)
- * to build an Authentication object
- */
 @Data
 public class UserDetailsImpl implements UserDetails {
 
@@ -37,22 +32,15 @@ public class UserDetailsImpl implements UserDetails {
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		//this.authorities = authorities;
 	}
 
-
-
 	public static UserDetailsImpl build(UserEntity user) {
-		//List<GrantedAuthority> authorities = user.getRoles().stream()
-		//		.map(role -> new SimpleGrantedAuthority(role.getName().name()))
-		//		.collect(Collectors.toList());
 
 		return new UserDetailsImpl(
 				user.getId(), 
 				user.getUsername(), 
 				user.getEmail(),
 				user.getPassword()
-				//,authorities //,Collections.emptyList()
 		);
 	}
 
@@ -90,16 +78,4 @@ public class UserDetailsImpl implements UserDetails {
 		UserDetailsImpl user = (UserDetailsImpl) o;
 		return Objects.equals(id, user.id);
 	}
-
-	// with authorization
-	/*
-	public UserDetailsImpl(Long id, String username, String email, String password,
-                           Collection<? extends GrantedAuthority> authorities) {
-		this.id = id;
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.authorities = authorities;
-	}
-	 */
 }

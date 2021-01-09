@@ -1,5 +1,4 @@
-package com.kodstar.backend.security.serv;
-
+package com.kodstar.backend.security.userdetails;
 
 import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.repository.UserRepository;
@@ -9,12 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-/**
- * UserDetailsService interface has a method to 'load User by username' and
- * returns a UserDetails object that Spring Security can use
- * for authentication and validation.
- */
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -29,5 +22,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 		return UserDetailsImpl.build(userEntity);
 	}
-
 }
