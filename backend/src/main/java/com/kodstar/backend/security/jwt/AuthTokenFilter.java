@@ -19,10 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@RequiredArgsConstructor
+
 public class AuthTokenFilter extends OncePerRequestFilter {
 
-    private final JwtConfiguration jwtConfiguration;
+    @Autowired
+    private  JwtConfiguration jwtConfiguration;
 
     @Autowired
     private JwtUtils jwtUtils;

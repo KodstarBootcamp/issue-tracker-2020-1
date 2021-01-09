@@ -5,7 +5,6 @@ import com.kodstar.backend.security.jwt.JwtConfiguration;
 import com.kodstar.backend.security.jwt.JwtCredentialsAuthenticationFilter;
 import com.kodstar.backend.security.serv.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,23 +26,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-   //private final PasswordEncoder encoder;
-   //private final UserDetailsService userDetailsService;
-   private final JwtConfiguration jwtConfiguration;
-   private final  UserDetailsServiceImpl userDetailsService;
-
-
-    //@Autowired
-    //private AuthEntryPointJwt unauthorizedHandler;
+    private final JwtConfiguration jwtConfiguration;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter(jwtConfiguration);
+        return new AuthTokenFilter();
     }
-
-    @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -52,9 +44,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    @Override
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
 
@@ -70,34 +62,24 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtCredentialsAuthenticationFilter(authenticationManager(),jwtConfiguration))
-                .addFilterAfter(new AuthTokenFilter(jwtConfiguration),JwtCredentialsAuthenticationFilter.class)
+                .addFilter(new JwtCredentialsAuthenticationFilter(authenticationManager(), jwtConfiguration))
+                .addFilterAfter(new AuthTokenFilter(), JwtCredentialsAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/auth/**")
-                    .permitAll()
+                .permitAll()
                 .antMatchers("/**")
-                    .permitAll()
+                .permitAll()
                 // all other requests need to be authenticated
                 .anyRequest()
                 .authenticated();
     }
 
-
-    //???????????
     @Bean
-    DaoAuthenticationProvider daoAuthenticationProvider(){
+    DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }
-
-    @Bean
-    public AuthenticationManager authenticationManager(){
-        return new ProviderManager() {
-        };
-    }
-
-
 }
