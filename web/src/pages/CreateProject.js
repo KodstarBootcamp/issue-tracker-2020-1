@@ -85,9 +85,7 @@ function CreateProject() {
         <button onClick={submitHandler} className="btn btn-primary">
           Submit
         </button>
-        <Link to="/">
-          <p style={{ textDecoration: "underline" }}>Back to Home Page</p>
-        </Link>
+
         <Link to="/projects">
           <p style={{ textDecoration: "underline" }}>Back to Projects Page</p>
         </Link>

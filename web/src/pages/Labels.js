@@ -74,6 +74,7 @@ function Labels() {
       color: color.slice(1),
     };
     const responseUpdate = await Axios.put("/label/" + id, UpdatedLabel);
+    console.log(responseUpdate);
     alert("Succesfully edited");
     setopenNewLabel(false);
     setedit(false);

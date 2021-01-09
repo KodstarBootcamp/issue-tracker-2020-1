@@ -2,14 +2,14 @@ import React, { useState, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { Multiselect } from "multiselect-react-dropdown";
 import Axios from "axios";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { IssueContex } from "../App";
 import styles from "./CreateIssue.module.css";
 import { CirclePicker } from "react-color";
 
 function CreateIssue(props) {
   const Projectid = props.match.params.id;
-  let history = useHistory();
+
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
   const [color, setcolor] = useState("#cddc39");
