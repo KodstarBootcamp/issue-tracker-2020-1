@@ -2,7 +2,6 @@ package com.kodstar.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Label;
-import com.kodstar.backend.repository.LabelRepository;
 import com.kodstar.backend.service.LabelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,14 +30,8 @@ class LabelControllerTest {
   @MockBean
   private LabelService labelService;
 
-  @MockBean
-  private LabelRepository labelRepository;
-
   @Autowired
   private MockMvc mockMvc;
-
-  @Autowired
-  private ObjectMapper objectMapper;
 
   @BeforeEach
   void setUp(){

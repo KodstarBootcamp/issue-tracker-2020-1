@@ -1,4 +1,4 @@
-package com.kodstar.backend.service;
+package com.kodstar.backend.service.impl;
 
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.Label;
