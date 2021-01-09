@@ -1,26 +1,8 @@
 package com.kodstar.backend.service;
 
-import com.kodstar.backend.model.dto.Issue;
-import com.kodstar.backend.model.dto.Label;
-import com.kodstar.backend.model.entity.IssueEntity;
-import com.kodstar.backend.model.enums.*;
-import com.kodstar.backend.model.entity.LabelEntity;
-import com.kodstar.backend.repository.IssueRepository;
-import com.kodstar.backend.repository.LabelRepository;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class IssueServiceImplTest {

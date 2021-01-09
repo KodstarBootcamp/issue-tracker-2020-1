@@ -1,12 +1,12 @@
 package com.kodstar.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kodstar.backend.model.auth.LoginRequest;
+import com.kodstar.backend.security.request.LoginRequest;
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.repository.UserRepository;
-import com.kodstar.backend.response.JwtResponse;
 import com.kodstar.backend.security.jwt.JwtUtils;
+import com.kodstar.backend.security.response.JwtResponse;
 import com.kodstar.backend.security.userdetails.UserDetailsImpl;
 import com.kodstar.backend.utils.Converter;
 import com.kodstar.backend.utils.PasswordValidator;

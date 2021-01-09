@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = {"*"})
+//@CrossOrigin(origins = {"*"})
 @RequiredArgsConstructor
 public class UserController {
 

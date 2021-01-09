@@ -1,6 +1,6 @@
 package com.kodstar.backend.controller;
 
-import com.kodstar.backend.model.auth.LoginRequest;
+import com.kodstar.backend.security.request.LoginRequest;
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.service.impl.AuthServiceImpl;
@@ -13,7 +13,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("auth")
-@CrossOrigin(origins = {"*"})
+//@CrossOrigin(origins = {"*"})
 public class AuthController {
 
     @Autowired

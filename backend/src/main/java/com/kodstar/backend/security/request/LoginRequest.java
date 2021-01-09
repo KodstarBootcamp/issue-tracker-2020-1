@@ -1,4 +1,4 @@
-package com.kodstar.backend.model.auth;
+package com.kodstar.backend.security.request;
 
 import lombok.Data;
 
