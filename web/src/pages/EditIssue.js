@@ -3,13 +3,11 @@ import Axios from "axios";
 import { IssueContex } from "../App";
 import "bootstrap/dist/css/bootstrap.css";
 import { Multiselect } from "multiselect-react-dropdown";
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./CreateIssue.module.css";
 import { CirclePicker } from "react-color";
 
 function EditIssue(props) {
-  let history = useHistory();
-
   // get id of the issue to edit
   const id = props.match.params.id;
 
@@ -20,21 +18,25 @@ function EditIssue(props) {
   const [description, setDescription] = useState("");
   const [labelsList, setLabelsList] = useState([]);
   const [preselect, setPreselect] = useState([]);
+  const [projectId, setprojectId] = useState();
 
   const { labels } = useContext(IssueContex);
 
-  useEffect(async () => {
-    const response = await Axios.get("/issue/" + id);
-    console.log(response.data, "edit");
-
-    const { title, description, labels } = response.data;
-
-    setTitle(title);
-    setDescription(description);
-
-    setPreselect(labels);
-    setLabelsList(labels);
-  }, []);
+  useEffect(() => {
+    Axios.get("/issue/" + id)
+      .then((res) => {
+        console.log(res.data);
+        const { title, description, labels, projectId } = res.data;
+        setTitle(title);
+        setDescription(description);
+        setprojectId(projectId);
+        setPreselect(labels);
+        setLabelsList(labels);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [id]);
 
   const titleHandler = (event) => {
     setTitle(
@@ -60,21 +62,29 @@ function EditIssue(props) {
     return true;
   };
 
-  const submitHandler = async (event) => {
+  const submitHandler = (event) => {
     event.preventDefault();
 
-    /*   const UpdatedIssue = {
+    const UpdatedIssue = {
       title: title.trim(),
       description: description,
-      labels: labelText,
-    }; */
+      labels: labelsList,
+      projectId: projectId,
+    };
 
-    /*   if (validate(UpdatedIssue)) {
-      const response = await Axios.put("/issue/" + id, UpdatedIssue);
-      console.log(response);
-      alert("Succesfully edited");
-      history.push("/");
-    } */
+    console.log(UpdatedIssue);
+
+    if (validate(UpdatedIssue)) {
+      Axios.put("/issue/" + id, UpdatedIssue)
+        .then((res) => {
+          console.log(res.data);
+          alert("Succesfully edited");
+          window.history.go(-1);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const addLabelHandler = () => {
@@ -100,7 +110,7 @@ function EditIssue(props) {
     setOpen(false);
   };
 
-  const createLabelHandler = async (event) => {
+  const createLabelHandler = (event) => {
     event.preventDefault();
     if (name.length < 1) {
       alert("Name can not left blank");
@@ -110,11 +120,16 @@ function EditIssue(props) {
       name: name.charAt(0).toUpperCase() + name.slice(1),
       color: color.slice(1),
     };
-    const response = await Axios.post("/label", newLabel);
-    console.log(response, 33);
-    alert("Succesfully created");
-    setOpen(false);
-    window.location.reload();
+    Axios.post("/label", newLabel)
+      .then((res) => {
+        console.log(res.data);
+        alert("Succesfully created");
+        setOpen(false);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

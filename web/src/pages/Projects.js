@@ -1,80 +1,52 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { IssueContex } from "../App";
-import styles from "./DisplayIssues.module.css";
+import styles from "./Project.module.css";
 import Axios from "axios";
 import Loader from "react-loader-spinner";
 
 export default function Projects() {
-  const [isCheck, setCheck] = useState(false);
-  const [search, setSearch] = useState("");
-  const [option, setoption] = useState("");
-  const [multipleDeleteIds, setmultipleDeleteIds] = useState([]);
+  let { projects } = useContext(IssueContex);
 
-  let { issues, setIssues } = useContext(IssueContex);
-  const { deleteHandler } = useContext(IssueContex);
-  const { editHandler } = useContext(IssueContex);
+  const deleteHandler = (event) => {
+    const id = event.target.id;
 
-  useEffect(() => {
-    sortedandSearchedIssues();
-  }, [option, search]);
-
-  const sortedandSearchedIssues = async () => {
-    if (option !== "" && search.length > 6) {
-      const field = search.split(":")[0];
-      const key = search.split(":")[1];
-      const URL = `/issues/search?field=${field}&key=${key}&sort=${option}`;
-      const response = await Axios.get(URL);
-      if (response.data.length > 0) {
-        setIssues(response.data);
-      }
-    } else if (option === "" && search.length > 6) {
-      console.log("hey2");
-      const field = search.split(":")[0];
-      const key = search.split(":")[1];
-      const URL = `/issues/search?field=${field}&key=${key}`;
-      const response = await Axios.get(URL);
-      console.log(response.data);
-      if (response.data.length > 0) {
-        setIssues(response.data);
-      }
-    } else if (option !== "" && search.length < 1) {
-      console.log("hey3");
-
-      const URL = `/issues/search?sort=${option}`;
-      const response = await Axios.get(URL);
-      setIssues(response.data);
-    }
-  };
-
-  const optionHandler = (event) => {
-    setoption(event.target.value);
-  };
-
-  const searchHandler = (event) => {
-    const query = event.target.value;
-    setSearch(query.trim().toLowerCase());
-  };
-
-  const CheckHandler = (event) => {
-    const { checked, value } = event.target;
-
-    if (checked) {
-      setmultipleDeleteIds((prevState) => {
-        return [...prevState, Number(value)];
-      });
+    let usersAnswer = window.confirm("Are you sure?");
+    if (usersAnswer === true) {
+      Axios.delete("/project/" + id)
+        .then((res) => {
+          console.log(res, "delete");
+        })
+        .then(() => {
+          window.location.reload();
+        });
     } else {
-      const deleted = multipleDeleteIds.filter(
-        (item) => item !== Number(value)
-      );
-      setmultipleDeleteIds(deleted);
+      return;
     }
-
-    setCheck(!isCheck);
+  };
+  const editHandler = async (event) => {
+    const id = event.target.id;
+    const response = await Axios.get("/project/" + id);
+    let name = window.prompt("Please enter name:", response.data.name);
+    let description = window.prompt(
+      "Please enter description:",
+      response.data.description
+    );
+    if ((name === null || name === "") && description === null) {
+      return;
+    } else {
+      const updatedProject = {
+        name: name.trim(),
+        description: description,
+      };
+      const response = await Axios.put("/project/" + id, updatedProject);
+      window.location.reload();
+      console.log(response, 444);
+    }
   };
 
   // mapping around all the issues to display one by one
-  const Display = !issues ? (
+  const Display = !projects ? (
     <div
       style={{
         width: "100%",
@@ -87,30 +59,14 @@ export default function Projects() {
       <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
     </div>
   ) : (
-    issues.map((item) => (
-      <div key={item.id} className={styles.issueCard}>
-        <div className="form-group form-check mr-5">
-          <input
-            value={item.id}
-            checked={item.isCheck}
-            onChange={CheckHandler}
-            className="form-check-input"
-            type="checkbox"
-          />
-        </div>
-        <p className={styles.issueTitle}>{item.title}</p>
+    projects.map((item) => (
+      <div key={item.id} className={styles.projectCard}>
+        <Link to={`projects/${item.id}`}>
+          <p className={styles.projectName}>{item.name}</p>
+        </Link>
+        <p className="w-25">{item.description}</p>
+
         <div>
-          {item.labels.map((label, i) => (
-            <span
-              style={{ backgroundColor: `#${label.color}` }}
-              className={styles.labelContainer}
-              key={i}
-            >
-              {label.name.charAt(0).toUpperCase() + label.name.slice(1)}
-            </span>
-          ))}
-        </div>
-        <div className="ml-auto">
           <button
             id={item.id}
             onClick={editHandler}
@@ -132,65 +88,15 @@ export default function Projects() {
     ))
   );
 
-  const multipleDeleteHandler = async () => {
-    const data = {
-      method: "delete",
-      ids: multipleDeleteIds,
-    };
-    const response = await Axios.post("/issues/batch", data);
-    console.log(response);
-  };
-
   return (
     <div>
-      <div className="d-flex mt-5 justify-content-center">
-        <Link to="/">
-          <button className="btn btn-outline-secondary btn-sm">
-            Back Home
-          </button>
-        </Link>
-      </div>
       <div className={styles.container}>
         <div className={styles.navbar}>
           <Link to="/createProject">
-            <button className="btn btn-outline-success btn-sm">
+            <button className="btn btn-success btn-sm">
               Create New Project
             </button>
           </Link>
-          <Link to="/allIssues">
-            <button
-              style={{
-                display: multipleDeleteIds.length > 1 ? "block" : "none",
-              }}
-              onClick={multipleDeleteHandler}
-              className="btn btn-outline-danger btn-sm"
-            >
-              Delete All
-            </button>
-          </Link>
-          <select
-            style={{ width: "150px" }}
-            value={option}
-            onChange={optionHandler}
-            className="form-control "
-          >
-            <option value="">Sort By</option>
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="recent">Recent Updated</option>
-            <option value="latest">Latest Updated</option>
-          </select>
-          <form className={styles.searchArea}>
-            <input
-              style={{ width: "250px" }}
-              value={search}
-              onChange={searchHandler}
-              className="form-control ml-3"
-              type="text"
-              placeholder="title:keyword ,description:keyword"
-              aria-label="Search"
-            />
-          </form>
         </div>
         <div>{Display}</div>
       </div>

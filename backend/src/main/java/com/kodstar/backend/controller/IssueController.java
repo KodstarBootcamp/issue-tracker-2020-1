@@ -5,6 +5,8 @@ import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.service.IssueService;
 import com.kodstar.backend.service.impl.IssueSearchAndSortFilterService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.Set;
 @RequestMapping
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"*"})
+@Tag(name = "issue")
 public class IssueController {
 
     private final IssueService issueService;
@@ -26,12 +29,14 @@ public class IssueController {
 
 
     @GetMapping("/issue/{id}")
+    @Operation(summary = "Find an issue by id")
     public ResponseEntity<Issue> getIssueById(@Valid @PathVariable Long id) {
 
         return ResponseEntity.ok(issueService.findById(id));
     }
 
     @GetMapping("/issues")
+    @Operation(summary = "Find all issues")
     public ResponseEntity<Collection<Issue>> getIssues() {
         Collection<Issue> issues = issueService.getAllIssues();
 
@@ -42,12 +47,14 @@ public class IssueController {
     }
 
     @PostMapping("/issue")
+    @Operation(summary = "Add a new issue")
     public ResponseEntity<Issue> createIssue(@Valid @RequestBody Issue issue) {
 
         return new ResponseEntity(issueService.saveIssueEntity(issue), HttpStatus.CREATED);
     }
 
     @PutMapping("/issue/{id}")
+    @Operation(summary = "Update an issue")
     public ResponseEntity<Issue> updateIssue(@Valid @PathVariable Long id, @RequestBody Issue issue) {
 
         return ResponseEntity.ok(issueService.updateIssueEntity(id, issue));
@@ -55,12 +62,14 @@ public class IssueController {
     }
 
     @PutMapping("/issue/{id}/assignee")
+    @Operation(summary = "Update assignees of an issue")
     public ResponseEntity<Issue> assign(@Valid @PathVariable Long id, @RequestBody Set<User> assignees) {
 
         return  ResponseEntity.ok(issueService.assignUsersToIssue(id, assignees));
     }
 
     @DeleteMapping("/issue/{id}")
+    @Operation(summary = "Delete an issue by id")
     public ResponseEntity<Void> deleteIssue(@Valid @PathVariable Long id) {
 
         issueService.deleteIssue(id);
@@ -69,6 +78,7 @@ public class IssueController {
     }
 
     @PostMapping("/issues/batch")
+    @Operation(summary = "Delete multiple issues")
     public ResponseEntity<Void> deleteMultipleIssues(@Valid @RequestBody BatchDeleteRequest request) {
 
         issueService.deleteMultipleIssues(request);
@@ -77,6 +87,7 @@ public class IssueController {
     }
 
     @GetMapping("/issues/search")
+    @Operation(summary = "Filter and sort issues")
     public ResponseEntity<Collection<Issue>> filterAndSort(
             @RequestParam( defaultValue = "") String field,
             @RequestParam( defaultValue = "") String key,
