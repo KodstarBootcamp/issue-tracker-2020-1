@@ -17,7 +17,6 @@ import java.util.Collection;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"*"})
 @Tag(name = "label")
 public class LabelController {
 

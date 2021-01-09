@@ -36,7 +36,7 @@ export default function AllIssues(props) {
       if (option !== "" && search.length > 6) {
         const field = search.split(":")[0];
         const key = search.split(":")[1];
-        const URL = `/issues/search?field=${field}&key=${key}&sort=${option}`;
+        const URL = `/project/${id}/issues/search?field=${field}&key=${key}&sort=${option}`;
         const response = await Axios.get(URL);
         if (response.data.length > 0) {
           setIssues(response.data);
@@ -45,7 +45,7 @@ export default function AllIssues(props) {
         console.log("hey2");
         const field = search.split(":")[0];
         const key = search.split(":")[1];
-        const URL = `/issues/search?field=${field}&key=${key}`;
+        const URL = `/project/${id}/issues/search?field=${field}&key=${key}`;
         const response = await Axios.get(URL);
         console.log(response.data);
         if (response.data.length > 0) {
@@ -54,13 +54,13 @@ export default function AllIssues(props) {
       } else if (option !== "" && search.length < 1) {
         console.log("hey3");
 
-        const URL = `/issues/search?sort=${option}`;
+        const URL = `/project/${id}/issues/search?sort=${option}`;
         const response = await Axios.get(URL);
         setIssues(response.data);
       }
     }
     fetchData();
-  }, [option, search]);
+  }, [option, search, id]);
 
   const optionHandler = (event) => {
     setoption(event.target.value);
