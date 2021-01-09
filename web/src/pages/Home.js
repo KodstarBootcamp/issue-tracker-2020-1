@@ -197,7 +197,7 @@ function Home(props) {
             <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
             <p style={{ position: "absolute", top: "300px" }}>
               Have you added any issues? If you did not
-              <Link to={`/createIssue/${id}`}>Create</Link>
+              <Link to={`/createIssue/${id}`}> Create</Link>
             </p>
           </div>
         ) : (
