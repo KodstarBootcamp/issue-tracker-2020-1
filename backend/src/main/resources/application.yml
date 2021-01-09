@@ -1,9 +1,9 @@
 app:
     jwt:
-        secretKey: 'IssueTrackerSecurity-ytiruceSrekcarTeussI'
+        secretKey: 'IssueTrackerSecurityytiruceSrekcarTeussIIssueTrackerSecurityytiruceSrekcarTeussIIssueTrackerSecurityytiruceSrekcarTeussI'
         tokenPrefix: 'Bearer '
         tokenExpirationDays: 14
 
 spring:
     profiles:
-        active: h2
+        active: dev
