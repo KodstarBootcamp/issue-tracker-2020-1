@@ -1,13 +1,13 @@
 package com.kodstar.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kodstar.backend.model.auth.ApplicationUser;
+import com.kodstar.backend.model.auth.LoginRequest;
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.repository.UserRepository;
 import com.kodstar.backend.response.JwtResponse;
 import com.kodstar.backend.security.jwt.JwtUtils;
-import com.kodstar.backend.security.serv.UserDetailsImpl;
+import com.kodstar.backend.security.userdetails.UserDetailsImpl;
 import com.kodstar.backend.utils.Converter;
 import com.kodstar.backend.utils.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-//@RequiredArgsConstructor
 public class AuthServiceImpl implements Converter<User, UserEntity> {
 
-    //private final PasswordEncoder encoder;
     @Autowired
     private PasswordEncoder encoder;
 
@@ -41,7 +39,6 @@ public class AuthServiceImpl implements Converter<User, UserEntity> {
     @Autowired
     private JwtUtils jwtUtils;
 
-
     public User register(UserEntity userEntity) {
         if(!PasswordValidator.isValid(userEntity.getPassword())){
             throw new IllegalArgumentException("Password is not valid");
@@ -51,11 +48,10 @@ public class AuthServiceImpl implements Converter<User, UserEntity> {
         return convertToDTO(userEntity);
     }
 
-
-    public ResponseEntity<?> login(ApplicationUser applicationUser) {
+    public ResponseEntity<?> login(LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(applicationUser.getUsername(),applicationUser.getPassword()));
+          new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -67,12 +63,6 @@ public class AuthServiceImpl implements Converter<User, UserEntity> {
                                                    userDetails.getId(),
                                                    userDetails.getUsername(),
                                                    userDetails.getEmail()));
-    }
-
-    // Not completed
-
-    public void logout(User user) {
-
     }
 
     @Override
