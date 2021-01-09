@@ -15,7 +15,6 @@ import java.util.Set;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-//@CrossOrigin(origins = {"*"})
 public class IssueController {
 
     private final IssueService issueService;

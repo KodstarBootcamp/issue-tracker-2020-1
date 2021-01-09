@@ -4,6 +4,8 @@ import com.kodstar.backend.security.request.LoginRequest;
 import com.kodstar.backend.model.dto.User;
 import com.kodstar.backend.model.entity.UserEntity;
 import com.kodstar.backend.service.impl.AuthServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,6 @@ import javax.validation.Valid;
 @Tag(name = "auth")
 public class AuthController {
 
-
     @Autowired
     private AuthServiceImpl authServiceImpl;
 
@@ -27,11 +28,10 @@ public class AuthController {
         return new ResponseEntity(authServiceImpl.register(userEntity), HttpStatus.CREATED);
     }
 
-    // Not completed
     @PostMapping("/login")
     @Operation(summary = "User login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest user) {
 
         return authServiceImpl.login(user);
-
     }
+}

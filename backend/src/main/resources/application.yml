@@ -6,7 +6,7 @@ app:
 
 spring:
     profiles:
-        active: dev
+        active: prod
 springdoc:
     version: '@springdoc.version@'
     api-docs:
