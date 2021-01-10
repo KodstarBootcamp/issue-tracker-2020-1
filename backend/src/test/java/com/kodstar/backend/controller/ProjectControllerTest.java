@@ -3,6 +3,8 @@ package com.kodstar.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.*;
 import com.kodstar.backend.service.*;
+import com.kodstar.backend.service.impl.IssueSearchAndSortFilterService;
+import com.kodstar.backend.utils.SearchAndSortFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,9 @@ class ProjectControllerTest {
 
   @MockBean
   private IssueService issueService;
+
+  @MockBean
+  private IssueSearchAndSortFilterService searchAndSortFilterService;
 
   @Autowired
   private MockMvc mockMvc;
@@ -215,9 +220,64 @@ class ProjectControllerTest {
   }
 
   @Test
-  void filterAndSort() {
+  @DisplayName("Test filterAndSort Success")
+  void filterAndSort() throws Exception{
+
+    //Setup our mocked service
+    Issue issue1 = new Issue();
+    issue1.setId(1L);
+    issue1.setTitle("test");
+    issue1.setDescription("test is important");
+    issue1.setProjectId(1L);
+
+    Issue issue2 = new Issue();
+    issue2.setId(2L);
+    issue2.setTitle("web");
+    issue2.setDescription("test2 is important");
+    issue2.setProjectId(2L);
+
+    Issue issue3 = new Issue();
+    issue3.setId(3L);
+    issue3.setTitle("web2");
+    issue3.setDescription("test3 is important");
+    issue3.setProjectId(2L);
+
+    when(searchAndSortFilterService.filterAndSort(2L,"title","web","oldest")).thenReturn(Arrays.asList(issue2, issue3));
+
+    // Execute the GET request
+    mockMvc.perform(get("/project/{id}/issues/search", 2L)
+            .param("sort", "oldest")
+            .param("field", "title")
+            .param("key", "web"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+            // Validate the returned fields
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].id", is(2)))
+            .andExpect(jsonPath("$[0].title", is(issue2.getTitle())))
+            .andExpect(jsonPath("$[0].description", is(issue2.getDescription())))
+            .andExpect(jsonPath("$[1].id", is(3)))
+            .andExpect(jsonPath("$[1].title", is(issue3.getTitle())))
+            .andExpect(jsonPath("$[1].description", is(issue3.getDescription())));
   }
 
+  @Test
+  @DisplayName("Test filterAndSortNoContent Success")
+  void filterAndSortNoContent() throws Exception{
+
+    //Setup our mocked service
+
+    when(searchAndSortFilterService.filterAndSort(2L,"title","web","oldest")).thenReturn(Collections.emptyList());
+
+    // Execute the GET request
+    mockMvc.perform(get("/project/{id}/issues/search", 2L)
+            .param("sort", "oldest")
+            .param("field", "title")
+            .param("key", "web"))
+
+            .andExpect(status().isNoContent());
+  }
 
   static String asJsonString(final Object obj) {
     try {
