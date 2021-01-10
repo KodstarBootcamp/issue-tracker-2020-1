@@ -7,9 +7,11 @@ import { Link } from "react-router-dom";
 import styles from "./CreateIssue.module.css";
 import { CirclePicker } from "react-color";
 
-function EditIssue(props) {
+function EditIssue() {
   // get id of the issue to edit
-  const id = props.match.params.id;
+  const pathname = window.location.pathname;
+  const idArray = pathname.split("/");
+  const id = idArray[idArray.length - 1];
 
   const [title, setTitle] = useState("");
   const [color, setcolor] = useState("#cddc39");

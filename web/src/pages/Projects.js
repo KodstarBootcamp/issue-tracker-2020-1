@@ -99,7 +99,7 @@ export default function Projects() {
             </button>
           </Link>
 
-          <button onClick={LogOutHandler} className="btn btn-info btn-sm">
+          <button onClick={LogOutHandler} className="btn btn-danger btn-sm">
             LogOut
           </button>
         </div>
