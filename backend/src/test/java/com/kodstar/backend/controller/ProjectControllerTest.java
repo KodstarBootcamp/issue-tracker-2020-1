@@ -1,5 +1,6 @@
 package com.kodstar.backend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.Project;
 import com.kodstar.backend.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +19,10 @@ import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -46,7 +49,7 @@ class ProjectControllerTest {
   }
 
   @Test
-  @DisplayName("Test getProjectById")
+  @DisplayName("Test getProjectById Success")
   void getProjectById() throws Exception {
 
     // Setup our mocked service
@@ -66,7 +69,7 @@ class ProjectControllerTest {
   }
 
   @Test
-  @DisplayName("Test getProjects")
+  @DisplayName("Test getProjects Success")
   void getProjects() throws Exception{
 
     // Setup our mocked service
@@ -110,7 +113,24 @@ class ProjectControllerTest {
   }
 
   @Test
-  void createProject() {
+  @DisplayName("Test createProject Success")
+  void createProject() throws Exception {
+    // Setup our mocked service
+    when(projectService.saveProjectEntity(any())).thenReturn(project);
+
+    // Execute the POST request
+    mockMvc.perform(post("/project")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(project)))
+
+            // Validate the response code and content type
+            .andExpect(status().isCreated())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+            // Validate the returned fields
+            .andExpect(jsonPath("$.id", is(1)))
+            .andExpect(jsonPath("$.name", is(project.getName())))
+            .andExpect(jsonPath("$.description", is(project.getDescription())));
   }
 
   @Test
@@ -127,5 +147,14 @@ class ProjectControllerTest {
 
   @Test
   void filterAndSort() {
+  }
+
+
+  static String asJsonString(final Object obj) {
+    try {
+      return new ObjectMapper().writeValueAsString(obj);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }
