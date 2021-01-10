@@ -1,8 +1,6 @@
 package com.kodstar.backend.service.impl;
 
-import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.dto.Project;
-import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.entity.ProjectEntity;
 import com.kodstar.backend.repository.ProjectRepository;
 import com.kodstar.backend.service.ProjectService;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +37,7 @@ class ProjectServiceImplTest {
     project.setName("project1");
     project.setDescription("This is a project");
     project.setState("open");
-  }
+    }
 
   @Test
   @DisplayName("Test findById Success")
@@ -54,7 +51,7 @@ class ProjectServiceImplTest {
     Project returnedProject = projectService.findById(1L);
 
     // Assert the response
-    assertEquals(projectEntity.getName(),returnedProject.getName());
+    assertEquals(projectEntity.getName(), returnedProject.getName());
   }
 
   @Test
@@ -65,12 +62,12 @@ class ProjectServiceImplTest {
     when(projectRepository.findById(1L)).thenReturn(Optional.empty());
 
     // Assert the response
-    assertThrows(EntityNotFoundException.class,()->projectService.findById(1L));
+    assertThrows(EntityNotFoundException.class, () -> projectService.findById(1L));
 
   }
 
   @Test
-  @DisplayName("Test deleteLabel Success")
+  @DisplayName("Test deleteProject Success")
   void deleteProject() {
 
     // Setup our mock repository
@@ -81,7 +78,7 @@ class ProjectServiceImplTest {
     projectService.deleteProject(1L);
 
     // Assert the response
-    verify(projectRepository,times(1)).delete(projectEntity);
+    verify(projectRepository, times(1)).delete(projectEntity);
 
   }
 
@@ -95,18 +92,42 @@ class ProjectServiceImplTest {
     when(projectRepository.findAll()).thenReturn(projects);
 
     // Execute the service call
-    Collection<Project> returnedProjects  = projectService.getAllProjects();
+    Collection<Project> returnedProjects = projectService.getAllProjects();
 
     // Assert the response
-    assertEquals(returnedProjects.size(),1);
+    assertEquals(returnedProjects.size(), 1);
   }
 
   @Test
   @DisplayName("Test saveProjectEntity Success")
   void saveProjectEntity() {
+    // Setup our mock repository
+    ProjectEntity projectEntity = projectService.convertToEntity(project);
+    when(projectRepository.save(any())).thenReturn(projectEntity);
+
+    // Execute the service call
+    Project savedProject = projectService.saveProjectEntity(project);
+
+    // Assert the response
+    assertNotNull(savedProject);
+    assertEquals(projectEntity.getName(), savedProject.getName());
   }
 
   @Test
+  @DisplayName("Test updateProjectEntity Success")
   void updateProjectEntity() {
+
+    // Setup our mock repository
+    ProjectEntity projectEntity = projectService.convertToEntity(project);
+
+    when(projectRepository.findById(1L)).thenReturn(Optional.of(projectEntity));
+    when(projectRepository.save(any())).thenReturn(projectEntity);
+
+    // Execute the service call
+    Project updatedProject = projectService.updateProjectEntity(1L, project);
+
+    // Assert the response
+    assertNotNull(updatedProject);
+    assertEquals(projectEntity.getDescription(), updatedProject.getDescription());
   }
 }
