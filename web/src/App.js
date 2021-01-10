@@ -74,6 +74,11 @@ function App() {
     history.push(`/editIssue/${id}`);
   };
 
+  const LogOutHandler = () => {
+    localStorage.removeItem("token");
+    history.push("/");
+  };
+
   return (
     <IssueContex.Provider
       value={{
@@ -83,6 +88,7 @@ function App() {
         editHandler,
         labels,
         projects,
+        LogOutHandler,
       }}
     >
       <Switch>

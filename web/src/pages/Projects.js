@@ -7,6 +7,7 @@ import Loader from "react-loader-spinner";
 
 export default function Projects() {
   let { projects } = useContext(IssueContex);
+  let { LogOutHandler } = useContext(IssueContex);
 
   const deleteHandler = (event) => {
     const id = event.target.id;
@@ -97,6 +98,10 @@ export default function Projects() {
               Create New Project
             </button>
           </Link>
+
+          <button onClick={LogOutHandler} className="btn btn-info btn-sm">
+            LogOut
+          </button>
         </div>
         <div>{Display}</div>
       </div>
