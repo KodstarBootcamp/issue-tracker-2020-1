@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,6 +50,18 @@ class ProjectServiceImplTest {
 
     // Assert the response
     assertEquals(projectEntity.getName(),returnedProject.getName());
+  }
+
+  @Test
+  @DisplayName("Test findById_NotFound")
+  void findByIdNotFound() {
+
+    // Setup our mock repository
+    when(projectRepository.findById(1L)).thenReturn(Optional.empty());
+
+    // Assert the response
+    assertThrows(EntityNotFoundException.class,()->projectService.findById(1L));
+
   }
 
   @Test
