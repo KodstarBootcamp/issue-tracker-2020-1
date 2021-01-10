@@ -1,7 +1,9 @@
 package com.kodstar.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.Project;
+import com.kodstar.backend.service.IssueService;
 import com.kodstar.backend.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,6 +34,9 @@ class ProjectControllerTest {
 
   @MockBean
   private ProjectService projectService;
+
+  @MockBean
+  private IssueService issueService;
 
   @Autowired
   private MockMvc mockMvc;
@@ -162,7 +167,39 @@ class ProjectControllerTest {
   }
 
   @Test
-  void getIssuesByProjectId() {
+  @DisplayName("Test getIssuesByProjectId Success")
+  void getIssuesByProjectId() throws Exception {
+
+    //Setup our mocked service
+    Issue issue1 = new Issue();
+    issue1.setId(1L);
+    issue1.setTitle("test");
+    issue1.setDescription("test is important");
+    issue1.setProjectId(2L);
+
+    Issue issue2 = new Issue();
+    issue2.setId(2L);
+    issue2.setTitle("test2");
+    issue2.setDescription("test2 is important");
+    issue2.setProjectId(2L);
+
+    when(issueService.findByProjectId(2L)).thenReturn(Arrays.asList(issue1, issue2));
+
+    // Execute the GET request
+    mockMvc.perform(get("/project/{id}/issues",2L))
+
+            // Validate the response code and content type
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+            // Validate the returned fields
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].id", is(1)))
+            .andExpect(jsonPath("$[0].title", is(issue1.getTitle())))
+            .andExpect(jsonPath("$[0].description", is(issue1.getDescription())))
+            .andExpect(jsonPath("$[1].id", is(2)))
+            .andExpect(jsonPath("$[1].title", is(issue2.getTitle())))
+            .andExpect(jsonPath("$[1].description", is(issue2.getDescription())));
   }
 
   @Test
