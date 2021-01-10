@@ -224,12 +224,6 @@ class ProjectControllerTest {
   void filterAndSort() throws Exception{
 
     //Setup our mocked service
-    Issue issue1 = new Issue();
-    issue1.setId(1L);
-    issue1.setTitle("test");
-    issue1.setDescription("test is important");
-    issue1.setProjectId(1L);
-
     Issue issue2 = new Issue();
     issue2.setId(2L);
     issue2.setTitle("web");
@@ -263,7 +257,7 @@ class ProjectControllerTest {
   }
 
   @Test
-  @DisplayName("Test filterAndSortNoContent Success")
+  @DisplayName("Test filterAndSortNoContent")
   void filterAndSortNoContent() throws Exception{
 
     //Setup our mocked service
