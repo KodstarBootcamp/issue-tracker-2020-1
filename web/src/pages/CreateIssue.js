@@ -7,8 +7,10 @@ import { IssueContex } from "../App";
 import styles from "./CreateIssue.module.css";
 import { CirclePicker } from "react-color";
 
-function CreateIssue(props) {
-  const Projectid = props.match.params.id;
+function CreateIssue() {
+  const pathname = window.location.pathname;
+  const idArray = pathname.split("/");
+  const Projectid = idArray[idArray.length - 1];
 
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import Column from "../components/Column";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Link } from "react-router-dom";
+import { IssueContex } from "../App";
 import Loader from "react-loader-spinner";
 
 const groupBy = function (xs, key) {
@@ -27,8 +28,12 @@ const formatToStringId = function (arr) {
     return { ...e, id: `task-${e.id}` };
   });
 };
-function Home(props) {
-  const id = props.match.params.id;
+function Home() {
+  const pathname = window.location.pathname;
+  const idArray = pathname.split("/");
+  const id = idArray[idArray.length - 1];
+
+  let { LogOutHandler } = useContext(IssueContex);
 
   const [state, setState] = useState(null);
 
@@ -171,17 +176,18 @@ function Home(props) {
           <button className="btn btn-info btn-sm ml-5">All Issues</button>
         </Link>
         <Link to="/labels">
-          <button className="btn btn-secondary btn-sm ml-5">All Labels</button>
+          <button className="btn btn-info btn-sm ml-5">All Labels</button>
         </Link>
         <Link to={`/createIssue/${id}`}>
-          <button className="btn btn-success btn-sm ml-5">New Issue</button>
-        </Link>
-        <Link to="/createProject">
-          <button className="btn btn-success btn-sm ml-5">New Project</button>
+          <button className="btn btn-info btn-sm ml-5">New Issue</button>
         </Link>
         <Link to="/projects">
-          <button className="btn btn-success btn-sm ml-5">Projects</button>
+          <button className="btn btn-info btn-sm ml-5">Projects</button>
         </Link>
+
+        <button onClick={LogOutHandler} className="btn btn-danger btn-sm ml-5">
+          LogOut
+        </button>
       </div>
       <div className="d-flex overflow-auto mt-1">
         {state === null ? (
