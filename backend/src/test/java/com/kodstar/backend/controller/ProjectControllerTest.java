@@ -13,6 +13,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -62,7 +66,47 @@ class ProjectControllerTest {
   }
 
   @Test
-  void getProjects() {
+  @DisplayName("Test getProjects")
+  void getProjects() throws Exception{
+
+    // Setup our mocked service
+    Project project1 = new Project();
+    project1.setId(2L);
+    project1.setName("project2");
+    project1.setDescription("This is a project");
+    project1.setState("open");
+
+    when(projectService.getAllProjects()).thenReturn(Arrays.asList(project, project1));
+
+    // Execute the GET request
+    mockMvc.perform(get("/projects"))
+
+            // Validate the response code and content type
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+            // Validate the returned fields
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].id", is(1)))
+            .andExpect(jsonPath("$[0].name", is(project.getName())))
+            .andExpect(jsonPath("$[0].description", is(project.getDescription())))
+            .andExpect(jsonPath("$[1].id", is(2)))
+            .andExpect(jsonPath("$[1].name", is(project1.getName())))
+            .andExpect(jsonPath("$[1].description", is(project1.getDescription())));
+  }
+
+  @Test
+  @DisplayName("Test getProjects No Content")
+  void getProjectsNoContent() throws Exception{
+
+    // Setup our mocked service
+    when(projectService.getAllProjects()).thenReturn(Collections.emptyList());
+
+    // Execute the GET request
+    mockMvc.perform(get("/projects"))
+
+            // Validate the response code
+            .andExpect(status().isNoContent());
   }
 
   @Test
