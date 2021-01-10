@@ -13,16 +13,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -134,11 +133,32 @@ class ProjectControllerTest {
   }
 
   @Test
-  void updateProject() {
+  @DisplayName("Test updateProject Success")
+  void updateProject() throws Exception {
+
+    // Execute the PUT request
+    mockMvc.perform(put("/project/{id}", 1)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(project))
+            .accept(MediaType.APPLICATION_JSON))
+
+            // Validate the response code
+            .andExpect(status().isOk());
+
   }
 
   @Test
-  void deleteProject() {
+  @DisplayName("Test deleteProject Success")
+  void deleteProject() throws Exception {
+
+    // Setup our mocked service
+    doNothing().when(projectService).deleteProject(1L);
+
+    // Execute the DELETE request
+    mockMvc.perform(delete("/project/{id}",1))
+            .andExpect(status().isNoContent());
+
+    verify(projectService, times(1)).deleteProject(1L);
   }
 
   @Test
