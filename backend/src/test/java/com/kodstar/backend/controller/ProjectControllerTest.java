@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.*;
 import com.kodstar.backend.service.*;
 import com.kodstar.backend.service.impl.IssueSearchAndSortFilterService;
-import com.kodstar.backend.utils.SearchAndSortFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
