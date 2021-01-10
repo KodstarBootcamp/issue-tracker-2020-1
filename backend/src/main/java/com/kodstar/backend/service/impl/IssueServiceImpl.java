@@ -135,6 +135,17 @@ public class IssueServiceImpl implements IssueService {
     return convertToDTO(issueEntity);
   }
 
+  @Override
+  public Collection<Issue> findAllByUser(Long userId) {
+
+    UserEntity userEntity = userRepository.findById(userId).orElseThrow(()->new EntityNotFoundException());
+
+    return issueRepository.findByUsersContaining(userEntity)
+            .stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toSet());
+  }
+
   //Project related methods
   @Override
   public Collection<Issue> findByProjectId(Long projectId) {
