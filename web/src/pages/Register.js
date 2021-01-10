@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import Axios from "axios";
 
 const Register = () => {
   const [values, setValues] = useState({
@@ -11,6 +12,7 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  let history = useHistory();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -23,7 +25,25 @@ const Register = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors(validateInfo(values));
+
+    const newUser = {
+      username: values.username,
+      email: values.email,
+      password: values.password,
+    };
+
+    Axios.post("/auth/register", newUser)
+      .then((res) => {
+        console.log(res);
+        alert("Successfully registered");
+        history.push("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+
+  let regex = /(?=[A-Za-z0-9@#$%^&+!=]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+!=])(?=.{8,}).*$/g;
 
   function validateInfo(values) {
     let errors = {};
@@ -40,8 +60,11 @@ const Register = () => {
 
     if (!values.password) {
       errors.password = "Password is required*";
-    } else if (values.password.length < 6) {
-      errors.password = "Password needs to be 6 characters or more*";
+    } else if (values.password.length < 8) {
+      errors.password = "Password needs to be 8 characters or more*";
+    } else if (!regex.test(values.password)) {
+      errors.password =
+        "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.";
     }
 
     if (!values.password2) {
