@@ -1,6 +1,8 @@
 package com.kodstar.backend.service.impl;
 
+import com.kodstar.backend.model.dto.Label;
 import com.kodstar.backend.model.dto.Project;
+import com.kodstar.backend.model.entity.LabelEntity;
 import com.kodstar.backend.model.entity.ProjectEntity;
 import com.kodstar.backend.repository.ProjectRepository;
 import com.kodstar.backend.service.ProjectService;
@@ -12,10 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class ProjectServiceImplTest {
@@ -65,14 +70,39 @@ class ProjectServiceImplTest {
   }
 
   @Test
+  @DisplayName("Test deleteLabel Success")
   void deleteProject() {
+
+    // Setup our mock repository
+    ProjectEntity projectEntity = projectService.convertToEntity(project);
+    when(projectRepository.findById(1L)).thenReturn(Optional.of(projectEntity));
+
+    // Execute the service call
+    projectService.deleteProject(1L);
+
+    // Assert the response
+    verify(projectRepository,times(1)).delete(projectEntity);
+
   }
 
   @Test
+  @DisplayName("Test getAllProjects Success")
   void getAllProjects() {
+    // Setup our mock repository
+    ProjectEntity projectEntity = projectService.convertToEntity(project);
+    List<ProjectEntity> projects = new ArrayList<>();
+    projects.add(projectEntity);
+    when(projectRepository.findAll()).thenReturn(projects);
+
+    // Execute the service call
+    Collection<Project> returnedProjects  = projectService.getAllProjects();
+
+    // Assert the response
+    assertEquals(returnedProjects.size(),1);
   }
 
   @Test
+  @DisplayName("Test saveProjectEntity Success")
   void saveProjectEntity() {
   }
 
