@@ -1,10 +1,8 @@
 package com.kodstar.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kodstar.backend.model.dto.Issue;
-import com.kodstar.backend.model.dto.Project;
-import com.kodstar.backend.service.IssueService;
-import com.kodstar.backend.service.ProjectService;
+import com.kodstar.backend.model.dto.*;
+import com.kodstar.backend.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -200,6 +198,20 @@ class ProjectControllerTest {
             .andExpect(jsonPath("$[1].id", is(2)))
             .andExpect(jsonPath("$[1].title", is(issue2.getTitle())))
             .andExpect(jsonPath("$[1].description", is(issue2.getDescription())));
+  }
+
+  @Test
+  @DisplayName("Test getIssuesByProjectId No Content")
+  void getIssuesByProjectIdNoContent() throws Exception {
+
+    // Setup our mocked service
+    when(issueService.findByProjectId(any())).thenReturn(Collections.emptyList());
+
+    // Execute the GET request
+    mockMvc.perform(get("/project/{id}/issues", 1L))
+
+            // Validate the response code
+            .andExpect(status().isNoContent());
   }
 
   @Test
