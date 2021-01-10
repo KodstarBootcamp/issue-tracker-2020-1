@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateProject from "./pages/CreateProject";
 import Projects from "./pages/Projects";
+import ProtectedRoutes from "./pages/ProtectedRoutes";
 
 export const IssueContex = createContext();
 
@@ -20,6 +21,8 @@ function App() {
   const [issues, setIssues] = useState();
   const [labels, setLabels] = useState();
   const [projects, setProjects] = useState();
+
+  const token = localStorage.getItem("token");
 
   //for labels
   useEffect(() => {
@@ -93,14 +96,50 @@ function App() {
     >
       <Switch>
         <Route path="/" exact component={Login} />
-        <Route path="/projects/:id" exact component={Home} />
-        <Route path="/createIssue/:id" exact component={CreateIssue} />
-        <Route path="/editIssue/:id" exact component={EditIssue} />
-        <Route path="/allIssues/:id" exact component={DisplayIssues} />
-        <Route path="/labels" exact component={Labels} />
         <Route path="/register" exact component={Register} />
-        <Route path="/createProject" exact component={CreateProject} />
-        <Route path="/projects" exact component={Projects} />
+        <ProtectedRoutes
+          path="/projects/:id"
+          exact
+          component={Home}
+          isAuth={token}
+        />
+        <ProtectedRoutes
+          path="/createIssue/:id"
+          exact
+          component={CreateIssue}
+          isAuth={token}
+        />
+        <ProtectedRoutes
+          path="/editIssue/:id"
+          exact
+          component={EditIssue}
+          isAuth={token}
+        />
+        <ProtectedRoutes
+          path="/allIssues/:id"
+          exact
+          component={DisplayIssues}
+          isAuth={token}
+        />
+        <ProtectedRoutes
+          path="/labels"
+          exact
+          component={Labels}
+          isAuth={token}
+        />
+
+        <ProtectedRoutes
+          path="/createProject"
+          exact
+          component={CreateProject}
+          isAuth={token}
+        />
+        <ProtectedRoutes
+          path="/projects"
+          exact
+          component={Projects}
+          isAuth={token}
+        />
       </Switch>
     </IssueContex.Provider>
   );
