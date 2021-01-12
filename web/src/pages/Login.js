@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import Axios from "axios";
 
 const Login = () => {
   const [values, setValues] = useState({
     username: "",
     email: "",
     password: "",
-    password2: "",
   });
+
+  let history = useHistory();
 
   const [errors, setErrors] = useState({});
 
@@ -23,6 +25,25 @@ const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors(validate(values));
+    const loginUser = {
+      username: values.email,
+      password: values.password,
+    };
+
+    Axios.post("/auth/login", loginUser)
+      .then((res) => {
+        const token = res.data.token;
+        localStorage.setItem("token", token);
+        history.push("/projects");
+      })
+      .catch((err) => {
+        console.log(err.response.status, 35);
+        if (err.response.status === 400) {
+          alert("Something went wrong. Check your info");
+        } else if (err.response.status === 409) {
+          alert("");
+        }
+      });
   };
 
   function validate(values) {
@@ -36,8 +57,8 @@ const Login = () => {
 
     if (!values.password) {
       errors.password = "Password is required*";
-    } else if (values.password.length < 6) {
-      errors.password = "Password needs to be 6 characters or more*";
+    } else if (values.password.length < 8) {
+      errors.password = "Password needs to be 8 characters or more*";
     }
     return errors;
   }

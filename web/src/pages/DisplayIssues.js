@@ -5,8 +5,11 @@ import styles from "./DisplayIssues.module.css";
 import Axios from "axios";
 import Loader from "react-loader-spinner";
 
-export default function AllIssues(props) {
-  const id = props.match.params.id;
+export default function AllIssues() {
+  const pathname = window.location.pathname;
+  const idArray = pathname.split("/");
+  const id = idArray[idArray.length - 1];
+
   const [isCheck, setCheck] = useState(false);
   const [search, setSearch] = useState("");
   const [option, setoption] = useState("");
