@@ -11,6 +11,12 @@ const Login = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [showPassword, setshowPassword] = useState(false);
+
+  const toggleShowPassword = (event) => {
+    event.preventDefault();
+    setshowPassword(!showPassword);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -69,7 +75,7 @@ const Login = () => {
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 className="form-control password"
                 id="password"
                 placeholder="Enter your password"
@@ -77,6 +83,18 @@ const Login = () => {
                 value={values.password}
                 onChange={handleChange}
               />
+              <button
+                onClick={toggleShowPassword}
+                style={{
+                  border: "none",
+                  backgroundColor: "transparent",
+                  fontSize: "10px",
+                  color: "gray",
+                  fontWeight: 600,
+                }}
+              >
+                {showPassword ? "Hide" : "Show"} Password
+              </button>
               {errors.password && (
                 <p style={{ fontSize: 14, color: "red", paddingLeft: 14 }}>
                   <i>{errors.password}</i>

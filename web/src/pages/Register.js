@@ -12,6 +12,13 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [showPassword, setshowPassword] = useState(false);
+
+  const toggleShowPassword = (event) => {
+    event.preventDefault();
+    setshowPassword(!showPassword);
+  };
+
   let history = useHistory();
 
   const handleChange = (event) => {
@@ -123,7 +130,7 @@ const Register = () => {
               <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className="form-control password"
                   id="password"
                   placeholder="Enter your password"
@@ -131,6 +138,18 @@ const Register = () => {
                   value={values.password}
                   onChange={handleChange}
                 />
+                <button
+                  onClick={toggleShowPassword}
+                  style={{
+                    border: "none",
+                    backgroundColor: "transparent",
+                    fontSize: "10px",
+                    color: "gray",
+                    fontWeight: 600,
+                  }}
+                >
+                  {showPassword ? "Hide" : "Show"} Password
+                </button>
                 {errors.password && (
                   <p style={{ fontSize: 14, color: "red", paddingLeft: 14 }}>
                     <i>{errors.password}</i>
@@ -140,7 +159,7 @@ const Register = () => {
               <div className="form-group">
                 <label htmlFor="password2">Confirm password</label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className="form-control password2"
                   id="password2"
                   placeholder="Confirm your password"
@@ -148,6 +167,18 @@ const Register = () => {
                   value={values.password2}
                   onChange={handleChange}
                 />
+                <button
+                  onClick={toggleShowPassword}
+                  style={{
+                    border: "none",
+                    backgroundColor: "transparent",
+                    fontSize: "10px",
+                    color: "gray",
+                    fontWeight: 600,
+                  }}
+                >
+                  {showPassword ? "Hide" : "Show"} Password
+                </button>
                 {errors.password2 && (
                   <p style={{ fontSize: 14, color: "red", paddingLeft: 14 }}>
                     <i>{errors.password2}</i>
