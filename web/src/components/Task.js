@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { IssueContex } from "../App";
 import styles from "./Task.module.css";
 import { Draggable } from "react-beautiful-dnd";
+import "@szhsin/react-menu/dist/index.css";
+import { Menu, MenuItem, MenuButton, MenuRadioGroup } from "@szhsin/react-menu";
 
 function Task({ task, index }) {
   const { deleteHandler } = useContext(IssueContex);
@@ -17,7 +19,7 @@ function Task({ task, index }) {
           {...provided.dragHandleProps}
         >
           <div className="row">
-            <div className="col-8">
+            <div className="col-9">
               <h5 className={styles.cardTitle}>{task.title}</h5>
               <p className={styles.cardText}>{task.description}</p>
               <div className={styles.listLabels}>
@@ -32,8 +34,64 @@ function Task({ task, index }) {
                 ))}
               </div>
             </div>
-            <div className="col-4">
-              <div className={styles.buttons}>
+            <div className="col-3">
+              <Menu
+                menuButton={
+                  <MenuButton
+                    styles={{
+                      border: "none",
+                      boxShadow: "none",
+                    }}
+                  >
+                    ...
+                  </MenuButton>
+                }
+              >
+                <MenuItem value="Delete">
+                  <button
+                    style={{
+                      border: "none",
+                      width: "100%",
+                      backgroundColor: "transparent",
+                    }}
+                    id={task.id}
+                    onClick={deleteHandler}
+                  >
+                    Delete
+                  </button>
+                </MenuItem>
+
+                <MenuItem value="Edit">
+                  <button
+                    style={{
+                      border: "none",
+                      width: "100%",
+                      backgroundColor: "transparent",
+                    }}
+                    id={task.id}
+                    onClick={editHandler}
+                  >
+                    Edit
+                  </button>
+                </MenuItem>
+                <MenuItem
+                  styles={{ borderBottom: "2px solid gray" }}
+                  value="setclose"
+                >
+                  <button
+                    style={{
+                      border: "none",
+                      width: "100%",
+                      backgroundColor: "transparent",
+                    }}
+                    id={task.id}
+                  >
+                    Close Issue
+                  </button>
+                </MenuItem>
+                <MenuItem value="Close">Close Window</MenuItem>
+              </Menu>
+              {/* <div className={styles.buttons}>
                 <button
                   id={task.id}
                   onClick={editHandler}
@@ -50,7 +108,7 @@ function Task({ task, index }) {
                 >
                   Delete
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
