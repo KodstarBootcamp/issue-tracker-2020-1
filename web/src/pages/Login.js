@@ -4,13 +4,17 @@ import { Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 
 const Login = () => {
+  let history = useHistory();
+
+  if (localStorage.getItem("token")) {
+    history.push("/projects");
+  }
+
   const [values, setValues] = useState({
     username: "",
     email: "",
     password: "",
   });
-
-  let history = useHistory();
 
   const [errors, setErrors] = useState({});
 
