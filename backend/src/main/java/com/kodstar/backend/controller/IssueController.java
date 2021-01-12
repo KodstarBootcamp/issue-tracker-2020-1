@@ -3,12 +3,14 @@ package com.kodstar.backend.controller;
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
 import com.kodstar.backend.model.dto.User;
+import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.Set;
 
 
@@ -25,6 +27,12 @@ public class IssueController {
         return ResponseEntity.ok(issueService.findById(id));
     }
 
+    @GetMapping("/issue/user/{userId}")
+    public ResponseEntity<Collection<Issue>> getIssuesByUser(@Valid @PathVariable Long userId) {
+
+        return ResponseEntity.ok(issueService.findAllByUser(userId));
+    }
+
     @PostMapping("/issue")
     public ResponseEntity<Issue> createIssue(@Valid @RequestBody Issue issue) {
 
@@ -39,7 +47,7 @@ public class IssueController {
     }
 
     @PutMapping("/issue/{id}/assignee")
-    public ResponseEntity<Issue> assign(@Valid @PathVariable Long id, @RequestBody Set<User> assignees) {
+    public ResponseEntity<Issue> assign(@Valid @PathVariable Long id, @RequestBody Set<Long> assignees) {
 
         return  ResponseEntity.ok(issueService.assignUsersToIssue(id, assignees));
     }

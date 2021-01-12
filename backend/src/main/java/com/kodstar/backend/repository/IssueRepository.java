@@ -12,5 +12,6 @@ public interface IssueRepository extends JpaRepository<IssueEntity,Long>{
     Collection<IssueEntity> findByProjectEntityAndLabels(ProjectEntity projectEntity, LabelEntity labelEntity, Sort sort);
     Collection<IssueEntity> findByProjectEntity(ProjectEntity projectEntity,Sort sort);
     Collection<IssueEntity> findByProjectEntity(ProjectEntity projectEntity);
+    Collection<IssueEntity> findByUsersContaining(UserEntity user);
 
 }
