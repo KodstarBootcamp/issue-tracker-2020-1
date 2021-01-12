@@ -115,15 +115,15 @@ public class IssueServiceImpl implements IssueService {
   }
 
   @Override
-  public Issue assignUsersToIssue(Long id, Set<User> assignees) {
+  public Issue assignUsersToIssue(Long id, Set<Long> assignees) {
     // get IssueEntity by id.
     IssueEntity issueEntity = issueRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
 
     // get new assignees from user table (UserEntity)
-    Set<UserEntity> newAssignees = assignees.stream().map(user -> {
-      UserEntity userEntity = userRepository.findById(user.getId())
-              .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this id " + user.getId()));
+    Set<UserEntity> newAssignees = assignees.stream().map(userId -> {
+      UserEntity userEntity = userRepository.findById(userId)
+              .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this id " + userId));
       return userEntity;
     }).collect(Collectors.toSet());
 

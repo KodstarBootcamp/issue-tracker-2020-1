@@ -47,7 +47,7 @@ public class IssueController {
     }
 
     @PutMapping("/issue/{id}/assignee")
-    public ResponseEntity<Issue> assign(@Valid @PathVariable Long id, @RequestBody Set<User> assignees) {
+    public ResponseEntity<Issue> assign(@Valid @PathVariable Long id, @RequestBody Set<Long> assignees) {
 
         return  ResponseEntity.ok(issueService.assignUsersToIssue(id, assignees));
     }
