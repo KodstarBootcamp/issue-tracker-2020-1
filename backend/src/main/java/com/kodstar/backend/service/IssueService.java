@@ -28,6 +28,6 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     Collection<Issue> findByProjectId(Long id);
 
     Issue assignUsersToIssue(Long id, Set<Long> assignees);
-    Collection<Issue> findAllByUser(Long userId);
+    Collection<Issue> findAllByUserId(Long userId);
 
 }

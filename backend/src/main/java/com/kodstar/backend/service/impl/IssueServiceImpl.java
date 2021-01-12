@@ -136,7 +136,7 @@ public class IssueServiceImpl implements IssueService {
   }
 
   @Override
-  public Collection<Issue> findAllByUser(Long userId) {
+  public Collection<Issue> findAllByUserId(Long userId) {
 
     UserEntity userEntity = userRepository.findById(userId).orElseThrow(()->new EntityNotFoundException());
 

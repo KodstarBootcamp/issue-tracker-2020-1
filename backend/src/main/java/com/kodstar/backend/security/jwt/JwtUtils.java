@@ -1,6 +1,5 @@
 package com.kodstar.backend.security.jwt;
 
-
 import com.kodstar.backend.security.userdetails.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -42,6 +41,13 @@ public class JwtUtils {
 
 	public String getUserNameFromJwtToken(String token) {
 
+		// TODO: avoid deprecated codes
+		/*
+		Jwts.parserBuilder().build()
+				.parseClaimsJws(token)
+				.getBody()
+				.getSubject();
+		 */
 		return Jwts.parser()
 				.setSigningKey(secretKey)
 				.parseClaimsJws(token)

@@ -28,9 +28,9 @@ public class IssueController {
     }
 
     @GetMapping("/issue/user/{userId}")
-    public ResponseEntity<Collection<Issue>> getIssuesByUser(@Valid @PathVariable Long userId) {
+    public ResponseEntity<Collection<Issue>> getIssuesByUserId(@Valid @PathVariable Long userId) {
 
-        return ResponseEntity.ok(issueService.findAllByUser(userId));
+        return ResponseEntity.ok(issueService.findAllByUserId(userId));
     }
 
     @PostMapping("/issue")
@@ -67,6 +67,4 @@ public class IssueController {
 
         return ResponseEntity.noContent().build();
     }
-
-
 }
