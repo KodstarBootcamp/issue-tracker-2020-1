@@ -1,12 +1,6 @@
-app:
-    jwt:
-        secretKey: 'IssueTrackerSecurityytiruceSrekcarTeussIIssueTrackerSecurityytiruceSrekcarTeussIIssueTrackerSecurityytiruceSrekcarTeussI'
-        tokenPrefix: 'Bearer '
-        tokenExpirationDays: 14
-
 spring:
     profiles:
-        active: dev
+        active: prod
 springdoc:
     version: '@springdoc.version@'
     api-docs:
@@ -19,3 +13,8 @@ springdoc:
         display-query-params-without-oauth2: true
     cache:
         disabled: true
+app:
+    jwt:
+        secretKey: 'IssueTrackerSecurityytiruceSrekcarTeussIIssueTrackerSecurityytiruceSrekcarTeussIIssueTrackerSecurityytiruceSrekcarTeussI'
+        tokenPrefix: 'Bearer '
+        tokenExpirationDays: 14

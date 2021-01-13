@@ -35,7 +35,7 @@ public class IssueEntity extends BaseEntity{
 
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "issue_user", joinColumns = @JoinColumn(name = "issue_id"),
+    @JoinTable(name = "issue_users", joinColumns = @JoinColumn(name = "issue_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<UserEntity> users;
 
