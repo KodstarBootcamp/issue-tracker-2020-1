@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import CreateProject from "./pages/CreateProject";
 import Projects from "./pages/Projects";
 import ProtectedRoutes from "./pages/ProtectedRoutes";
+import IssueDetail from "./pages/IssueDetail";
 
 export const IssueContex = createContext();
 
@@ -138,6 +139,12 @@ function App() {
           path="/projects"
           exact
           component={Projects}
+          isAuth={token}
+        />
+         <ProtectedRoutes
+          path="/issueDetail"
+          exact
+          component={IssueDetail}
           isAuth={token}
         />
       </Switch>
