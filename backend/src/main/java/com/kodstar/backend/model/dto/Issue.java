@@ -22,6 +22,7 @@ public class Issue {
     private String category;
     private String state;
     private Long projectId;
+    private String openedBy;
 
     public Issue(String title) {
         this.title = title;

@@ -4,10 +4,14 @@ import com.kodstar.backend.model.dto.*;
 import com.kodstar.backend.model.entity.*;
 import com.kodstar.backend.model.enums.*;
 import com.kodstar.backend.repository.*;
+import com.kodstar.backend.security.userdetails.UserDetailsImpl;
 import com.kodstar.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
@@ -201,7 +205,8 @@ public class IssueServiceImpl implements IssueService {
 
     Issue issue = new Issue();
 
-    ProjectEntity projectEntity = projectRepository.findById(issueEntity.getProjectEntity().getId()).get();
+    ProjectEntity projectEntity = getProject(issueEntity.getProjectEntity().getId());
+    UserEntity userEntity = userRepository.findById(issueEntity.getOpenedBy().getId()).get();
 
     issue.setId(issueEntity.getId());
     issue.setTitle(issueEntity.getTitle());
@@ -210,10 +215,11 @@ public class IssueServiceImpl implements IssueService {
     issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
     issue.setState(issueEntity.getIssueState().toString().toLowerCase());
     issue.setProjectId(projectEntity.getId());
+    issue.setOpenedBy(userEntity.getUsername());
 
     if (issueEntity.getUsers() != null) {
       Set<User> users = issueEntity.getUsers().stream()
-              .map(userEntity -> userService.convertToDTO(userEntity))
+              .map(user -> userService.convertToDTO(user))
               .collect(Collectors.toSet());
       issue.setUsers(users);
     }
@@ -227,7 +233,7 @@ public class IssueServiceImpl implements IssueService {
     //Convert explicitly, handling is easier for this case
     IssueEntity issueEntity = new IssueEntity();
 
-    ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId()).get();
+    ProjectEntity projectEntity = getProject(issue.getProjectId());
 
     issueEntity.setDescription(issue.getDescription());
     issueEntity.setTitle(issue.getTitle());
@@ -236,6 +242,7 @@ public class IssueServiceImpl implements IssueService {
     issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
     issueEntity.setIssueState(State.fromString(issue.getState()));
     issueEntity.setProjectEntity(projectEntity);
+    issueEntity.setOpenedBy(getLoginUser());
 
     return issueEntity;
   }
@@ -259,6 +266,17 @@ public class IssueServiceImpl implements IssueService {
             .orElseThrow(() -> new EntityNotFoundException("Error: Project not found for this id " + projectId));
 
     return projectEntity;
+  }
+
+  private UserEntity getLoginUser(){
+
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    UserEntity userEntity = userRepository.findByUsername(username)
+            .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this name " + username));
+
+    return userEntity;
+
   }
 }
 
