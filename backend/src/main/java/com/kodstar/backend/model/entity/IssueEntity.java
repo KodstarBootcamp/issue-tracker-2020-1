@@ -28,7 +28,7 @@ public class IssueEntity extends BaseEntity{
     @Column(length = 1500)
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "issue_label", joinColumns = @JoinColumn(name = "issue_id"),
     inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<LabelEntity> labels;
