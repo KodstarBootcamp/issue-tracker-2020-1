@@ -4,13 +4,10 @@ import com.kodstar.backend.model.dto.*;
 import com.kodstar.backend.model.entity.*;
 import com.kodstar.backend.model.enums.*;
 import com.kodstar.backend.repository.*;
-import com.kodstar.backend.security.userdetails.UserDetailsImpl;
 import com.kodstar.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,27 +63,37 @@ public class IssueServiceImpl implements IssueService {
   }
 
   @Override
-  public void deleteMultipleIssues(BatchDeleteRequest request) {
+  public void multipleIssues(BatchRequest request) {
 
-    if (!request.getMethod().equals("delete"))
+    System.out.println(request.getMethod());
+
+    if (!request.getMethod().equals("delete") && !request.getMethod().equals("close"))
       throw new IllegalArgumentException();
 
     // If we know the entities' ids, we can make direct fetching by findAllById.
     // It is simplest and more efficient.
-    Collection<IssueEntity> deleteBatchIssues = issueRepository.findAllById(request.getIds());
+    Collection<IssueEntity> batchIssues = issueRepository.findAllById(request.getIds());
 
     // We should get back an entity for each id
     // if sizes are not match, throw 404 not found
-    if (deleteBatchIssues.size() != request.getIds().size())
+    if (batchIssues.size() != request.getIds().size())
       throw new EntityNotFoundException();
 
-    deleteBatchIssues.stream()
-            .forEach(issue -> {
-              issue.setLabels(null);
-              issue.setUsers(null);
-            });
+    if (request.getMethod().equals("delete")){
+      batchIssues.forEach(issue -> {
+                issue.setLabels(null);
+                issue.setUsers(null);
+              });
 
-    issueRepository.deleteInBatch(deleteBatchIssues);
+      issueRepository.deleteInBatch(batchIssues);
+    }
+
+    if (request.getMethod().equals("close")){
+      batchIssues.forEach(issue -> issue.setIssueState(State.CLOSED));
+
+      issueRepository.saveAll(batchIssues);
+    }
+
   }
 
   @Override
