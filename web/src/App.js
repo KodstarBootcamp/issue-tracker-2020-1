@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import CreateProject from "./pages/CreateProject";
 import Projects from "./pages/Projects";
 import ProtectedRoutes from "./pages/ProtectedRoutes";
+import NotFoundPage from "./pages/NotFoundPage";
 
 export const IssueContex = createContext();
 
@@ -139,6 +140,9 @@ function App() {
           exact
           component={Projects}
           isAuth={token}
+        />
+        <Route 
+          component={NotFoundPage}
         />
       </Switch>
     </IssueContex.Provider>

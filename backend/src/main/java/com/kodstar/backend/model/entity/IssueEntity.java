@@ -51,6 +51,10 @@ public class IssueEntity extends BaseEntity{
     @JoinColumn(name = "project_id",nullable = false)
     private ProjectEntity projectEntity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",nullable = false)
+    private UserEntity openedBy;
+
     public void removeLabel(LabelEntity entity){
         this.labels.remove(entity);
     }
