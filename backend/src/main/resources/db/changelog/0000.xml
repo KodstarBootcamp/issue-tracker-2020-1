@@ -1,0 +1,114 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.10.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+    <changeSet author="schwarz (generated)" id="1610628080174-1">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modified_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="email" type="VARCHAR(50)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-2">
+        <createTable tableName="issue_label">
+            <column name="issue_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="issue_label_pkey"/>
+            </column>
+            <column name="label_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="issue_label_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-3">
+        <createTable tableName="issue_users">
+            <column name="issue_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="issue_users_pkey"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="issue_users_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-4">
+        <createTable tableName="issue">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="issue_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modified_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(1500)"/>
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="state" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(250)"/>
+            <column name="project_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-5">
+        <createTable tableName="label">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="label_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modified_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="color" type="VARCHAR(6)"/>
+            <column name="name" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-6">
+        <createTable tableName="project">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="project_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modified_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(1500)"/>
+            <column name="name" type="VARCHAR(250)"/>
+            <column name="state" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-7">
+        <addUniqueConstraint columnNames="email" constraintName="uk_6dotkott2kjsp8vw4d0m25fb7" tableName="users"/>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-8">
+        <createIndex indexName="uk_r43af9ap4edm43mmtq01oddj6" tableName="users" unique="true">
+            <column name="username"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-9">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="issue_users" constraintName="fkr0mm178x8btx0sgkfjpv39q35" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-10">
+        <addUniqueConstraint columnNames="title, project_id" constraintName="uk6tj8oicm4ovqqfu93g10ei2iu" tableName="issue"/>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-11">
+        <addUniqueConstraint columnNames="name" constraintName="uk_defh0r2wr6e5g7vu7vanv4pxa" tableName="label"/>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-12">
+        <addUniqueConstraint columnNames="name" constraintName="uk_3k75vvu7mevyvvb5may5lj8k7" tableName="project"/>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-13">
+        <addForeignKeyConstraint baseColumnNames="issue_id" baseTableName="issue_label" constraintName="fkit5n9c0frugu5m8xqsxtps63r" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="issue" validate="true"/>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-14">
+        <addForeignKeyConstraint baseColumnNames="label_id" baseTableName="issue_label" constraintName="fkxbk5rr30kkb6k4ech7x4vh9h" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="label" validate="true"/>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-15">
+        <addForeignKeyConstraint baseColumnNames="issue_id" baseTableName="issue_users" constraintName="fkmyot4sukykft5px72b4ud1inc" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="issue" validate="true"/>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-16">
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="issue" constraintName="fkcombytcpeogaqi2012phvvvhy" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="project" validate="true"/>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-17">
+        <addColumn tableName="issue">
+            <column name="user_id" type="bigint" />
+        </addColumn>
+    </changeSet>
+    <changeSet author="schwarz (generated)" id="1610628080174-18">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="issue" constraintName="fk_issue_user_open" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
