@@ -7,6 +7,9 @@ import com.kodstar.backend.repository.*;
 import com.kodstar.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -148,13 +151,14 @@ public class IssueServiceImpl implements IssueService {
 
   //Project related methods
   @Override
-  public Collection<Issue> findByProjectId(Long projectId) {
+  public Page<Issue> findByProjectId(Long projectId, int page, int size) {
 
+    Sort sort = Sort.by(Sort.Order.desc("created"));
+    Pageable pageable = PageRequest.of(page,size, sort);
     ProjectEntity projectEntity = getProject(projectId);
 
-    return issueRepository.findByProjectEntity(projectEntity).stream()
-            .map(issueEntity -> convertToDTO(issueEntity))
-            .collect(Collectors.toList());
+    return issueRepository.findByProjectEntity(projectEntity, pageable).map(this::convertToDTO);
+
   }
 
   @Override

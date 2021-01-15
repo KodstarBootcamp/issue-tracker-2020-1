@@ -2,13 +2,12 @@ package com.kodstar.backend.controller;
 
 import com.kodstar.backend.model.dto.BatchDeleteRequest;
 import com.kodstar.backend.model.dto.Issue;
-import com.kodstar.backend.model.dto.User;
-import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Set;

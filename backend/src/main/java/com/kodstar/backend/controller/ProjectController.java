@@ -7,11 +7,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.Map;
 
 @RestController
 @RequestMapping
@@ -73,14 +76,16 @@ public class ProjectController {
 
   @GetMapping("/project/{id}/issues")
   @Operation(summary = "Find all issues of a project")
-  public ResponseEntity<Collection<Issue>> getIssuesByProjectId(@PathVariable Long id) {
+  public ResponseEntity<Map<String,Object>> getIssuesByProjectId(@PathVariable Long id,
+                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "3") int size) {
 
-    Collection<Issue> projectIssues = issueService.findByProjectId(id);
+    Page<Issue> issues = issueService.findByProjectId(id, page, size);
 
-    if (projectIssues.isEmpty())
-      return ResponseEntity.noContent().build();
+    //if (projectIssues.isEmpty())
+     // return ResponseEntity.noContent().build();
 
-    return ResponseEntity.ok(projectIssues);
+    return null; //ResponseEntity.ok(projectIssues);
   }
 
   @GetMapping("/project/{id}/issues/search")

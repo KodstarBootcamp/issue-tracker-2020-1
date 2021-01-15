@@ -3,6 +3,8 @@ package com.kodstar.backend.service;
 import com.kodstar.backend.model.dto.*;
 import com.kodstar.backend.model.entity.*;
 import com.kodstar.backend.utils.Converter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import java.util.Collection;
 import java.util.Set;
@@ -25,9 +27,12 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     Collection<Issue> findByProjectAndDescriptionContaining(Long projectId, String searchWord, Sort sort);
     Collection<Issue> findByProjectAndLabels(Long projectId, LabelEntity labelEntity, Sort sort);
     Collection<Issue> findByProjectIdAndSort(Long id, Sort sort);
-    Collection<Issue> findByProjectId(Long id);
+    //Collection<Issue> findByProjectId(Long id);
 
     Issue assignUsersToIssue(Long id, Set<Long> assignees);
     Collection<Issue> findAllByUserId(Long userId);
+
+    Page<Issue> findByProjectId(Long id, int page, int size);
+
 
 }
