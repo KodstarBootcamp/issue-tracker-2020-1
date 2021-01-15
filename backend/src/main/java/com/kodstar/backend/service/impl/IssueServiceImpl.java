@@ -1,5 +1,6 @@
 package com.kodstar.backend.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.*;
 import com.kodstar.backend.model.entity.*;
 import com.kodstar.backend.model.enums.*;
@@ -8,6 +9,7 @@ import com.kodstar.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class IssueServiceImpl implements IssueService {
 
   private final IssueRepository issueRepository;
+  private final ObjectMapper objectMapper;
 
   @Autowired
   private ProjectRepository projectRepository;
@@ -62,27 +65,40 @@ public class IssueServiceImpl implements IssueService {
   }
 
   @Override
-  public void deleteMultipleIssues(BatchDeleteRequest request) {
+  public void multipleIssues(BatchRequest request) {
 
-    if (!request.getMethod().equals("delete"))
+    System.out.println(request.getMethod());
+
+    if (!request.getMethod().equals("delete") && !request.getMethod().equals("close"))
       throw new IllegalArgumentException();
 
     // If we know the entities' ids, we can make direct fetching by findAllById.
     // It is simplest and more efficient.
-    Collection<IssueEntity> deleteBatchIssues = issueRepository.findAllById(request.getIds());
+    Collection<IssueEntity> batchIssues = issueRepository.findAllById(request.getIds());
 
     // We should get back an entity for each id
     // if sizes are not match, throw 404 not found
-    if (deleteBatchIssues.size() != request.getIds().size())
+    if (batchIssues.size() != request.getIds().size())
       throw new EntityNotFoundException();
 
-    deleteBatchIssues.stream()
-            .forEach(issue -> {
-              issue.setLabels(null);
-              issue.setUsers(null);
-            });
+    if (request.getMethod().equals("delete")){
+      batchIssues.forEach(issue -> {
+                issue.setLabels(null);
+                issue.setUsers(null);
+              });
 
-    issueRepository.deleteInBatch(deleteBatchIssues);
+      issueRepository.deleteInBatch(batchIssues);
+    }
+
+    if (request.getMethod().equals("close")){
+      batchIssues.forEach(issue -> {
+        issue.setIssueState(State.CLOSED);
+        issue.setIssueCategory(IssueCategory.FINISHED);
+      });
+
+      issueRepository.saveAll(batchIssues);
+    }
+
   }
 
   @Override
@@ -101,14 +117,21 @@ public class IssueServiceImpl implements IssueService {
   @Override
   public Issue updateIssueEntity(Long id, Issue issue) {
 
-    if (issueRepository.findById(id) == null)
-      throw new EntityNotFoundException("Error: Issue not found for this id " + id);
+    IssueEntity issueOldEntity = issueRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
+
 
     IssueEntity issueEntityToUpdate = convertToEntity(issue);
     issueEntityToUpdate.setId(id);
     issueEntityToUpdate.setModified(LocalDateTime.now());
+    issueEntityToUpdate.setOpenedBy(issueOldEntity.getOpenedBy());
+
+    if (issueEntityToUpdate.getIssueState().equals(State.CLOSED))
+      issueEntityToUpdate.setIssueCategory(IssueCategory.FINISHED);
+
     setIdFromExistingLabel(issueEntityToUpdate);
     labelService.saveAll(issueEntityToUpdate.getLabels());
+
     issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
     return convertToDTO(issueEntityToUpdate);
@@ -201,7 +224,8 @@ public class IssueServiceImpl implements IssueService {
 
     Issue issue = new Issue();
 
-    ProjectEntity projectEntity = projectRepository.findById(issueEntity.getProjectEntity().getId()).get();
+    ProjectEntity projectEntity = getProject(issueEntity.getProjectEntity().getId());
+    UserEntity userEntity = userRepository.findById(issueEntity.getOpenedBy().getId()).get();
 
     issue.setId(issueEntity.getId());
     issue.setTitle(issueEntity.getTitle());
@@ -210,10 +234,11 @@ public class IssueServiceImpl implements IssueService {
     issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
     issue.setState(issueEntity.getIssueState().toString().toLowerCase());
     issue.setProjectId(projectEntity.getId());
+    issue.setOpenedBy(userEntity.getUsername());
 
     if (issueEntity.getUsers() != null) {
       Set<User> users = issueEntity.getUsers().stream()
-              .map(userEntity -> userService.convertToDTO(userEntity))
+              .map(user -> userService.convertToDTO(user))
               .collect(Collectors.toSet());
       issue.setUsers(users);
     }
@@ -226,8 +251,7 @@ public class IssueServiceImpl implements IssueService {
 
     //Convert explicitly, handling is easier for this case
     IssueEntity issueEntity = new IssueEntity();
-
-    ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId()).get();
+    ProjectEntity projectEntity = getProject(issue.getProjectId());
 
     issueEntity.setDescription(issue.getDescription());
     issueEntity.setTitle(issue.getTitle());
@@ -236,6 +260,7 @@ public class IssueServiceImpl implements IssueService {
     issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
     issueEntity.setIssueState(State.fromString(issue.getState()));
     issueEntity.setProjectEntity(projectEntity);
+    issueEntity.setOpenedBy(getLoginUser());
     Set<UserEntity> userEntities = issue.getUsers().stream().map(user -> userService.convertToEntity(user)).collect(Collectors.toSet());
     issueEntity.setUsers(userEntities);
 
@@ -261,6 +286,18 @@ public class IssueServiceImpl implements IssueService {
             .orElseThrow(() -> new EntityNotFoundException("Error: Project not found for this id " + projectId));
 
     return projectEntity;
+  }
+
+
+  private UserEntity getLoginUser(){
+
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    UserEntity userEntity = userRepository.findByUsername(username)
+            .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this name " + username));
+
+    return userEntity;
+
   }
 }
 

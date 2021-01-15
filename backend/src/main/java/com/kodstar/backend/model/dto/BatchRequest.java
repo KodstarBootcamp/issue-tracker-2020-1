@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class BatchDeleteRequest {
+public class BatchRequest {
 
     private String method;
     private Set<Long> ids;

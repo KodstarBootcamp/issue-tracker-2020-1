@@ -11,9 +11,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 @ToString
 public class UserEntity extends BaseEntity{
