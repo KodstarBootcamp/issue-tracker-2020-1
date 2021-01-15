@@ -11,6 +11,7 @@ export default function AllIssues() {
   const id = idArray[idArray.length - 1];
 
   const [isCheck, setCheck] = useState(false);
+  const [open, setOpen] = useState("open");
   const [search, setSearch] = useState("");
   const [option, setoption] = useState("");
   const [multipleDeleteIds, setmultipleDeleteIds] = useState([]);
@@ -105,49 +106,51 @@ export default function AllIssues() {
       <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
     </div>
   ) : (
-    issues.map((item) => (
-      <div key={item.id} className={styles.issueCard}>
-        <div className="form-group form-check mr-5">
-          <input
-            value={item.id}
-            checked={item.isCheck}
-            onChange={CheckHandler}
-            className="form-check-input"
-            type="checkbox"
-          />
-        </div>
-        <p className={styles.issueTitle}>{item.title}</p>
-        <div>
-          {item.labels.map((label, i) => (
-            <span
-              style={{ backgroundColor: `#${label.color}` }}
-              className={styles.labelContainer}
-              key={i}
+    issues
+      .filter((item) => item.state === open)
+      .map((item) => (
+        <div key={item.id} className={styles.issueCard}>
+          <div className="form-group form-check mr-5">
+            <input
+              value={item.id}
+              checked={item.isCheck}
+              onChange={CheckHandler}
+              className="form-check-input"
+              type="checkbox"
+            />
+          </div>
+          <p className={styles.issueTitle}>{item.title}</p>
+          <div>
+            {item.labels.map((label, i) => (
+              <span
+                style={{ backgroundColor: `#${label.color}` }}
+                className={styles.labelContainer}
+                key={i}
+              >
+                {label.name.charAt(0).toUpperCase() + label.name.slice(1)}
+              </span>
+            ))}
+          </div>
+          <div className="ml-auto">
+            <button
+              id={item.id}
+              onClick={editHandler}
+              type="button"
+              className="btn btn-secondary btn-sm mr-2"
             >
-              {label.name.charAt(0).toUpperCase() + label.name.slice(1)}
-            </span>
-          ))}
+              Edit
+            </button>
+            <button
+              id={item.id}
+              onClick={deleteHandler}
+              type="button"
+              className="btn btn-danger btn-sm"
+            >
+              Delete
+            </button>
+          </div>
         </div>
-        <div className="ml-auto">
-          <button
-            id={item.id}
-            onClick={editHandler}
-            type="button"
-            className="btn btn-secondary btn-sm mr-2"
-          >
-            Edit
-          </button>
-          <button
-            id={item.id}
-            onClick={deleteHandler}
-            type="button"
-            className="btn btn-danger btn-sm"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    ))
+      ))
   );
 
   const multipleDeleteHandler = async () => {
@@ -158,7 +161,24 @@ export default function AllIssues() {
     const response = await Axios.post("/issues/batch", data);
     console.log(response);
   };
+  const multipleCloseHandler = async () => {
+    const data = {
+      method: "close",
+      ids: multipleDeleteIds,
+    };
+    const response = await Axios.post("/issues/batch", data);
+    window.location.reload();
+    console.log(response);
+  };
 
+  const openIssue = (e) => {
+    e.preventDefault();
+    setOpen("open");
+  };
+  const closeIssue = (e) => {
+    e.preventDefault();
+    setOpen("closed");
+  };
   return (
     <div>
       <div className="d-flex mt-5 justify-content-center">
@@ -170,45 +190,64 @@ export default function AllIssues() {
       </div>
       <div className={styles.container}>
         <div className={styles.navbar}>
-          <Link to={`/createIssue/${id}`}>
-            <button className="btn btn-outline-success btn-sm">
-              Create New Issue
-            </button>
-          </Link>
-          <Link to="/allIssues">
+          <div className={styles.isOpen}>
+            <span onClick={openIssue} role="button" className="mx-3">
+              {issues.filter((item) => item.state === "open").length} Open
+            </span>
+            <span onClick={closeIssue} role="button" className="text-secondary">
+              {issues.filter((item) => item.state === "closed").length} Close
+            </span>
+          </div>
+          <div className={styles.optionBar}>
+            <Link to={`/createIssue/${id}`}>
+              <button className="btn btn-outline-success btn-sm">
+                Create New Issue
+              </button>
+            </Link>
+            <Link to="/allIssues">
+              <button
+                style={{
+                  display: multipleDeleteIds.length > 1 ? "block" : "none",
+                }}
+                onClick={multipleDeleteHandler}
+                className="btn btn-outline-danger btn-sm"
+              >
+                Delete All
+              </button>
+            </Link>
             <button
               style={{
                 display: multipleDeleteIds.length > 1 ? "block" : "none",
               }}
-              onClick={multipleDeleteHandler}
-              className="btn btn-outline-danger btn-sm"
+              onClick={multipleCloseHandler}
+              className="btn btn-outline-danger btn-sm mx-2"
             >
-              Delete All
+              Close All
             </button>
-          </Link>
-          <select
-            style={{ width: "150px" }}
-            value={option}
-            onChange={optionHandler}
-            className="form-control "
-          >
-            <option value="">Sort By</option>
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="recent">Recent Updated</option>
-            <option value="latest">Latest Updated</option>
-          </select>
-          <form className={styles.searchArea}>
-            <input
-              style={{ width: "250px" }}
-              value={search}
-              onChange={searchHandler}
-              className="form-control ml-3"
-              type="text"
-              placeholder="title:keyword ,description:keyword"
-              aria-label="Search"
-            />
-          </form>
+            <select
+              style={{ width: "150px" }}
+              value={option}
+              onChange={optionHandler}
+              className="form-control "
+            >
+              <option value="">Sort By</option>
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="recent">Recent Updated</option>
+              <option value="latest">Latest Updated</option>
+            </select>
+            <form className={styles.searchArea}>
+              <input
+                style={{ width: "250px" }}
+                value={search}
+                onChange={searchHandler}
+                className="form-control ml-3"
+                type="text"
+                placeholder="title:keyword ,description:keyword"
+                aria-label="Search"
+              />
+            </form>
+          </div>
         </div>
         <div>{Display}</div>
       </div>
