@@ -15,8 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -151,13 +150,21 @@ public class IssueServiceImpl implements IssueService {
 
   //Project related methods
   @Override
-  public Page<Issue> findByProjectId(Long projectId, int page, int size) {
+  public Map<String, Object> findByProjectId(Long projectId, int page, int size) {
 
     Sort sort = Sort.by(Sort.Order.desc("created"));
     Pageable pageable = PageRequest.of(page,size, sort);
     ProjectEntity projectEntity = getProject(projectId);
+    Page<Issue> pageIssue = issueRepository.findByProjectEntity(projectEntity, pageable).map(this::convertToDTO);
+    List<Issue> issues = pageIssue.getContent();
+    Map<String, Object> response = new HashMap<>();
 
-    return issueRepository.findByProjectEntity(projectEntity, pageable).map(this::convertToDTO);
+    response.put("issues", issues);
+    response.put("currentPage", pageIssue.getNumber());
+    response.put("totalItems", pageIssue.getTotalElements());
+    response.put("totalPages", pageIssue.getTotalPages());
+
+    return response;
 
   }
 
