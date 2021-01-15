@@ -21,7 +21,7 @@ public interface IssueService extends Converter<Issue, IssueEntity> {
     //to use in label service
     Collection<IssueEntity> findAll();
 
-    void deleteMultipleIssues(BatchDeleteRequest request);
+    void multipleIssues(BatchRequest request);
 
     //to use search and sort
     Collection<Issue> findByProjectAndTitleContaining(Long projectId, String title, Sort sort);

@@ -28,15 +28,15 @@ public class IssueEntity extends BaseEntity{
     @Column(length = 1500)
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "issue_label", joinColumns = @JoinColumn(name = "issue_id"),
     inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<LabelEntity> labels;
 
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "issue_user", joinColumns = @JoinColumn(name = "issue_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(name = "issue_users", joinColumns = @JoinColumn(name = "issue_id"),
+            inverseJoinColumns = @JoinColumn(name = "users_id"))
     private Set<UserEntity> users;
 
     @Column(name = "category")
@@ -50,6 +50,10 @@ public class IssueEntity extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id",nullable = false)
     private ProjectEntity projectEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",nullable = false,updatable = false)
+    private UserEntity openedBy;
 
     public void removeLabel(LabelEntity entity){
         this.labels.remove(entity);
