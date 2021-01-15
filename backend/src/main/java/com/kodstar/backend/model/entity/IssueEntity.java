@@ -1,6 +1,5 @@
 package com.kodstar.backend.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kodstar.backend.model.enums.*;
 import lombok.*;
 import javax.persistence.*;
@@ -37,7 +36,7 @@ public class IssueEntity extends BaseEntity{
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "issue_users", joinColumns = @JoinColumn(name = "issue_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+            inverseJoinColumns = @JoinColumn(name = "users_id"))
     private Set<UserEntity> users;
 
     @Column(name = "category")

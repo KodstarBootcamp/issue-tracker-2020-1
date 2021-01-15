@@ -98,7 +98,6 @@ public class IssueServiceImpl implements IssueService {
 
       issueRepository.saveAll(batchIssues);
     }
-
   }
 
   @Override
@@ -119,7 +118,6 @@ public class IssueServiceImpl implements IssueService {
 
     IssueEntity issueOldEntity = issueRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
-
 
     IssueEntity issueEntityToUpdate = convertToEntity(issue);
     issueEntityToUpdate.setId(id);
@@ -261,8 +259,6 @@ public class IssueServiceImpl implements IssueService {
     issueEntity.setIssueState(State.fromString(issue.getState()));
     issueEntity.setProjectEntity(projectEntity);
     issueEntity.setOpenedBy(getLoginUser());
-    Set<UserEntity> userEntities = issue.getUsers().stream().map(user -> userService.convertToEntity(user)).collect(Collectors.toSet());
-    issueEntity.setUsers(userEntities);
 
     return issueEntity;
   }
