@@ -89,7 +89,10 @@ public class IssueServiceImpl implements IssueService {
     }
 
     if (request.getMethod().equals("close")){
-      batchIssues.forEach(issue -> issue.setIssueState(State.CLOSED));
+      batchIssues.forEach(issue -> {
+        issue.setIssueState(State.CLOSED);
+        issue.setIssueCategory(IssueCategory.FINISHED);
+      });
 
       issueRepository.saveAll(batchIssues);
     }
@@ -118,8 +121,13 @@ public class IssueServiceImpl implements IssueService {
     IssueEntity issueEntityToUpdate = convertToEntity(issue);
     issueEntityToUpdate.setId(id);
     issueEntityToUpdate.setModified(LocalDateTime.now());
+
+    if (issueEntityToUpdate.getIssueState().equals(State.CLOSED))
+      issueEntityToUpdate.setIssueCategory(IssueCategory.FINISHED);
+
     setIdFromExistingLabel(issueEntityToUpdate);
     labelService.saveAll(issueEntityToUpdate.getLabels());
+
     issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
     return convertToDTO(issueEntityToUpdate);
