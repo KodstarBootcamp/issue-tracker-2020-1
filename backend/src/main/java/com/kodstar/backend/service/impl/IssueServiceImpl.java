@@ -236,6 +236,8 @@ public class IssueServiceImpl implements IssueService {
     issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
     issueEntity.setIssueState(State.fromString(issue.getState()));
     issueEntity.setProjectEntity(projectEntity);
+    Set<UserEntity> userEntities = issue.getUsers().stream().map(user -> userService.convertToEntity(user)).collect(Collectors.toSet());
+    issueEntity.setUsers(userEntities);
 
     return issueEntity;
   }
