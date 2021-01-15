@@ -92,6 +92,49 @@ export default function AllIssues() {
     setCheck(!isCheck);
   };
 
+  const OpenCloseHandler = (event) => {
+    const id = event.target.id;
+
+    Axios.get("/issue/" + id)
+      .then((res) => {
+        return res.data;
+      })
+      .then((data) => {
+        delete data.id;
+        const UpdatedIssue = {
+          ...data,
+
+          state: data.state === "open" ? "closed" : "open",
+        };
+        Axios.put("/issue/" + id, UpdatedIssue)
+          .then((res) => {
+            console.log(res.data);
+            window.location.reload();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    /*   const UpdatedIssue = {
+      ...task,
+
+      state: task.state === "open" ? "closed" : "open",
+    };
+
+    Axios.put("/issue/" + id, UpdatedIssue)
+      .then((res) => {
+        console.log(res.data);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      }); */
+  };
+
   // mapping around all the issues to display one by one
   const Display = !issues ? (
     <div
@@ -132,6 +175,14 @@ export default function AllIssues() {
             ))}
           </div>
           <div className="ml-auto">
+            <button
+              id={item.id}
+              onClick={OpenCloseHandler}
+              type="button"
+              className="btn btn-outline-info btn-sm mr-2"
+            >
+              {item.state === "open" ? "Close" : "Reopen"}
+            </button>
             <button
               id={item.id}
               onClick={editHandler}
