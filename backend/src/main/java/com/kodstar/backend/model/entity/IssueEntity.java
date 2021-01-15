@@ -1,5 +1,6 @@
 package com.kodstar.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kodstar.backend.model.enums.*;
 import lombok.*;
 import javax.persistence.*;
@@ -52,7 +53,7 @@ public class IssueEntity extends BaseEntity{
     private ProjectEntity projectEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",nullable = false)
+    @JoinColumn(name = "user_id",nullable = false,updatable = false)
     private UserEntity openedBy;
 
     public void removeLabel(LabelEntity entity){

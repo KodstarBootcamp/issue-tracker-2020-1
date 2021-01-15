@@ -1,5 +1,6 @@
 package com.kodstar.backend.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodstar.backend.model.dto.*;
 import com.kodstar.backend.model.entity.*;
 import com.kodstar.backend.model.enums.*;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class IssueServiceImpl implements IssueService {
 
   private final IssueRepository issueRepository;
+  private final ObjectMapper objectMapper;
 
   @Autowired
   private ProjectRepository projectRepository;
@@ -89,7 +91,10 @@ public class IssueServiceImpl implements IssueService {
     }
 
     if (request.getMethod().equals("close")){
-      batchIssues.forEach(issue -> issue.setIssueState(State.CLOSED));
+      batchIssues.forEach(issue -> {
+        issue.setIssueState(State.CLOSED);
+        issue.setIssueCategory(IssueCategory.FINISHED);
+      });
 
       issueRepository.saveAll(batchIssues);
     }
@@ -112,14 +117,21 @@ public class IssueServiceImpl implements IssueService {
   @Override
   public Issue updateIssueEntity(Long id, Issue issue) {
 
-    if (issueRepository.findById(id) == null)
-      throw new EntityNotFoundException("Error: Issue not found for this id " + id);
+    IssueEntity issueOldEntity = issueRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
+
 
     IssueEntity issueEntityToUpdate = convertToEntity(issue);
     issueEntityToUpdate.setId(id);
     issueEntityToUpdate.setModified(LocalDateTime.now());
+    issueEntityToUpdate.setOpenedBy(issueOldEntity.getOpenedBy());
+
+    if (issueEntityToUpdate.getIssueState().equals(State.CLOSED))
+      issueEntityToUpdate.setIssueCategory(IssueCategory.FINISHED);
+
     setIdFromExistingLabel(issueEntityToUpdate);
     labelService.saveAll(issueEntityToUpdate.getLabels());
+
     issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
     return convertToDTO(issueEntityToUpdate);
@@ -239,7 +251,6 @@ public class IssueServiceImpl implements IssueService {
 
     //Convert explicitly, handling is easier for this case
     IssueEntity issueEntity = new IssueEntity();
-
     ProjectEntity projectEntity = getProject(issue.getProjectId());
 
     issueEntity.setDescription(issue.getDescription());
@@ -274,6 +285,7 @@ public class IssueServiceImpl implements IssueService {
 
     return projectEntity;
   }
+
 
   private UserEntity getLoginUser(){
 
