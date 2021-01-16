@@ -8,14 +8,16 @@ import com.kodstar.backend.repository.*;
 import com.kodstar.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -98,7 +100,6 @@ public class IssueServiceImpl implements IssueService {
 
       issueRepository.saveAll(batchIssues);
     }
-
   }
 
   @Override
@@ -120,7 +121,6 @@ public class IssueServiceImpl implements IssueService {
     IssueEntity issueOldEntity = issueRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
 
-
     IssueEntity issueEntityToUpdate = convertToEntity(issue);
     issueEntityToUpdate.setId(id);
     issueEntityToUpdate.setModified(LocalDateTime.now());
@@ -131,6 +131,9 @@ public class IssueServiceImpl implements IssueService {
 
     setIdFromExistingLabel(issueEntityToUpdate);
     labelService.saveAll(issueEntityToUpdate.getLabels());
+
+    Set<UserEntity> userEntities = issue.getUsers().stream().map(user -> userService.convertToEntity(user)).collect(Collectors.toSet());
+    issueEntityToUpdate.setUsers(userEntities);
 
     issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
@@ -159,7 +162,7 @@ public class IssueServiceImpl implements IssueService {
   }
 
   @Override
-  public Collection<Issue> findAllByUser(Long userId) {
+  public Collection<Issue> findAllByUserId(Long userId) {
 
     UserEntity userEntity = userRepository.findById(userId).orElseThrow(()->new EntityNotFoundException());
 
@@ -171,13 +174,22 @@ public class IssueServiceImpl implements IssueService {
 
   //Project related methods
   @Override
-  public Collection<Issue> findByProjectId(Long projectId) {
+  public Map<String, Object> findByProjectId(Long projectId, int page, int size) {
 
+    Sort sort = Sort.by(Sort.Order.desc("created"));
+    Pageable pageable = PageRequest.of(page,size, sort);
     ProjectEntity projectEntity = getProject(projectId);
+    Page<Issue> pageIssue = issueRepository.findByProjectEntity(projectEntity, pageable).map(this::convertToDTO);
+    List<Issue> issues = pageIssue.getContent();
+    Map<String, Object> response = new HashMap<>();
 
-    return issueRepository.findByProjectEntity(projectEntity).stream()
-            .map(issueEntity -> convertToDTO(issueEntity))
-            .collect(Collectors.toList());
+    response.put("issues", issues);
+    response.put("currentPage", pageIssue.getNumber());
+    response.put("totalItems", pageIssue.getTotalElements());
+    response.put("totalPages", pageIssue.getTotalPages());
+
+    return response;
+
   }
 
   @Override
