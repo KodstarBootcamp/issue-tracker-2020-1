@@ -1,19 +1,33 @@
 package com.kodstar.backend.service.impl;
 
-import com.kodstar.backend.model.dto.*;
-import com.kodstar.backend.model.entity.*;
-import com.kodstar.backend.model.enums.*;
-import com.kodstar.backend.repository.*;
-import com.kodstar.backend.service.*;
+import com.kodstar.backend.model.dto.BatchRequest;
+import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.User;
+import com.kodstar.backend.model.entity.IssueEntity;
+import com.kodstar.backend.model.entity.LabelEntity;
+import com.kodstar.backend.model.entity.ProjectEntity;
+import com.kodstar.backend.model.entity.UserEntity;
+import com.kodstar.backend.model.enums.IssueCategory;
+import com.kodstar.backend.model.enums.State;
+import com.kodstar.backend.repository.IssueRepository;
+import com.kodstar.backend.repository.ProjectRepository;
+import com.kodstar.backend.repository.UserRepository;
+import com.kodstar.backend.service.IssueService;
+import com.kodstar.backend.service.LabelService;
+import com.kodstar.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -62,27 +76,39 @@ public class IssueServiceImpl implements IssueService {
   }
 
   @Override
-  public void deleteMultipleIssues(BatchDeleteRequest request) {
+  public void multipleIssues(BatchRequest request) {
 
-    if (!request.getMethod().equals("delete"))
+    System.out.println(request.getMethod());
+
+    if (!request.getMethod().equals("delete") && !request.getMethod().equals("close"))
       throw new IllegalArgumentException();
 
     // If we know the entities' ids, we can make direct fetching by findAllById.
     // It is simplest and more efficient.
-    Collection<IssueEntity> deleteBatchIssues = issueRepository.findAllById(request.getIds());
+    Collection<IssueEntity> batchIssues = issueRepository.findAllById(request.getIds());
 
     // We should get back an entity for each id
     // if sizes are not match, throw 404 not found
-    if (deleteBatchIssues.size() != request.getIds().size())
+    if (batchIssues.size() != request.getIds().size())
       throw new EntityNotFoundException();
 
-    deleteBatchIssues.stream()
-            .forEach(issue -> {
-              issue.setLabels(null);
-              issue.setUsers(null);
-            });
+    if (request.getMethod().equals("delete")){
+      batchIssues.forEach(issue -> {
+                issue.setLabels(null);
+                issue.setUsers(null);
+              });
 
-    issueRepository.deleteInBatch(deleteBatchIssues);
+      issueRepository.deleteInBatch(batchIssues);
+    }
+
+    if (request.getMethod().equals("close")){
+      batchIssues.forEach(issue -> {
+        issue.setIssueState(State.CLOSED);
+        issue.setIssueCategory(IssueCategory.FINISHED);
+      });
+
+      issueRepository.saveAll(batchIssues);
+    }
   }
 
   @Override
@@ -101,29 +127,39 @@ public class IssueServiceImpl implements IssueService {
   @Override
   public Issue updateIssueEntity(Long id, Issue issue) {
 
-    if (issueRepository.findById(id) == null)
-      throw new EntityNotFoundException("Error: Issue not found for this id " + id);
+    IssueEntity issueOldEntity = issueRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
 
     IssueEntity issueEntityToUpdate = convertToEntity(issue);
     issueEntityToUpdate.setId(id);
     issueEntityToUpdate.setModified(LocalDateTime.now());
+    issueEntityToUpdate.setOpenedBy(issueOldEntity.getOpenedBy());
+    issueEntityToUpdate.setProjectEntity(issueOldEntity.getProjectEntity());
+
+    if (issueEntityToUpdate.getIssueState().equals(State.CLOSED))
+      issueEntityToUpdate.setIssueCategory(IssueCategory.FINISHED);
+
     setIdFromExistingLabel(issueEntityToUpdate);
     labelService.saveAll(issueEntityToUpdate.getLabels());
+
+    Set<UserEntity> userEntities = issue.getUsers().stream().map(user -> userService.convertToEntity(user)).collect(Collectors.toSet());
+    issueEntityToUpdate.setUsers(userEntities);
+
     issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
     return convertToDTO(issueEntityToUpdate);
   }
 
   @Override
-  public Issue assignUsersToIssue(Long id, Set<User> assignees) {
+  public Issue assignUsersToIssue(Long id, Set<Long> assignees) {
     // get IssueEntity by id.
     IssueEntity issueEntity = issueRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
 
     // get new assignees from user table (UserEntity)
-    Set<UserEntity> newAssignees = assignees.stream().map(user -> {
-      UserEntity userEntity = userRepository.findById(user.getId())
-              .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this id " + user.getId()));
+    Set<UserEntity> newAssignees = assignees.stream().map(userId -> {
+      UserEntity userEntity = userRepository.findById(userId)
+              .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this id " + userId));
       return userEntity;
     }).collect(Collectors.toSet());
 
@@ -135,15 +171,35 @@ public class IssueServiceImpl implements IssueService {
     return convertToDTO(issueEntity);
   }
 
+  @Override
+  public Collection<Issue> findAllByUserId(Long userId) {
+
+    UserEntity userEntity = userRepository.findById(userId).orElseThrow(()->new EntityNotFoundException());
+
+    return issueRepository.findByUsersContaining(userEntity)
+            .stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toSet());
+  }
+
   //Project related methods
   @Override
-  public Collection<Issue> findByProjectId(Long projectId) {
+  public Map<String, Object> findByProjectId(Long projectId, int page, int size) {
 
+    Sort sort = Sort.by(Sort.Order.desc("created"));
+    Pageable pageable = PageRequest.of(page,size, sort);
     ProjectEntity projectEntity = getProject(projectId);
+    Page<Issue> pageIssue = issueRepository.findByProjectEntity(projectEntity, pageable).map(this::convertToDTO);
+    List<Issue> issues = pageIssue.getContent();
+    Map<String, Object> response = new HashMap<>();
 
-    return issueRepository.findByProjectEntity(projectEntity).stream()
-            .map(issueEntity -> convertToDTO(issueEntity))
-            .collect(Collectors.toList());
+    response.put("issues", issues);
+    response.put("currentPage", pageIssue.getNumber());
+    response.put("totalItems", pageIssue.getTotalElements());
+    response.put("totalPages", pageIssue.getTotalPages());
+
+    return response;
+
   }
 
   @Override
@@ -190,7 +246,8 @@ public class IssueServiceImpl implements IssueService {
 
     Issue issue = new Issue();
 
-    ProjectEntity projectEntity = projectRepository.findById(issueEntity.getProjectEntity().getId()).get();
+    ProjectEntity projectEntity = getProject(issueEntity.getProjectEntity().getId());
+    UserEntity userEntity = userRepository.findById(issueEntity.getOpenedBy().getId()).get();
 
     issue.setId(issueEntity.getId());
     issue.setTitle(issueEntity.getTitle());
@@ -199,10 +256,11 @@ public class IssueServiceImpl implements IssueService {
     issue.setCategory(issueEntity.getIssueCategory().toString().toLowerCase());
     issue.setState(issueEntity.getIssueState().toString().toLowerCase());
     issue.setProjectId(projectEntity.getId());
+    issue.setOpenedBy(userEntity.getUsername());
 
     if (issueEntity.getUsers() != null) {
       Set<User> users = issueEntity.getUsers().stream()
-              .map(userEntity -> userService.convertToDTO(userEntity))
+              .map(user -> userService.convertToDTO(user))
               .collect(Collectors.toSet());
       issue.setUsers(users);
     }
@@ -215,8 +273,7 @@ public class IssueServiceImpl implements IssueService {
 
     //Convert explicitly, handling is easier for this case
     IssueEntity issueEntity = new IssueEntity();
-
-    ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId()).get();
+    ProjectEntity projectEntity = getProject(issue.getProjectId());
 
     issueEntity.setDescription(issue.getDescription());
     issueEntity.setTitle(issue.getTitle());
@@ -225,6 +282,7 @@ public class IssueServiceImpl implements IssueService {
     issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
     issueEntity.setIssueState(State.fromString(issue.getState()));
     issueEntity.setProjectEntity(projectEntity);
+    issueEntity.setOpenedBy(getLoginUser());
 
     return issueEntity;
   }
@@ -248,6 +306,18 @@ public class IssueServiceImpl implements IssueService {
             .orElseThrow(() -> new EntityNotFoundException("Error: Project not found for this id " + projectId));
 
     return projectEntity;
+  }
+
+
+  private UserEntity getLoginUser(){
+
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    UserEntity userEntity = userRepository.findByUsername(username)
+            .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this name " + username));
+
+    return userEntity;
+
   }
 }
 

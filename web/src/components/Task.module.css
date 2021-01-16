@@ -14,11 +14,16 @@
 }
 
 .cardTitle {
-  font-size: 16px;
-  font-weight: bold;
-  color: rgb(61, 61, 245);
-  text-align: left;
-  margin: 10px;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: rgb(61, 61, 245) !important;
+  text-align: left !important;
+  margin: 10px !important;
+  border: none !important;
+  background-color: transparent !important;
+}
+.cardTitle:hover {
+  text-decoration: underline !important;
 }
 
 .cardText {
@@ -47,4 +52,10 @@
 }
 .container:hover .buttons {
   visibility: visible;
+}
+.descriptionDrawer {
+  font-weight: bold;
+}
+.contentTitle {
+  color: gray;
 }
