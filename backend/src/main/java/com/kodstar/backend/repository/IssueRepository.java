@@ -1,6 +1,8 @@
 package com.kodstar.backend.repository;
 
 import com.kodstar.backend.model.entity.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Collection;
@@ -14,4 +16,5 @@ public interface IssueRepository extends JpaRepository<IssueEntity,Long>{
     Collection<IssueEntity> findByProjectEntity(ProjectEntity projectEntity);
     Collection<IssueEntity> findByUsersContaining(UserEntity user);
 
+    Page<IssueEntity> findByProjectEntity(ProjectEntity projectEntity, Pageable pageable);
 }

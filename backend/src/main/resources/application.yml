@@ -1,6 +1,13 @@
 spring:
-    profiles:
-        active: prod
+    profiles.active: '@spring.profiles.active@'
+    liquibase.enabled: false
+    jpa:
+        open-in-view: false
+        show-sql: true
+    jackson:
+        default-property-inclusion: non_null
+    output:
+        ansi.enabled: always
 springdoc:
     version: '@springdoc.version@'
     api-docs:

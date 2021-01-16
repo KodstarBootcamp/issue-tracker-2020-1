@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping
@@ -81,6 +84,20 @@ public class ProjectController {
       return ResponseEntity.noContent().build();
 
     return ResponseEntity.ok(projectIssues);
+  }
+
+  @GetMapping("/project/{id}/display")
+  @Operation(summary = "Find all issues of a project")
+  public ResponseEntity<Map<String,Object>> getIssuesByProject(@PathVariable Long id,
+                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
+
+    Map<String,Object> response = issueService.findByProjectId(id, page, size);
+
+    if (((List) response.get("issues")).isEmpty())
+        return ResponseEntity.noContent().build();
+
+    return ResponseEntity.ok(response);
   }
 
   @GetMapping("/project/{id}/issues/search")
