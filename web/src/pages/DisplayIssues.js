@@ -22,7 +22,7 @@ export default function AllIssues() {
       Axios.get(`/project/${id}/issues`)
         .then((res) => {
           console.log(res.data);
-          setIssues(res.data);
+          setIssues(res.data.issues);
         })
         .catch((error) => {
           console.log(error);

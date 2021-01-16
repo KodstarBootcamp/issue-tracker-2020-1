@@ -41,7 +41,6 @@ const Register = () => {
 
     Axios.post("/auth/register", newUser)
       .then((res) => {
-        console.log(res);
         alert("Successfully registered");
         history.push("/");
       })

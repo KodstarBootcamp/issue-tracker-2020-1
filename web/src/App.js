@@ -141,9 +141,7 @@ function App() {
           component={Projects}
           isAuth={token}
         />
-        <Route 
-          component={NotFoundPage}
-        />
+        <Route component={NotFoundPage} />
       </Switch>
     </IssueContex.Provider>
   );
