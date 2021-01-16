@@ -17,6 +17,4 @@ public interface IssueRepository extends JpaRepository<IssueEntity,Long>{
     Collection<IssueEntity> findByUsersContaining(UserEntity user);
 
     Page<IssueEntity> findByProjectEntity(ProjectEntity projectEntity, Pageable pageable);
-
-
 }
