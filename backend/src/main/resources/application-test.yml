@@ -1,24 +1,13 @@
-jasypt:
-  encryptor:
-    algorithm: PBEWithMD5AndDES
-    iv-generator-classname: org.jasypt.iv.NoIvGenerator
-    password: '@mysql-credentials-key@'
 spring:
+  liquibase.enabled: false
   datasource:
-    password: ENC(PKazajCWIgZcxMU9puuoFfjVL/90Vv71)
-    url: ENC(opax6sV/V5hDz/gXk59t/2TP3cM//nSUCVoOLMwfUSDcEC8CA0NC9iyARqg2b91TFKaFvV9EMbbIadgtBpxXcw==)
-    username: ENC(hKWTH5AH7wvBTOg7OAXOoQ==)
+    url: jdbc:mysql://localhost:3306/issue-tracker?useSSL=false&serverTimezone=UTC
+    username: root
+    password: '@password@'
+    driver: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
-    show-sql: true
-  output:
-    ansi:
-      enabled: always
-  liquibase.enabled: true

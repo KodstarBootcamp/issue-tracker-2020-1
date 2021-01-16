@@ -9,6 +9,10 @@ spring:
         initialSize: 5
         removeAbandoned: true
     jpa:
+        properties.hibernate:
+            dialect: org.hibernate.dialect.PostgreSQL10Dialect
         hibernate:
             ddl-auto: validate
-    liquibase.enabled: true
+    liquibase:
+        enabled: true
+        change-log: classpath:db/changelog/main.xml
