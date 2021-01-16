@@ -1,11 +1,20 @@
 package com.kodstar.backend.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kodstar.backend.model.dto.*;
-import com.kodstar.backend.model.entity.*;
-import com.kodstar.backend.model.enums.*;
-import com.kodstar.backend.repository.*;
-import com.kodstar.backend.service.*;
+import com.kodstar.backend.model.dto.BatchRequest;
+import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.User;
+import com.kodstar.backend.model.entity.IssueEntity;
+import com.kodstar.backend.model.entity.LabelEntity;
+import com.kodstar.backend.model.entity.ProjectEntity;
+import com.kodstar.backend.model.entity.UserEntity;
+import com.kodstar.backend.model.enums.IssueCategory;
+import com.kodstar.backend.model.enums.State;
+import com.kodstar.backend.repository.IssueRepository;
+import com.kodstar.backend.repository.ProjectRepository;
+import com.kodstar.backend.repository.UserRepository;
+import com.kodstar.backend.service.IssueService;
+import com.kodstar.backend.service.LabelService;
+import com.kodstar.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -27,7 +37,6 @@ import java.util.stream.Collectors;
 public class IssueServiceImpl implements IssueService {
 
   private final IssueRepository issueRepository;
-  private final ObjectMapper objectMapper;
 
   @Autowired
   private ProjectRepository projectRepository;
@@ -125,6 +134,7 @@ public class IssueServiceImpl implements IssueService {
     issueEntityToUpdate.setId(id);
     issueEntityToUpdate.setModified(LocalDateTime.now());
     issueEntityToUpdate.setOpenedBy(issueOldEntity.getOpenedBy());
+    issueEntityToUpdate.setProjectEntity(issueOldEntity.getProjectEntity());
 
     if (issueEntityToUpdate.getIssueState().equals(State.CLOSED))
       issueEntityToUpdate.setIssueCategory(IssueCategory.FINISHED);

@@ -48,7 +48,7 @@ public class IssueEntity extends BaseEntity{
     private State issueState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id",nullable = false)
+    @JoinColumn(name = "project_id",nullable = false, updatable = false)
     private ProjectEntity projectEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
