@@ -4,15 +4,15 @@ spring:
     liquibase:
         enabled: false
         change-log: classpath:db/changelog/main.xml
-   # jpa:
-    #    open-in-view: false
-     #   show-sql: true
-        #properties.hibernate:
-           # dialect: org.hibernate.dialect.PostgreSQL10Dialect
-      #  jackson:
-       #     default-property-inclusion: non_null
-        #output:
-         #   ansi.enabled: always
+    jpa:
+        open-in-view: false
+        show-sql: true
+        properties.hibernate:
+            dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        jackson:
+            default-property-inclusion: non_null
+        output:
+            ansi.enabled: always
 springdoc:
     version: '@springdoc.version@'
     api-docs:
