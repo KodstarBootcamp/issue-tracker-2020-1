@@ -78,7 +78,7 @@ public class ProjectController {
   @Operation(summary = "Find all issues of a project")
   public ResponseEntity<Map<String,Object>> getIssuesByProjectId(@PathVariable Long id,
                                                                  @RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "3") int size) {
+                                                                 @RequestParam(defaultValue = "10") int size) {
 
     Map<String,Object> response = issueService.findByProjectId(id, page, size);
 
