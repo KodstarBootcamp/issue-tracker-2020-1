@@ -40,8 +40,9 @@ function Home() {
   useEffect(() => {
     async function fetchIssues() {
       const response = await Axios.get(`/project/${id}/issues`);
-
+      console.log(response.data, 43);
       if (response.data) {
+        // UNDONE: issues kismi fazlalik
         const formattedResponseData = formatToStringId(response.data);
         const tasks = groupBy(formattedResponseData, "category");
         const initialData = {
