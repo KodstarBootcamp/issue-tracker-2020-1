@@ -185,7 +185,7 @@ class ProjectControllerTest {
     issue2.setDescription("test2 is important");
     issue2.setProjectId(2L);
 
-    when(issueService.findByProjectId(2L)).thenReturn(Arrays.asList(issue1, issue2));
+    //when(issueService.findByProjectId(2L,null)).thenReturn(Arrays.asList(issue1, issue2));
 
     // Execute the GET request
     mockMvc.perform(get("/project/{id}/issues",2L))
@@ -209,7 +209,7 @@ class ProjectControllerTest {
   void getIssuesByProjectIdNoContent() throws Exception {
 
     // Setup our mocked service
-    when(issueService.findByProjectId(any())).thenReturn(Collections.emptyList());
+   // when(issueService.findByProjectId(any())).thenReturn(Collections.emptyList());
 
     // Execute the GET request
     mockMvc.perform(get("/project/{id}/issues", 1L))
@@ -279,4 +279,6 @@ class ProjectControllerTest {
       throw new RuntimeException(e);
     }
   }
+
+
 }

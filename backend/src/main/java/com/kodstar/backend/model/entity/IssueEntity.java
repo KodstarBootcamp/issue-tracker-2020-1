@@ -36,7 +36,7 @@ public class IssueEntity extends BaseEntity{
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "issue_users", joinColumns = @JoinColumn(name = "issue_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+            inverseJoinColumns = @JoinColumn(name = "users_id"))
     private Set<UserEntity> users;
 
     @Column(name = "category")
@@ -48,11 +48,11 @@ public class IssueEntity extends BaseEntity{
     private State issueState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id",nullable = false)
+    @JoinColumn(name = "project_id",nullable = false, updatable = false)
     private ProjectEntity projectEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",nullable = false)
+    @JoinColumn(name = "user_id",nullable = false,updatable = false)
     private UserEntity openedBy;
 
     public void removeLabel(LabelEntity entity){

@@ -10,7 +10,7 @@ spring:
     username: ENC(hKWTH5AH7wvBTOg7OAXOoQ==)
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
@@ -21,4 +21,4 @@ spring:
   output:
     ansi:
       enabled: always
-  liquibase.enabled: false
+  liquibase.enabled: true
