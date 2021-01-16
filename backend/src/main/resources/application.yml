@@ -1,6 +1,6 @@
 spring:
     profiles:
-        active: dev
+        active: prod
     liquibase:
         enabled: false
         change-log: classpath:db/changelog/main.xml
