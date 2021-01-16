@@ -184,6 +184,17 @@ public class IssueServiceImpl implements IssueService {
 
   //Project related methods
   @Override
+  public Collection<Issue> findByProjectId(Long projectId) {
+
+    ProjectEntity projectEntity = getProject(projectId);
+
+    return issueRepository.findByProjectEntity(projectEntity).stream()
+            .map(issueEntity -> convertToDTO(issueEntity))
+            .collect(Collectors.toList());
+  }
+
+  //Project related methods
+  @Override
   public Map<String, Object> findByProjectId(Long projectId, int page, int size) {
 
     Sort sort = Sort.by(Sort.Order.desc("created"));
