@@ -33,17 +33,37 @@ function Home() {
   const idArray = pathname.split("/");
   const id = idArray[idArray.length - 1];
 
-  let { LogOutHandler } = useContext(IssueContex);
-
+  const [removeFilter, setRemoveFilter] = useState(false);
   const [state, setState] = useState(null);
+
+  let { LogOutHandler } = useContext(IssueContex);
+  let { UserId, setUserId } = useContext(IssueContex);
+  let { refresh } = useContext(IssueContex);
+
+  const exist = (item) => {
+    const ids = item.users.map((el) => el.id);
+    if (ids.includes(Number(UserId))) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   useEffect(() => {
     async function fetchIssues() {
       const response = await Axios.get(`/project/${id}/issues`);
-      console.log(response.data, 43);
+
       if (response.data) {
-        // UNDONE: issues kismi fazlalik
-        const formattedResponseData = formatToStringId(response.data);
+        const filteredData = response.data.filter((item) => exist(item));
+
+        const renderedData =
+          filteredData.length > 0 ? filteredData : response.data;
+
+        if (filteredData.length > 0) {
+          setRemoveFilter(true);
+        }
+
+        const formattedResponseData = formatToStringId(renderedData);
         const tasks = groupBy(formattedResponseData, "category");
         const initialData = {
           tasks: formatTasks(formattedResponseData),
@@ -84,7 +104,7 @@ function Home() {
     }
 
     fetchIssues();
-  }, [id]);
+  }, [id, UserId, refresh]);
 
   const findTask = (id) => {
     const task = state.tasks[id];
@@ -170,9 +190,21 @@ function Home() {
       });
   };
 
+  const removeFilterHandler = () => {
+    setUserId(null);
+    setRemoveFilter(false);
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEndHandler}>
       <div className="d-flex mt-5 justify-content-center">
+        <button
+          onClick={removeFilterHandler}
+          style={{ visibility: removeFilter ? "visible" : "hidden" }}
+          className="btn btn-danger btn-sm ml-5"
+        >
+          Remove Filters
+        </button>
         <Link to={`/allIssues/${id}`}>
           <button className="btn btn-info btn-sm ml-5">All Issues</button>
         </Link>
