@@ -20,10 +20,10 @@ export const IssueContex = createContext();
 
 function App() {
   let history = useHistory();
-  const [issues, setIssues] = useState();
   const [labels, setLabels] = useState();
   const [projects, setProjects] = useState();
   const [UserId, setUserId] = useState();
+  const [refresh, setRefresh] = useState(true);
 
   const token = localStorage.getItem("token");
 
@@ -88,8 +88,6 @@ function App() {
   return (
     <IssueContex.Provider
       value={{
-        issues,
-        setIssues,
         deleteHandler,
         editHandler,
         labels,
@@ -97,6 +95,8 @@ function App() {
         LogOutHandler,
         UserId,
         setUserId,
+        refresh,
+        setRefresh,
       }}
     >
       <Switch>
