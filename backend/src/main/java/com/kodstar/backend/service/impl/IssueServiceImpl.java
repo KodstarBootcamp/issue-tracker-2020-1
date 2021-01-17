@@ -25,6 +25,8 @@ public class IssueServiceImpl implements IssueService {
 
   private final IssueRepository issueRepository;
 
+  private final IssueHistoryService issueHistoryService;
+
   @Autowired
   private ProjectRepository projectRepository;
 
@@ -106,21 +108,27 @@ public class IssueServiceImpl implements IssueService {
     labelService.saveAll(issueEntity.getLabels());
     issueEntity = issueRepository.save(issueEntity);
 
+    issueHistoryService.save(getLoginUser().getUsername(),issueEntity);
+
     return convertToDTO(issueEntity);
   }
 
   @Override
   public Issue updateIssueEntity(Long id, Issue issue) {
 
-    if (issueRepository.findById(id) == null)
-      throw new EntityNotFoundException("Error: Issue not found for this id " + id);
+    IssueEntity issueEntity = issueRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
 
     IssueEntity issueEntityToUpdate = convertToEntity(issue);
     issueEntityToUpdate.setId(id);
     issueEntityToUpdate.setModified(LocalDateTime.now());
     setIdFromExistingLabel(issueEntityToUpdate);
     labelService.saveAll(issueEntityToUpdate.getLabels());
+
+    issueHistoryService.update(getLoginUser().getUsername(),issueEntity,issue);
+
     issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
+
 
     return convertToDTO(issueEntityToUpdate);
   }
