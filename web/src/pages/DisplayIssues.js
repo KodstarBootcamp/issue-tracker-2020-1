@@ -16,12 +16,15 @@ export default function AllIssues() {
   const [option, setoption] = useState("");
   const [multipleDeleteIds, setmultipleDeleteIds] = useState([]);
   const [issues, setIssues] = useState([]);
+  const [CurrentPageNumber, setCurrentPageNumber] = useState(0);
+  const [TotalPageNumber, setTotalPageNumber] = useState(0);
 
   useEffect(() => {
     function fetchIssues() {
-      Axios.get(`/project/${id}/issues`)
+      Axios.get(`/project/${id}/display?page=${CurrentPageNumber}`)
         .then((res) => {
-          console.log(res.data);
+          console.log(res.data.totalPages);
+          setTotalPageNumber(res.data.totalPages);
           setIssues(res.data.issues);
         })
         .catch((error) => {
@@ -30,7 +33,7 @@ export default function AllIssues() {
     }
 
     fetchIssues();
-  }, [id]);
+  }, [id, CurrentPageNumber]);
 
   const { deleteHandler } = useContext(IssueContex);
   const { editHandler } = useContext(IssueContex);
@@ -118,21 +121,6 @@ export default function AllIssues() {
       .catch((error) => {
         console.log(error);
       });
-
-    /*   const UpdatedIssue = {
-      ...task,
-
-      state: task.state === "open" ? "closed" : "open",
-    };
-
-    Axios.put("/issue/" + id, UpdatedIssue)
-      .then((res) => {
-        console.log(res.data);
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-      }); */
   };
 
   // mapping around all the issues to display one by one
@@ -230,6 +218,17 @@ export default function AllIssues() {
     e.preventDefault();
     setOpen("closed");
   };
+
+  let pagesArray = [];
+  for (let i = 0; i < TotalPageNumber; i++) {
+    pagesArray.push(i);
+  }
+
+  const changeThePage = (event) => {
+    const id = event.target.id;
+    setCurrentPageNumber(id);
+  };
+
   return (
     <div>
       <div className="d-flex mt-5 justify-content-center">
@@ -301,6 +300,25 @@ export default function AllIssues() {
           </div>
         </div>
         <div>{Display}</div>
+        <div className={styles.pagination}>
+          {pagesArray.map((item) => (
+            <button
+              onClick={changeThePage}
+              style={{
+                border:
+                  Number(item) === Number(CurrentPageNumber)
+                    ? "2px solid rgb(40,176,198)"
+                    : "none",
+              }}
+              id={item}
+              key={item}
+              type="button"
+              className="btn btn-outline-info m-1 btn-sm"
+            >
+              {item}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
