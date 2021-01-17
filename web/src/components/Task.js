@@ -17,6 +17,8 @@ function Task({ task, index }) {
 
   const { labels } = useContext(IssueContex);
   const { setUserId } = useContext(IssueContex);
+  const { refresh, setRefresh } = useContext(IssueContex);
+
   // console.log(labels, 20);
 
   const id = task.id.slice(5);
@@ -46,7 +48,7 @@ function Task({ task, index }) {
     Axios.put(`/issue/${id}/assignee`, ids)
       .then((res) => {
         console.log(res.data, 49);
-        window.location.reload();
+        setRefresh(!refresh);
       })
       .catch((err) => {
         console.log(err);
@@ -59,7 +61,7 @@ function Task({ task, index }) {
     Axios.put(`/issue/${id}/assignee`, ids)
       .then((res) => {
         console.log(res);
-        window.location.reload();
+        setRefresh(!refresh);
       })
       .catch((err) => {
         console.log(err);
@@ -85,6 +87,7 @@ function Task({ task, index }) {
     Axios.put("/issue/" + id, UpdatedIssue)
       .then((res) => {
         console.log(res.data);
+        setRefresh(!refresh);
       })
       .catch((error) => {
         console.log(error);
@@ -107,7 +110,7 @@ function Task({ task, index }) {
     Axios.put("/issue/" + id, UpdatedIssue)
       .then((res) => {
         console.log(res.data);
-        window.location.reload();
+        setRefresh(!refresh);
       })
       .catch((error) => {
         console.log(error);
@@ -137,7 +140,7 @@ function Task({ task, index }) {
     Axios.put("/issue/" + id, UpdatedIssue)
       .then((res) => {
         console.log(res.data);
-        window.location.reload();
+        setRefresh(!refresh);
       })
       .catch((error) => {
         console.log(error);

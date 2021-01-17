@@ -38,6 +38,7 @@ function Home() {
 
   let { LogOutHandler } = useContext(IssueContex);
   let { UserId, setUserId } = useContext(IssueContex);
+  let { refresh } = useContext(IssueContex);
 
   const exist = (item) => {
     const ids = item.users.map((el) => el.id);
@@ -103,7 +104,7 @@ function Home() {
     }
 
     fetchIssues();
-  }, [id, UserId]);
+  }, [id, UserId, refresh]);
 
   const findTask = (id) => {
     const task = state.tasks[id];
