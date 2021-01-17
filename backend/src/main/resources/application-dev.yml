@@ -9,8 +9,6 @@ spring:
         console:
             enabled: true
             path: /h2
-    jackson:
-        default-property-inclusion: non-null
     jpa:
         database-platform: org.hibernate.dialect.H2Dialect
         hibernate:
@@ -20,7 +18,4 @@ spring:
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.H2Dialect
-    output:
-        ansi:
-            enabled: always
     liquibase.enabled: false
