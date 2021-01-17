@@ -40,3 +40,9 @@
 .isOpen {
   min-width: 200px;
 }
+.pagination {
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}

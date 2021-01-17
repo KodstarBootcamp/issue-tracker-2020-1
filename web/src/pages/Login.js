@@ -47,11 +47,12 @@ const Login = () => {
         history.push("/projects");
       })
       .catch((err) => {
-        console.log(err.response.status, 35);
-        if (err.response.status === 400) {
-          alert("Something went wrong. Check your info");
-        } else if (err.response.status === 409) {
-          alert("");
+        if (err) {
+          if (err.response.status === 400) {
+            alert("Something went wrong. Check your info");
+          } else if (err.response.status === 409) {
+            alert("");
+          }
         }
       });
   };
