@@ -1,20 +1,10 @@
 package com.kodstar.backend.service.impl;
 
-import com.kodstar.backend.model.dto.BatchRequest;
-import com.kodstar.backend.model.dto.Issue;
-import com.kodstar.backend.model.dto.User;
-import com.kodstar.backend.model.entity.IssueEntity;
-import com.kodstar.backend.model.entity.LabelEntity;
-import com.kodstar.backend.model.entity.ProjectEntity;
-import com.kodstar.backend.model.entity.UserEntity;
-import com.kodstar.backend.model.enums.IssueCategory;
-import com.kodstar.backend.model.enums.State;
-import com.kodstar.backend.repository.IssueRepository;
-import com.kodstar.backend.repository.ProjectRepository;
-import com.kodstar.backend.repository.UserRepository;
-import com.kodstar.backend.service.IssueService;
-import com.kodstar.backend.service.LabelService;
-import com.kodstar.backend.service.UserService;
+import com.kodstar.backend.model.dto.*;
+import com.kodstar.backend.model.entity.*;
+import com.kodstar.backend.model.enums.*;
+import com.kodstar.backend.repository.*;
+import com.kodstar.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -37,6 +26,8 @@ import java.util.stream.Collectors;
 public class IssueServiceImpl implements IssueService {
 
   private final IssueRepository issueRepository;
+
+  private final IssueHistoryService issueHistoryService;
 
   @Autowired
   private ProjectRepository projectRepository;
@@ -120,6 +111,8 @@ public class IssueServiceImpl implements IssueService {
     setIdFromExistingLabel(issueEntity);
     labelService.saveAll(issueEntity.getLabels());
     issueEntity = issueRepository.save(issueEntity);
+
+    issueHistoryService.save(getLoginUser().getUsername(),issueEntity);
 
     return convertToDTO(issueEntity);
   }
@@ -317,7 +310,6 @@ public class IssueServiceImpl implements IssueService {
 
     return projectEntity;
   }
-
 
   private UserEntity getLoginUser(){
 
