@@ -144,16 +144,16 @@ function App() {
           isAuth={token}
         />
 
+        <Route component={NotFoundPage} />
+
          <ProtectedRoutes
           path="/issueDetail"
           exact
           component={IssueDetail}
           isAuth={token}
 
-        <Route 
-          component={NotFoundPage}
-
         />
+
       </Switch>
     </IssueContex.Provider>
   );

@@ -12,8 +12,12 @@ import Axios from "axios";
 function Task({ task, index }) {
   const [visible, setVisible] = useState(false);
   const [show, setShow] = useState(false);
+  const [showLabel, setShowLabel] = useState(false);
   const [userList, setUserList] = useState([]);
-  const [nameList, setNameList] = useState([]);
+
+  const { labels } = useContext(IssueContex);
+  // console.log(labels, 20);
+  console.log(task, 21);
 
   const id = task.id.slice(5);
 
@@ -30,7 +34,6 @@ function Task({ task, index }) {
   useEffect(() => {
     Axios.get("/user")
       .then((res) => {
-        console.log(res.data, 29);
         setUserList(res.data);
       })
       .catch((error) => {
@@ -38,26 +41,76 @@ function Task({ task, index }) {
       });
   }, []);
 
-  const onSelect = (data) => {
+  const onSelectUser = (data) => {
     const ids = data.map((item) => item.id);
     Axios.put(`/issue/${id}/assignee`, ids)
       .then((res) => {
-        setNameList(res.data.users);
+        console.log(res.data, 49);
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const onRemove = (data) => {
+  const onRemoveUser = (data) => {
     const ids = data.map((item) => item.id);
 
     Axios.put(`/issue/${id}/assignee`, ids)
       .then((res) => {
-        setNameList(res.data.users);
+        console.log(res);
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
+      });
+  };
+
+  const onSelectLabel = (data) => {
+    const id = task.id.slice(5);
+    const UpdatedObj = { ...task };
+    delete UpdatedObj.id;
+    console.log(id, 73);
+    const labelInfo = data.map((item) => {
+      delete item.id;
+      return item;
+    });
+
+    const UpdatedIssue = {
+      ...UpdatedObj,
+      labels: labelInfo,
+    };
+
+    console.log(UpdatedIssue, 84);
+    Axios.put("/issue/" + id, UpdatedIssue)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const onRemoveLabel = (data) => {
+    const id = task.id.slice(5);
+    const UpdatedObj = { ...task };
+    delete UpdatedObj.id;
+    console.log(id);
+    const labelInfo = data.map((item) => {
+      delete item.id;
+      return item;
+    });
+
+    const UpdatedIssue = {
+      ...UpdatedObj,
+      labels: labelInfo,
+    };
+    Axios.put("/issue/" + id, UpdatedIssue)
+      .then((res) => {
+        console.log(res.data);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 
@@ -66,10 +119,35 @@ function Task({ task, index }) {
     setShow(!show);
   };
 
-  const namelistUser =
-    nameList.length < 1
-      ? ""
-      : nameList.map((item) => <li key={item.id}>{item.username}</li>);
+  const toggleFormLabel = (event) => {
+    event.preventDefault();
+    setShowLabel(!showLabel);
+  };
+
+  const toggleIssueHandler = (event) => {
+    const id = event.target.id.slice(5);
+    const UpdatedObj = { ...task };
+    delete UpdatedObj.id;
+    const UpdatedIssue = {
+      ...UpdatedObj,
+
+      state: UpdatedObj.state === "open" ? "closed" : "open",
+    };
+
+    Axios.put("/issue/" + id, UpdatedIssue)
+      .then((res) => {
+        console.log(res.data);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const showAssignedUser = (event) => {
+    const id = event.target.id;
+    alert(id);
+  };
 
   return (
     <Draggable key={task.id} draggableId={task.id} index={index}>
@@ -82,6 +160,11 @@ function Task({ task, index }) {
         >
           <div className="row">
             <div className="col-9">
+              <i
+                className={`fa fa-circle text-${
+                  task.state === "open" ? "success" : "danger"
+                } ml-2`}
+              ></i>
               <button
                 className={styles.cardTitle}
                 type="primary"
@@ -90,7 +173,7 @@ function Task({ task, index }) {
                 {task.title}
               </button>
               <Drawer
-                width={440}
+                width={340}
                 placement="right"
                 closable={false}
                 onClose={onClose}
@@ -98,12 +181,10 @@ function Task({ task, index }) {
               >
                 <h3 className="my-3">{task.title}</h3>
                 <p className="">
-                  #{id} opened by {task.description}
+                  #{id} opened by {task.openedBy}
                 </p>
                 <p>
-                  <span className={styles.descriptionDrawer}>
-                    Description :
-                  </span>
+                  <span className={styles.descriptionDrawer}>Description:</span>
                   {task.description}
                 </p>
                 <Divider />
@@ -120,7 +201,24 @@ function Task({ task, index }) {
                   </Col>
                 </Row>
                 <div className="">
-                  <ul>{namelistUser}</ul>
+                  {task.users
+                    ? task.users.map((item) => (
+                        <span
+                          style={{
+                            backgroundColor: "lightskyblue",
+                            padding: "5px 10px",
+                            fontSize: "12px",
+                            margin: "5px",
+                            color: "white",
+                            borderRadius: "10px",
+                            fontWeight: "bold",
+                          }}
+                          key={item.id}
+                        >
+                          {item.username.charAt(0).toUpperCase()}
+                        </span>
+                      ))
+                    : "no user assigned"}
                 </div>
                 <div
                   style={{ display: show ? "block" : "none" }}
@@ -130,16 +228,76 @@ function Task({ task, index }) {
                   <Multiselect
                     options={userList}
                     displayValue="username"
+                    selectedValues={task.users}
                     emptyRecordMsg="No options available. Add new one"
-                    onSelect={onSelect}
-                    onRemove={onRemove}
+                    onSelect={onSelectUser}
+                    onRemove={onRemoveUser}
                   />
                 </div>
                 <Divider />
+                <Row>
+                  <Col span={20}>
+                    <p className={styles.contentTitle}>Labels</p>
+                  </Col>
+                  <Col span={4}>
+                    <i
+                      style={{ cursor: "pointer" }}
+                      onClick={toggleFormLabel}
+                      className="fa fa-angle-double-down fa-2x text-secondary"
+                    ></i>
+                  </Col>
+                </Row>
+                <div>
+                  {task.labels.map((label, i) => (
+                    <span
+                      style={{
+                        backgroundColor: `#${label.color}`,
+                        marginRight: "10px",
+                        color: "white",
+                        fontSize: "12px",
+                        borderRadius: "20px",
+                        padding: "5px 15px",
+                      }}
+                      key={i}
+                    >
+                      {label.name.charAt(0).toUpperCase() + label.name.slice(1)}
+                    </span>
+                  ))}
+                </div>
+                <div
+                  style={{ display: showLabel ? "block" : "none" }}
+                  className="form-group mt-3"
+                >
+                  <label htmlFor="exampleFormControlSelect1">Add Labels</label>
+                  <Multiselect
+                    options={labels}
+                    selectedValues={task.labels}
+                    displayValue="name"
+                    emptyRecordMsg="No options available. Add new one"
+                    onSelect={onSelectLabel}
+                    onRemove={onRemoveLabel}
+                  />
+                </div>
+
+                <Divider />
+                <Row>
+                  <Col span={24}>
+                    <button
+                      id={task.id}
+                      onClick={toggleIssueHandler}
+                      type="button"
+                      className={`btn btn-outline-${
+                        task.state === "open" ? "danger" : "primary"
+                      } w-100`}
+                    >
+                      {task.state === "open" ? "Close issue" : "Reopen issue"}
+                    </button>
+                  </Col>
+                </Row>
               </Drawer>
 
               <p className={styles.cardText}>
-                #{id} opened by {task.description}
+                #{id} opened by {task.openedBy}
               </p>
 
               <div className={styles.listLabels}>
@@ -211,6 +369,34 @@ function Task({ task, index }) {
                 </MenuItem>
                 <MenuItem value="Close">Close Window</MenuItem>
               </Menu>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                }}
+              >
+                {task.users
+                  ? task.users.map((item) => (
+                      <span
+                        id={item.id}
+                        role="button"
+                        onClick={showAssignedUser}
+                        style={{
+                          backgroundColor: "lightskyblue",
+                          padding: "2px 5px",
+                          fontSize: "10px",
+                          margin: "2px",
+                          color: "white",
+                          borderRadius: "10px",
+                          fontWeight: "bold",
+                        }}
+                        key={item.id}
+                      >
+                        {item.username.charAt(0).toUpperCase()}
+                      </span>
+                    ))
+                  : "no user assigned"}
+              </div>
             </div>
           </div>
         </div>

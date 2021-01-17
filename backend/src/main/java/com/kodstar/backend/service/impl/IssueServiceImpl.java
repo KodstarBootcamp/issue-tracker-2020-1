@@ -210,7 +210,6 @@ public class IssueServiceImpl implements IssueService {
     response.put("totalPages", pageIssue.getTotalPages());
 
     return response;
-
   }
 
   @Override
@@ -328,7 +327,6 @@ public class IssueServiceImpl implements IssueService {
             .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this name " + username));
 
     return userEntity;
-
   }
 }
 
