@@ -1,6 +1,5 @@
 package com.kodstar.backend.model.dto;
 
-import com.kodstar.backend.model.entity.IssueEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
