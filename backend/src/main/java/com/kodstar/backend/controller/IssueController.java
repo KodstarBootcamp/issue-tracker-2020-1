@@ -2,12 +2,14 @@ package com.kodstar.backend.controller;
 
 import com.kodstar.backend.model.dto.BatchRequest;
 import com.kodstar.backend.model.dto.Issue;
+import com.kodstar.backend.model.dto.IssueHistory;
+import com.kodstar.backend.service.IssueHistoryService;
 import com.kodstar.backend.service.IssueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Set;
@@ -19,6 +21,9 @@ import java.util.Set;
 public class IssueController {
 
     private final IssueService issueService;
+
+    @Autowired
+    private IssueHistoryService issueHistoryService;
 
     @GetMapping("/issue/{id}")
     public ResponseEntity<Issue> getIssueById(@Valid @PathVariable Long id) {
@@ -66,4 +71,13 @@ public class IssueController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/issue/{id}/history")
+    public ResponseEntity<Collection<IssueHistory>> getIssueHistory(@PathVariable ("id") Long issueId){
+
+        return  ResponseEntity.ok(issueHistoryService.getIssueHistories(issueId));
+
+    }
+
+
 }

@@ -1,30 +1,15 @@
 package com.kodstar.backend.service.impl;
 
-import com.kodstar.backend.model.dto.BatchRequest;
-import com.kodstar.backend.model.dto.Issue;
-import com.kodstar.backend.model.dto.User;
-import com.kodstar.backend.model.entity.IssueEntity;
-import com.kodstar.backend.model.entity.LabelEntity;
-import com.kodstar.backend.model.entity.ProjectEntity;
-import com.kodstar.backend.model.entity.UserEntity;
-import com.kodstar.backend.model.enums.IssueCategory;
-import com.kodstar.backend.model.enums.State;
-import com.kodstar.backend.repository.IssueRepository;
-import com.kodstar.backend.repository.ProjectRepository;
-import com.kodstar.backend.repository.UserRepository;
-import com.kodstar.backend.service.IssueService;
-import com.kodstar.backend.service.LabelService;
-import com.kodstar.backend.service.UserService;
+import com.kodstar.backend.model.dto.*;
+import com.kodstar.backend.model.entity.*;
+import com.kodstar.backend.model.enums.*;
+import com.kodstar.backend.repository.*;
+import com.kodstar.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -37,6 +22,8 @@ import java.util.stream.Collectors;
 public class IssueServiceImpl implements IssueService {
 
   private final IssueRepository issueRepository;
+
+  private final IssueHistoryService issueHistoryService;
 
   @Autowired
   private ProjectRepository projectRepository;
@@ -121,6 +108,8 @@ public class IssueServiceImpl implements IssueService {
     labelService.saveAll(issueEntity.getLabels());
     issueEntity = issueRepository.save(issueEntity);
 
+    issueHistoryService.save(issueEntity);
+
     return convertToDTO(issueEntity);
   }
 
@@ -145,6 +134,8 @@ public class IssueServiceImpl implements IssueService {
     Set<UserEntity> userEntities = issue.getUsers().stream().map(user -> userService.convertToEntity(user)).collect(Collectors.toSet());
     issueEntityToUpdate.setUsers(userEntities);
 
+    issueHistoryService.update(issueOldEntity,issue);
+
     issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
     return convertToDTO(issueEntityToUpdate);
@@ -155,7 +146,7 @@ public class IssueServiceImpl implements IssueService {
     // get IssueEntity by id.
     IssueEntity issueEntity = issueRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Error: Issue not found for this id " + id));
-
+    Set<UserEntity> oldAssignees = issueEntity.getUsers();
     // get new assignees from user table (UserEntity)
     Set<UserEntity> newAssignees = assignees.stream().map(userId -> {
       UserEntity userEntity = userRepository.findById(userId)
@@ -167,6 +158,8 @@ public class IssueServiceImpl implements IssueService {
     issueEntity.setUsers(newAssignees);
 
     issueEntity = issueRepository.save(issueEntity);
+
+    issueHistoryService.assignedUser(issueEntity,oldAssignees);
 
     return convertToDTO(issueEntity);
   }
@@ -292,7 +285,7 @@ public class IssueServiceImpl implements IssueService {
     issueEntity.setIssueCategory(IssueCategory.fromString(issue.getCategory()));
     issueEntity.setIssueState(State.fromString(issue.getState()));
     issueEntity.setProjectEntity(projectEntity);
-    issueEntity.setOpenedBy(getLoginUser());
+    issueEntity.setOpenedBy(userService.getLoginUser());
 
     return issueEntity;
   }
@@ -318,15 +311,5 @@ public class IssueServiceImpl implements IssueService {
     return projectEntity;
   }
 
-
-  private UserEntity getLoginUser(){
-
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-    UserEntity userEntity = userRepository.findByUsername(username)
-            .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this name " + username));
-
-    return userEntity;
-  }
 }
 
