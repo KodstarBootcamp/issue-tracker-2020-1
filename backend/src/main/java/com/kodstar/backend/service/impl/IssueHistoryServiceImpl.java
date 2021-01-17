@@ -5,10 +5,11 @@ import com.kodstar.backend.model.dto.*;
 import com.kodstar.backend.model.entity.*;
 import com.kodstar.backend.model.enums.*;
 import com.kodstar.backend.repository.IssueHistoryRepository;
-import com.kodstar.backend.service.IssueHistoryService;
+import com.kodstar.backend.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
+ import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,28 +22,27 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
   private final IssueHistoryRepository issueHistoryRepository;
   private final ObjectMapper objectMapper;
 
+  @Autowired
+  private UserService userService;
+
 
   @Override
-  public void save(String username, IssueEntity issueEntity) {
+  public void save(IssueEntity issueEntity) {
 
     IssueHistoryEntity issueHistoryEntity = IssueHistoryEntity.builder()
-            .subject(username)
+            .subject(userService.getLoginUser().getUsername())
             .issueId(issueEntity.getId())
             .action("add")
             .title(issueEntity.getTitle())
-            .description(issueEntity.getDescription())
-            .labels(convertSetToString(issueEntity.getLabels()))
-            .assignees(convertSetToString(getUserSet(issueEntity)))
-            .state(issueEntity.getIssueState().toString())
-            .category(issueEntity.getIssueCategory().toString())
             .build();
 
     issueHistoryRepository.save(issueHistoryEntity);
   }
 
   @Override
-  public void update(String username, IssueEntity oldIssueEntity, Issue issue) {
+  public void update(IssueEntity oldIssueEntity, Issue issue) {
 
+    String username = userService.getLoginUser().getUsername();
     //Changed issue title
     if (!issue.getTitle().equals(oldIssueEntity.getTitle())) {
       issueHistoryRepository.save(getByTitleIssueHistoryEntity(username, oldIssueEntity, issue));
@@ -56,6 +56,8 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
     //Changed issue state
     if (!State.fromString(issue.getState()).equals(oldIssueEntity.getIssueState())) {
       issueHistoryRepository.save(getByStateIssueHistoryEntity(username, oldIssueEntity, issue));
+      if(issue.getState().equalsIgnoreCase("closed"))
+        issueHistoryRepository.save(getByCategoryIssueHistoryEntity(username, oldIssueEntity, issue)).setNewValue(asJsonString("FINISHED"));
     }
 
     //Changed issue category
@@ -67,12 +69,6 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
     if (!equalsSet(oldIssueEntity.getLabels(), issue.getLabels())) {
       issueHistoryRepository.save(getByLabelsIssueHistoryEntity(username, oldIssueEntity, issue));
     }
-
-    //Changed issue assignees
-    if (!equalsSet(getUserSet(oldIssueEntity), issue.getUsers())) {
-      issueHistoryRepository.save(getByAssigneesIssueHistoryEntity(username, oldIssueEntity, issue));
-    }
-
   }
 
   @Override
@@ -86,15 +82,38 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
     }).collect(Collectors.toList());
   }
 
-  //Helper methods
-  private Set<User> getUserSet(IssueEntity issueEntity) {
-    if (issueEntity.getUsers() == null) return null;
+  @Override
+  public void addedComment(Comment comment){
+    String username = userService.getLoginUser().getUsername();
+    IssueHistoryEntity issueHistoryEntity = IssueHistoryEntity.builder()
+            .issueId(comment.getIssueId())
+            .subject(username)
+            .action("added")
+            .field("comment")
+            .newValue(asJsonString(comment.getContent()))
+            .build();
 
-    Set<User> users = issueEntity.getUsers().stream().map(userEntity -> {
+    issueHistoryRepository.save(issueHistoryEntity);
+
+  }
+
+  @Override
+  public void assignedUser(IssueEntity issueEntity,Set<UserEntity> oldAssignees) {
+    String username = userService.getLoginUser().getUsername();
+    IssueHistoryEntity issueHistoryEntity = getByAssigneesIssueHistoryEntity(username,issueEntity,oldAssignees);
+    issueHistoryRepository.save(issueHistoryEntity);
+  }
+
+  //Helper methods
+
+  private Set<User> getUserSet(Set<UserEntity> users) {
+    if (users == null) return null;
+
+    return users.stream().map(userEntity -> {
       User user = objectMapper.convertValue(userEntity, User.class);
       return user;
     }).collect(Collectors.toSet());
-    return users;
+
   }
 
   private boolean equalsSet(Set<?> set1, Set<?> set2) {
@@ -128,7 +147,7 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
     return IssueHistoryEntity.builder()
             .issueId(oldIssueEntity.getId())
             .subject(username)
-            .action("updated")
+            .action("moved")
             .field("category")
             .oldValue(asJsonString(oldIssueEntity.getIssueCategory().toString()))
             .newValue(asJsonString(issue.getCategory().toUpperCase()))
@@ -158,14 +177,14 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
             .build();
   }
 
-  private IssueHistoryEntity getByAssigneesIssueHistoryEntity(String username, IssueEntity oldIssueEntity, Issue issue) {
+  private IssueHistoryEntity getByAssigneesIssueHistoryEntity(String username, IssueEntity issueEntity,Set<UserEntity> oldAssignees) {
     return IssueHistoryEntity.builder()
-            .issueId(oldIssueEntity.getId())
+            .issueId(issueEntity.getId())
             .subject(username)
-            .action("updated")
+            .action("assigned")
             .field("assignees")
-            .oldValue(convertSetToString(getUserSet(oldIssueEntity)))
-            .newValue(convertSetToString(issue.getUsers()))
+            .oldValue(convertSetToString(getUserSet(oldAssignees)))
+            .newValue(convertSetToString(getUserSet(issueEntity.getUsers())))
             .build();
   }
 
