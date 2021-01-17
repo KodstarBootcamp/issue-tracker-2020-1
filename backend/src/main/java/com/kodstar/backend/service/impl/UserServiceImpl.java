@@ -7,6 +7,7 @@ import com.kodstar.backend.repository.UserRepository;
 import com.kodstar.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -72,6 +73,15 @@ public class UserServiceImpl implements UserService {
     public UserEntity convertToEntity(User user) {
         return objectMapper.convertValue(user, UserEntity.class);
     }
+    @Override
+    public UserEntity getLoginUser(){
 
+      String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+      UserEntity userEntity = userRepository.findByUsername(username)
+              .orElseThrow(() -> new EntityNotFoundException("Error: User not found for this name " + username));
+
+      return userEntity;
+    }
 
 }

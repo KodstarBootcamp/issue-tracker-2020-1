@@ -26,10 +26,5 @@ public class IssueHistoryEntity extends BaseEntity{
   @Column(name = "new_value")
   private String newValue;
   private String title;
-  private String description;
-  private String assignees;
-  private String labels;
-  private String category;
-  private String state;
 
 }

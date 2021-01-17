@@ -21,13 +21,6 @@ public class IssueHistory {
   @JsonRawValue
   private String newValue;
   private String title;
-  private String description;
-  private String assignees;
-  @JsonRawValue
-  private String labels;
-  private String project;
-  private String category;
-  private String state;
   private LocalDateTime createdAt;
 
 }

@@ -6,6 +6,7 @@ import com.kodstar.backend.model.entity.IssueEntity;
 import com.kodstar.backend.repository.CommentRepository;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.service.CommentService;
+import com.kodstar.backend.service.IssueHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,9 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
     @Autowired
+    private IssueHistoryService issueHistoryService;
+
+    @Autowired
     private IssueRepository issueRepository;
 
 
@@ -31,6 +35,9 @@ public class CommentServiceImpl implements CommentService {
     public Comment saveComment(Comment comment) {
 
         CommentEntity commentEntity = commentRepository.save(convertToEntity(comment));
+
+        //Save comment issue history
+        issueHistoryService.addedComment(comment);
 
         return convertToDTO(commentEntity);
     }
