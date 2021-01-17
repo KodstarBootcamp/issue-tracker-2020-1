@@ -16,7 +16,6 @@ import ProtectedRoutes from "./pages/ProtectedRoutes";
 import IssueDetail from "./pages/IssueDetail";
 import NotFoundPage from "./pages/NotFoundPage";
 
-
 export const IssueContex = createContext();
 
 function App() {
@@ -24,6 +23,7 @@ function App() {
   const [issues, setIssues] = useState();
   const [labels, setLabels] = useState();
   const [projects, setProjects] = useState();
+  const [UserId, setUserId] = useState();
 
   const token = localStorage.getItem("token");
 
@@ -95,6 +95,8 @@ function App() {
         labels,
         projects,
         LogOutHandler,
+        UserId,
+        setUserId,
       }}
     >
       <Switch>
@@ -146,14 +148,12 @@ function App() {
 
         <Route component={NotFoundPage} />
 
-         <ProtectedRoutes
+        <ProtectedRoutes
           path="/issueDetail"
           exact
           component={IssueDetail}
           isAuth={token}
-
         />
-
       </Switch>
     </IssueContex.Provider>
   );

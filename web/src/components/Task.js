@@ -16,8 +16,8 @@ function Task({ task, index }) {
   const [userList, setUserList] = useState([]);
 
   const { labels } = useContext(IssueContex);
+  const { setUserId } = useContext(IssueContex);
   // console.log(labels, 20);
-  console.log(task, 21);
 
   const id = task.id.slice(5);
 
@@ -146,7 +146,7 @@ function Task({ task, index }) {
 
   const showAssignedUser = (event) => {
     const id = event.target.id;
-    alert(id);
+    setUserId(id);
   };
 
   return (
