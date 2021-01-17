@@ -138,6 +138,8 @@ public class IssueServiceImpl implements IssueService {
     Set<UserEntity> userEntities = issue.getUsers().stream().map(user -> userService.convertToEntity(user)).collect(Collectors.toSet());
     issueEntityToUpdate.setUsers(userEntities);
 
+    issueHistoryService.update(getLoginUser().getUsername(),issueOldEntity,issue);
+
     issueEntityToUpdate = issueRepository.save(issueEntityToUpdate);
 
     return convertToDTO(issueEntityToUpdate);
