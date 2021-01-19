@@ -47,11 +47,11 @@ public class IssueEntity extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private State issueState;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "project_id",nullable = false, updatable = false)
     private ProjectEntity projectEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id",nullable = false,updatable = false)
     private UserEntity openedBy;
 
