@@ -32,7 +32,7 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
     IssueHistoryEntity issueHistoryEntity = IssueHistoryEntity.builder()
             .subject(userService.getLoginUser().getUsername())
             .issueId(issueEntity.getId())
-            .action("add")
+            .action("added")
             .title(issueEntity.getTitle())
             .build();
 
