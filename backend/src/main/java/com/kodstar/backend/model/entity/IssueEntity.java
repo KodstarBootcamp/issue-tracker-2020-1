@@ -1,9 +1,12 @@
 package com.kodstar.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kodstar.backend.model.enums.*;
 import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -49,6 +52,7 @@ public class IssueEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "project_id",nullable = false, updatable = false)
+    @JsonBackReference
     private ProjectEntity projectEntity;
 
     @ManyToOne
@@ -56,7 +60,17 @@ public class IssueEntity extends BaseEntity{
     private UserEntity openedBy;
 
     @OneToMany(mappedBy = "issueEntity", orphanRemoval = true)
-    private Set<CommentEntity> commentEntity;
+    @JsonManagedReference
+    private Set<CommentEntity> commentEntities;
+
+    public void addComment(CommentEntity commentEntity){
+
+        if (commentEntities == null)
+            this.commentEntities = new HashSet<>();
+
+        this.commentEntities.add(commentEntity);
+        commentEntity.setIssueEntity(this);
+    }
 
     public void removeLabel(LabelEntity entity){
         this.labels.remove(entity);

@@ -65,8 +65,6 @@ public class IssueServiceImpl implements IssueService {
   @Override
   public void multipleIssues(BatchRequest request) {
 
-    System.out.println(request.getMethod());
-
     if (!request.getMethod().equals("delete") && !request.getMethod().equals("close"))
       throw new IllegalArgumentException();
 
@@ -101,11 +99,14 @@ public class IssueServiceImpl implements IssueService {
   @Override
   public Issue saveIssueEntity(Issue issue) {
 
+    ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId()).orElseThrow(()->new EntityNotFoundException());
+
     IssueEntity issueEntity = convertToEntity(issue);
 
     //check if label exist and then set id
     setIdFromExistingLabel(issueEntity);
     labelService.saveAll(issueEntity.getLabels());
+    projectEntity.addIssue(issueEntity);
     issueEntity = issueRepository.save(issueEntity);
 
     issueHistoryService.save(issueEntity);

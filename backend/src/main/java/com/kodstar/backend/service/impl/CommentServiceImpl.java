@@ -38,8 +38,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment saveComment(Comment comment) {
 
+        IssueEntity issueEntity = issueRepository.findById(comment.getIssueId()).orElseThrow(()-> new EntityNotFoundException("Error: Issue not found"));
+
         CommentEntity commentEntity = commentRepository.save(convertToEntity(comment));
 
+        issueEntity.addComment(commentEntity);
         //Save comment issue history
         issueHistoryService.addedComment(comment);
 

@@ -1,5 +1,6 @@
 package com.kodstar.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,5 +25,6 @@ public class CommentEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "issue_id",nullable = false, updatable = false)
+    @JsonBackReference
     private IssueEntity issueEntity;
 }
