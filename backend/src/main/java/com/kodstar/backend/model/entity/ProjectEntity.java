@@ -32,19 +32,5 @@ public class ProjectEntity extends BaseEntity{
   @Enumerated(EnumType.STRING)
   private State projectState;
 
-  @OneToMany(mappedBy = "projectEntity", orphanRemoval = true)
-  @JsonManagedReference
-  private Set<IssueEntity> issueEntities;
-
-
-  public void addIssue(IssueEntity issueEntity){
-
-    if (issueEntities == null)
-      this.issueEntities = new HashSet<>();
-
-    this.issueEntities.add(issueEntity);
-    issueEntity.setProjectEntity(this);
-  }
-
 
 }

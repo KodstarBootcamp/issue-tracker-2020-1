@@ -25,6 +25,6 @@ public class CommentEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "issue_id",nullable = false, updatable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private IssueEntity issueEntity;
 }

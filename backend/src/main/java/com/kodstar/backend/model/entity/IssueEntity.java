@@ -52,25 +52,12 @@ public class IssueEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "project_id",nullable = false, updatable = false)
-    @JsonBackReference
     private ProjectEntity projectEntity;
 
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false,updatable = false)
     private UserEntity openedBy;
 
-    @OneToMany(mappedBy = "issueEntity", orphanRemoval = true)
-    @JsonManagedReference
-    private Set<CommentEntity> commentEntities;
-
-    public void addComment(CommentEntity commentEntity){
-
-        if (commentEntities == null)
-            this.commentEntities = new HashSet<>();
-
-        this.commentEntities.add(commentEntity);
-        commentEntity.setIssueEntity(this);
-    }
 
     public void removeLabel(LabelEntity entity){
         this.labels.remove(entity);

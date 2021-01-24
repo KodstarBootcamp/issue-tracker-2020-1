@@ -25,6 +25,8 @@ public class IssueServiceImpl implements IssueService {
 
   private final IssueHistoryService issueHistoryService;
 
+  private final CommentService commentService;
+
   @Autowired
   private ProjectRepository projectRepository;
 
@@ -54,6 +56,10 @@ public class IssueServiceImpl implements IssueService {
 
     issueEntity.setLabels(null);
     issueEntity.setUsers(null);
+
+    commentService.findAllByIssueEntityId(id)
+            .forEach(comment -> commentService.deleteComment(comment.getId()));
+
     issueRepository.delete(issueEntity);
   }
 
@@ -81,6 +87,8 @@ public class IssueServiceImpl implements IssueService {
       batchIssues.forEach(issue -> {
                 issue.setLabels(null);
                 issue.setUsers(null);
+                commentService.findAllByIssueEntityId(issue.getId())
+                  .forEach(comment -> commentService.deleteComment(comment.getId()));
               });
 
       issueRepository.deleteInBatch(batchIssues);
@@ -98,15 +106,12 @@ public class IssueServiceImpl implements IssueService {
 
   @Override
   public Issue saveIssueEntity(Issue issue) {
-
-    ProjectEntity projectEntity = projectRepository.findById(issue.getProjectId()).orElseThrow(()->new EntityNotFoundException());
-
     IssueEntity issueEntity = convertToEntity(issue);
 
     //check if label exist and then set id
     setIdFromExistingLabel(issueEntity);
     labelService.saveAll(issueEntity.getLabels());
-    projectEntity.addIssue(issueEntity);
+
     issueEntity = issueRepository.save(issueEntity);
 
     issueHistoryService.save(issueEntity);
