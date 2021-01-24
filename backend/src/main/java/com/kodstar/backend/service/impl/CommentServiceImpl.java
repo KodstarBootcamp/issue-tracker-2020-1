@@ -7,6 +7,7 @@ import com.kodstar.backend.repository.CommentRepository;
 import com.kodstar.backend.repository.IssueRepository;
 import com.kodstar.backend.service.CommentService;
 import com.kodstar.backend.service.IssueHistoryService;
+import com.kodstar.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private IssueRepository issueRepository;
+
+    @Autowired
+    private UserService userService;
 
 
     @Override
@@ -88,6 +92,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setId(commentEntity.getId());
         comment.setContent(commentEntity.getContent());
         comment.setIssueId(commentEntity.getIssueEntity().getId());
+        comment.setCommentedBy(userService.getLoginUser().getUsername());
         return comment;
     }
 

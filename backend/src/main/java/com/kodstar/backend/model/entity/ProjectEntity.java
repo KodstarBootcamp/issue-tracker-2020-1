@@ -4,6 +4,7 @@ import com.kodstar.backend.model.enums.State;
 import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,5 +29,8 @@ public class ProjectEntity extends BaseEntity{
   @Column(name = "state")
   @Enumerated(EnumType.STRING)
   private State projectState;
+
+  @OneToMany(mappedBy = "projectEntity", orphanRemoval = true)
+  private Set<IssueEntity> issueEntities;
 
 }
