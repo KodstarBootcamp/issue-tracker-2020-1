@@ -21,14 +21,16 @@ function EditIssue() {
   const [labelsList, setLabelsList] = useState([]);
   const [preselect, setPreselect] = useState([]);
   const [projectId, setprojectId] = useState();
+  const [issue, setIssue] = useState();
 
   const { labels } = useContext(IssueContex);
 
   useEffect(() => {
     Axios.get("/issue/" + id)
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data, 31);
         const { title, description, labels, projectId } = res.data;
+        setIssue(res.data);
         setTitle(title);
         setDescription(description);
         setprojectId(projectId);
@@ -66,15 +68,16 @@ function EditIssue() {
 
   const submitHandler = (event) => {
     event.preventDefault();
-
+    delete issue.id;
     const UpdatedIssue = {
+      ...issue,
       title: title.trim(),
       description: description,
       labels: labelsList,
       projectId: projectId,
     };
 
-    console.log(UpdatedIssue);
+    console.log(UpdatedIssue, 77);
 
     if (validate(UpdatedIssue)) {
       Axios.put("/issue/" + id, UpdatedIssue)
