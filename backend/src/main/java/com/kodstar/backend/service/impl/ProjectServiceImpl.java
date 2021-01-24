@@ -43,13 +43,6 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectEntity projectEntity = projectRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Error: Project not found for this id " + id));
 
-    Collection<IssueEntity> deleteBatchIssues = issueRepository.findByProjectEntity(projectEntity);
-
-    if(!deleteBatchIssues.isEmpty())
-      deleteBatchIssues
-              .forEach(issue -> issue.setLabels(null));
-      issueRepository.deleteInBatch(deleteBatchIssues);
-
     projectRepository.delete(projectEntity);
   }
 

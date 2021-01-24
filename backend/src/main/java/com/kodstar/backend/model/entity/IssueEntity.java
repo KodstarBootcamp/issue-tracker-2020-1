@@ -55,6 +55,9 @@ public class IssueEntity extends BaseEntity{
     @JoinColumn(name = "user_id",nullable = false,updatable = false)
     private UserEntity openedBy;
 
+    @OneToMany(mappedBy = "issueEntity", orphanRemoval = true)
+    private Set<CommentEntity> commentEntity;
+
     public void removeLabel(LabelEntity entity){
         this.labels.remove(entity);
     }
