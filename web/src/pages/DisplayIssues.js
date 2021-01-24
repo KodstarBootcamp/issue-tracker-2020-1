@@ -263,7 +263,7 @@ export default function AllIssues() {
           </div>
           <div className={styles.optionBar}>
             <Link to={`/createIssue/${id}`}>
-              <button className="btn btn-outline-success btn-sm">
+              <button className="btn btn-outline-success btn-sm mx-2">
                 Create New Issue
               </button>
             </Link>

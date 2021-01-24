@@ -233,9 +233,16 @@ function EditIssue() {
         <button onClick={submitHandler} className="btn btn-primary">
           Submit
         </button>
-        <Link to="/">
-          <p style={{ textDecoration: "underline" }}>Back to Home Page</p>
-        </Link>
+
+        <p
+          role="button"
+          onClick={() => {
+            window.history.go(-1);
+          }}
+          style={{ textDecoration: "underline" }}
+        >
+          Back to Previous Page
+        </p>
       </div>
     </form>
   );

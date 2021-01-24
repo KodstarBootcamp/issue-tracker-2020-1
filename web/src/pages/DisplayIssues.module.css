@@ -2,7 +2,7 @@
   border: 1px solid lightgray;
   border-radius: 10px;
   margin: 10px 50px 0 50px;
-  min-width: 700px;
+  min-width: 1000px;
   min-height: 250px;
   background-color: white;
 }
@@ -10,7 +10,7 @@
   background-color: #f6f8fa;
   padding: 20px 10px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 .issueCard {
   background-color: white;
@@ -35,7 +35,6 @@
   display: flex;
   margin-left: auto;
   justify-content: space-around;
-  min-width: 750px;
 }
 .isOpen {
   min-width: 200px;
