@@ -132,7 +132,6 @@ function App() {
           component={Labels}
           isAuth={token}
         />
-
         <ProtectedRoutes
           path="/createProject"
           exact
@@ -145,15 +144,13 @@ function App() {
           component={Projects}
           isAuth={token}
         />
-
-        <Route component={NotFoundPage} />
-
         <ProtectedRoutes
-          path="/issueDetail"
+          path="/issueDetail/:id"
           exact
           component={IssueDetail}
           isAuth={token}
         />
+        <Route component={NotFoundPage} />
       </Switch>
     </IssueContex.Provider>
   );

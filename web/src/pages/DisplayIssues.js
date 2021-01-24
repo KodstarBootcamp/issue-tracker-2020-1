@@ -1,11 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { IssueContex } from "../App";
 import styles from "./DisplayIssues.module.css";
 import Axios from "axios";
 import Loader from "react-loader-spinner";
 
 export default function AllIssues() {
+  let history = useHistory();
   const pathname = window.location.pathname;
   const idArray = pathname.split("/");
   const id = idArray[idArray.length - 1];
@@ -123,6 +124,11 @@ export default function AllIssues() {
       });
   };
 
+  const redirectCommentPage = (event) => {
+    const id = event.target.id;
+    history.push(`/issueDetail/${id}`);
+  };
+
   // mapping around all the issues to display one by one
   const Display = !issues ? (
     <div
@@ -150,7 +156,14 @@ export default function AllIssues() {
               type="checkbox"
             />
           </div>
-          <p className={styles.issueTitle}>{item.title}</p>
+          <p
+            role="button"
+            onClick={redirectCommentPage}
+            id={item.id}
+            className={styles.issueTitle}
+          >
+            {item.title}
+          </p>
           <div>
             {item.labels.map((label, i) => (
               <span

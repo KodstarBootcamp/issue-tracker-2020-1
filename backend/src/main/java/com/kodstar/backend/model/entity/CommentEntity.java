@@ -22,7 +22,7 @@ public class CommentEntity extends BaseEntity{
     @NotBlank
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "issue_id",nullable = false, updatable = false)
     private IssueEntity issueEntity;
 }
