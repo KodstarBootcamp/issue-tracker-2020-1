@@ -13,10 +13,12 @@ import javax.persistence.*;
 public class IssueHistoryEntity extends BaseEntity{
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String subject;
   private String action;
+
+  @Column(name = "issue_id")
   private Long issueId;
   private String field;
 

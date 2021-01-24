@@ -37,7 +37,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment saveComment(Comment comment) {
-
         CommentEntity commentEntity = commentRepository.save(convertToEntity(comment));
 
         //Save comment issue history

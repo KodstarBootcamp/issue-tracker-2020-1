@@ -1,9 +1,11 @@
 package com.kodstar.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kodstar.backend.model.enums.State;
 import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -30,7 +32,5 @@ public class ProjectEntity extends BaseEntity{
   @Enumerated(EnumType.STRING)
   private State projectState;
 
-  @OneToMany(mappedBy = "projectEntity", orphanRemoval = true)
-  private Set<IssueEntity> issueEntities;
 
 }

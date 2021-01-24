@@ -5,6 +5,7 @@ import com.kodstar.backend.model.dto.Project;
 import com.kodstar.backend.model.entity.*;
 import com.kodstar.backend.model.enums.State;
 import com.kodstar.backend.repository.*;
+import com.kodstar.backend.service.IssueService;
 import com.kodstar.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
 
   private final ProjectRepository projectRepository;
+  private final IssueService issueService;
 
   @Autowired
   private ObjectMapper objectMapper;
@@ -42,6 +44,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     ProjectEntity projectEntity = projectRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Error: Project not found for this id " + id));
+
+    issueService.findByProjectId(id).forEach(issue -> issueService.deleteIssue(issue.getId()));
 
     projectRepository.delete(projectEntity);
   }
