@@ -205,13 +205,20 @@ export default function AllIssues() {
       ))
   );
 
-  const multipleDeleteHandler = async () => {
+  const multipleDeleteHandler = () => {
     const data = {
       method: "delete",
       ids: multipleDeleteIds,
     };
-    const response = await Axios.post("/issues/batch", data);
-    console.log(response);
+    Axios.post("/issues/batch", data)
+      .then((res) => {
+        console.log(res.data);
+        window.location.reload();
+        alert("succesfully deleted");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const multipleCloseHandler = async () => {
     const data = {
@@ -267,7 +274,7 @@ export default function AllIssues() {
                 Create New Issue
               </button>
             </Link>
-            <Link to="/allIssues">
+            <Link to={`/allIssues/${id}`}>
               <button
                 style={{
                   display: multipleDeleteIds.length > 1 ? "block" : "none",
