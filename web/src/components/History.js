@@ -109,7 +109,7 @@ const History = ({ data }) => {
             {moment(item.createdAt + "Z").fromNow()}
           </span>
         );
-      } else if (item.field === "state") {
+      } else if (item.field !== "state") {
         return (
           <>
             <span style={{ color: "black", fontWeight: "bold", margin: "5px" }}>
