@@ -355,22 +355,6 @@ function Task({ task, index }) {
                     Edit
                   </button>
                 </MenuItem>
-                <MenuItem
-                  styles={{ borderBottom: "2px solid gray" }}
-                  value="setclose"
-                >
-                  <button
-                    style={{
-                      border: "none",
-                      width: "100%",
-                      backgroundColor: "transparent",
-                    }}
-                    id={task.id}
-                  >
-                    Close Issue
-                  </button>
-                </MenuItem>
-                <MenuItem value="Close">Close Window</MenuItem>
               </Menu>
               <div
                 style={{

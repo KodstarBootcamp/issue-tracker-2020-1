@@ -219,7 +219,7 @@ function Home() {
         </Link>
 
         <button onClick={LogOutHandler} className="btn btn-danger btn-sm ml-5">
-          LogOut
+          Log Out
         </button>
       </div>
       <div className="d-flex overflow-auto mt-1">

@@ -58,6 +58,7 @@ export default function Projects() {
       }}
     >
       <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
+      <p className={"ml-5"}>If you have not add any projects, add new one</p>
     </div>
   ) : (
     projects.map((item) => (
@@ -100,7 +101,7 @@ export default function Projects() {
           </Link>
 
           <button onClick={LogOutHandler} className="btn btn-danger btn-sm">
-            LogOut
+            Log Out
           </button>
         </div>
         <div>{Display}</div>

@@ -105,13 +105,23 @@ function IssueDetail() {
           id="comment"
         ></textarea>
       </div>
-      <button
-        onClick={saveCommentHandler}
-        type="button"
-        className="btn btn-success"
-      >
-        Save
-      </button>
+      <div className="d-flex justify-content-between">
+        <button
+          onClick={saveCommentHandler}
+          type="button"
+          className="btn btn-success"
+        >
+          Save
+        </button>
+        <button
+          onClick={() => {
+            window.history.go(-1);
+          }}
+          style={{ border: "none" }}
+        >
+          Go previous page
+        </button>
+      </div>
     </div>
   );
 }

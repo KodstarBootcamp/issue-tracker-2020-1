@@ -99,11 +99,15 @@ function Labels() {
         >
           New Label
         </button>
-        <Link to="/projects">
-          <button className="btn btn-outline-secondary btn-sm">
-            Back Home
-          </button>
-        </Link>
+
+        <button
+          onClick={() => {
+            window.history.go(-1);
+          }}
+          className="btn btn-outline-secondary btn-sm"
+        >
+          Back Home
+        </button>
       </div>
       <div
         style={{ display: openNewLabel ? "flex" : "none" }}
