@@ -10,15 +10,6 @@ const History = ({ data }) => {
               {item.action}
             </span>
             a comment this issue {moment(item.createdAt + "Z").fromNow()}{" "}
-            <p
-              style={{
-                padding: "10px",
-                backgroundColor: "#F6F8FA",
-                margin: "5px",
-              }}
-            >
-              {item.newValue}
-            </p>{" "}
           </span>
         );
       } else {
@@ -116,7 +107,7 @@ const History = ({ data }) => {
               {item.action}
             </span>
             <span>
-              state from{" "}
+              {item.field} from{" "}
               <span
                 style={{ color: "black", fontWeight: "bold", margin: "5px" }}
               >
