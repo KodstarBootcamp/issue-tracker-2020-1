@@ -32,11 +32,19 @@ function Labels() {
       name: name.charAt(0).toUpperCase() + name.slice(1),
       color: color.slice(1),
     };
-    const response = await Axios.post("/label", newLabel);
-    console.log(response, 33);
-    alert("Succesfully created");
-    setopenNewLabel(false);
-    window.location.reload();
+    Axios.post("/label", newLabel)
+      .then((res) => {
+        console.log(res.data);
+        alert("Succesfully created");
+        setopenNewLabel(false);
+        window.location.reload();
+      })
+      .catch((error) => {
+        if (error.response.status === 409) {
+          alert("Title must be unique");
+          return;
+        }
+      });
   };
 
   const deleteLabelHandler = (event) => {

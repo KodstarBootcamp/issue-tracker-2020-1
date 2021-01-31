@@ -68,6 +68,8 @@ function CreateIssue() {
         .then((res) => {
           console.log(res.data);
           alert("Succesfully Created");
+          setTitle("");
+          setDescription("");
         })
         .catch((error) => {
           if (error.response.status === 409) {
@@ -120,7 +122,10 @@ function CreateIssue() {
         window.location.reload();
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status === 409) {
+          alert("Title must be unique");
+          return;
+        }
       });
   };
 

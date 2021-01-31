@@ -133,7 +133,10 @@ function EditIssue() {
         window.location.reload();
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status === 409) {
+          alert("Title must be unique");
+          return;
+        }
       });
   };
 
