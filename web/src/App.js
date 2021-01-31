@@ -57,8 +57,9 @@ function App() {
 
     let usersAnswer = window.confirm("Are you sure?");
     if (usersAnswer === true) {
+      console.log(event.target.id, 600);
       const id =
-        event.target.id.length > 2 ? event.target.id.slice(5) : event.target.id;
+        event.target.id.length > 4 ? event.target.id.slice(5) : event.target.id;
 
       // make delete request
       Axios.delete("/issue/" + id)

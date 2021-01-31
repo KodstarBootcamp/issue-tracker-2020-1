@@ -76,7 +76,7 @@ export default function AllIssues() {
 
   const searchHandler = (event) => {
     const query = event.target.value;
-    setSearch(query.trim().toLowerCase());
+    setSearch(query.trim());
   };
 
   const CheckHandler = (event) => {
@@ -260,14 +260,22 @@ export default function AllIssues() {
       </div>
       <div className={styles.container}>
         <div className={styles.navbar}>
-          <div className={styles.isOpen}>
-            <span onClick={openIssue} role="button" className="mx-3">
-              {issues.filter((item) => item.state === "open").length} Open
-            </span>
-            <span onClick={closeIssue} role="button" className="text-secondary">
-              {issues.filter((item) => item.state === "closed").length} Close
-            </span>
-          </div>
+          {issues ? (
+            <div className={styles.isOpen}>
+              <span onClick={openIssue} role="button" className="mx-3">
+                {issues.filter((item) => item.state === "open").length} Open
+              </span>
+              <span
+                onClick={closeIssue}
+                role="button"
+                className="text-secondary"
+              >
+                {issues.filter((item) => item.state === "closed").length} Close
+              </span>
+            </div>
+          ) : (
+            ""
+          )}
           <div className={styles.optionBar}>
             <Link to={`/createIssue/${id}`}>
               <button className="btn btn-outline-success btn-sm mx-2">
