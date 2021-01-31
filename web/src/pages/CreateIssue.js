@@ -68,6 +68,8 @@ function CreateIssue() {
         .then((res) => {
           console.log(res.data);
           alert("Succesfully Created");
+          setTitle("");
+          setDescription("");
         })
         .catch((error) => {
           if (error.response.status === 409) {
