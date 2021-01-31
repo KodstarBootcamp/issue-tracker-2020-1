@@ -19,6 +19,7 @@ export default function AllIssues() {
   const [issues, setIssues] = useState([]);
   const [CurrentPageNumber, setCurrentPageNumber] = useState(0);
   const [TotalPageNumber, setTotalPageNumber] = useState(0);
+  const [refresh, setRefresh] = useState(true);
 
   useEffect(() => {
     function fetchIssues() {
@@ -34,7 +35,7 @@ export default function AllIssues() {
     }
 
     fetchIssues();
-  }, [id, CurrentPageNumber]);
+  }, [id, CurrentPageNumber, refresh]);
 
   const { deleteHandler } = useContext(IssueContex);
   const { editHandler } = useContext(IssueContex);
@@ -113,7 +114,7 @@ export default function AllIssues() {
         Axios.put("/issue/" + id, UpdatedIssue)
           .then((res) => {
             console.log(res.data);
-            window.location.reload();
+            setRefresh(!refresh);
           })
           .catch((error) => {
             console.log(error);
@@ -213,7 +214,7 @@ export default function AllIssues() {
     Axios.post("/issues/batch", data)
       .then((res) => {
         console.log(res.data);
-        window.location.reload();
+        setRefresh(!refresh);
         alert("succesfully deleted");
       })
       .catch((err) => {
@@ -226,7 +227,7 @@ export default function AllIssues() {
       ids: multipleDeleteIds,
     };
     const response = await Axios.post("/issues/batch", data);
-    window.location.reload();
+    setRefresh(!refresh);
     console.log(response);
   };
 
