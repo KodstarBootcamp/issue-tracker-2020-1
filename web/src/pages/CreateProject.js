@@ -46,6 +46,7 @@ function CreateProject() {
 
           setName("");
           setDescription("");
+          window.location.reload();
         })
         .catch((error) => {
           if (error.response.status === 409) {
