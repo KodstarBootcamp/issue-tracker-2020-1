@@ -3,7 +3,6 @@ import Axios from "axios";
 import { IssueContex } from "../App";
 import "bootstrap/dist/css/bootstrap.css";
 import { Multiselect } from "multiselect-react-dropdown";
-import { Link } from "react-router-dom";
 import styles from "./CreateIssue.module.css";
 import { CirclePicker } from "react-color";
 

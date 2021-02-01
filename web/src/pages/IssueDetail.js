@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { Modal } from "antd";
 import History from "../components/History";
-import axios from "axios";
 
 function IssueDetail() {
   const pathname = window.location.pathname;

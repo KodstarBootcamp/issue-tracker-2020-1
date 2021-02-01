@@ -75,7 +75,7 @@ function App() {
 
   const editHandler = (event) => {
     const id =
-      event.target.id.length > 2 ? event.target.id.slice(5) : event.target.id;
+      event.target.id.length > 4 ? event.target.id.slice(5) : event.target.id;
     console.log(id);
 
     history.push(`/editIssue/${id}`);
