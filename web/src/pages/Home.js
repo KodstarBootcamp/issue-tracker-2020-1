@@ -40,18 +40,18 @@ function Home() {
   let { UserId, setUserId } = useContext(IssueContex);
   let { refresh } = useContext(IssueContex);
 
-  const exist = (item) => {
-    const ids = item.users.map((el) => el.id);
-    if (ids.includes(Number(UserId))) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   useEffect(() => {
     async function fetchIssues() {
       const response = await Axios.get(`/project/${id}/issues`);
+
+      const exist = (item) => {
+        const ids = item.users.map((el) => el.id);
+        if (ids.includes(Number(UserId))) {
+          return true;
+        } else {
+          return false;
+        }
+      };
 
       if (response.data) {
         const filteredData = response.data.filter((item) => exist(item));

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import styles from "./Labels.module.css";
 import { CirclePicker } from "react-color";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { IssueContex } from "../App";
 import Loader from "react-loader-spinner";
 import Axios from "axios";
