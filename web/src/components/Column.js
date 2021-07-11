@@ -1,7 +1,8 @@
 import React from "react";
 import styles from "./Column.module.css";
-import Task from "./Task";
 import { Droppable } from "react-beautiful-dnd";
+import Task from "./Task";
+
 function Column({ column, tasks }) {
   return (
     <div className={styles.column}>
